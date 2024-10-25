@@ -33,6 +33,13 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => (
       <div className='setting-option'>
         <label className='checkbox-label'>
           <input type='checkbox' className='checkbox' />
+          Dark Mode
+        </label>
+      </div>
+
+      <div className='setting-option'>
+        <label className='checkbox-label'>
+          <input type='checkbox' className='checkbox' />
           Screen Reader Mode
         </label>
       </div>
