@@ -11,32 +11,35 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => (
     <div className='popup-content'>
       <h2>Accessibility Options</h2>
 
-      {/* Accessibility options go here */}
-      <label>
-        Text Size:
-        <select>
-          <option value='small'>Small</option>
-          <option value='medium'>Medium</option>
-          <option value='large'>Large</option>
-        </select>
-      </label>
+      {/* Accessibility options, each on its own line */}
+      <div className='setting-option'>
+        <label>
+          Text Size:
+          <select>
+            <option value='small'>Small</option>
+            <option value='medium'>Medium</option>
+            <option value='large'>Large</option>
+          </select>
+        </label>
+      </div>
 
-      <label>
-        Dark Mode:
-        <input type='checkbox' />
-      </label>
+      <div className='setting-option'>
+        <label className='checkbox-label'>
+          <input type='checkbox' className='checkbox' />
+          High Contrast Mode
+        </label>
+      </div>
 
-      <label>
-        High Contrast Mode:
-        <input type='checkbox' />
-      </label>
+      <div className='setting-option'>
+        <label className='checkbox-label'>
+          <input type='checkbox' className='checkbox' />
+          Screen Reader Mode
+        </label>
+      </div>
 
-      <label>
-        Screen Reader Mode:
-        <input type='checkbox' />
-      </label>
-
-      <button onClick={onClose}>Close</button>
+      <button onClick={onClose} className='close-btn'>
+        Close
+      </button>
     </div>
   </div>
 );
