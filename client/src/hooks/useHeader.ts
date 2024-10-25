@@ -40,9 +40,6 @@ const useHeader = () => {
     }
   };
 
-  const handleButtonClick = () => {
-  }
-
   return {
     val,
     setVal,
