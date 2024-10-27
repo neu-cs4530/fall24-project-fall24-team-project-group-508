@@ -4,7 +4,7 @@
   justify-content: space-around;
   height: 10%;
   width: 100%;
-  background: #dddddd;
+  background: var(--background-color);
 }
 
 .title {
@@ -19,5 +19,5 @@ button {
 }
 
 button:hover {
-  color: #0073e6;
+  color: var(--primary-color);
 }

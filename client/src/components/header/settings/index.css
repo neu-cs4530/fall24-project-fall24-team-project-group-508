@@ -69,3 +69,60 @@
   width: 100%; /* Make dropdown wider */
   max-width: 200px; /* Set a maximum width to control size */
 }
+
+.popup {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.popup-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  color: #333;
+}
+
+/* Dark mode styles */
+.popup.dark {
+  background-color: #222;
+  color: #f5f5f5;
+}
+
+.popup-content.dark-content {
+  background-color: #333;
+  color: #f5f5f5;
+}
+
+/* Other optional dark mode adjustments */
+.close-btn {
+  background-color: #ccc;
+  color: #333;
+}
+
+.popup.dark .close-btn {
+  background-color: #444;
+  color: #f5f5f5;
+}
+
+/* General styles */
+body, .popup, .other-component {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode styles */
+.dark .popup,
+.dark .other-component {
+  background-color: #222;
+  color: #f5f5f5;
+}
+
+.dark .popup-content,
+.dark .other-component-content {
+  background-color: #333;
+  color: #f5f5f5;
+}
+
+.dark .close-btn {
+  background-color: #444;
+  color: #f5f5f5;
+}
