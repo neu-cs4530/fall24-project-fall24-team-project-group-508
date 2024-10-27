@@ -19,11 +19,11 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
   return (
     <div className={`popup ${darkMode ? 'dark' : ''}`}>
       <div className={`popup-content ${darkMode ? 'dark-content' : ''}`}>
-        <h2>Accessibility Options</h2>
+        <h2 className='setting-option'>Accessibility Options</h2>
 
         {/* Accessibility options, each on its own line */}
         <div className='setting-option'>
-          <label>
+          <label className='setting-option'>
             Text Size:
             <select>
               <option value='small'>Small</option>
