@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
+import useFontSize from '../../../hooks/useFontSizeEditor';
 
 interface AccessibilityPopupProps {
   onClose: () => void;
@@ -9,33 +10,13 @@ interface AccessibilityPopupProps {
 
 const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
   const { darkMode, toggleDarkMode } = useDarkMode();
-
-  const [textSize, setTextSize] = useState<'small' | 'medium' | 'large'>(
-    () => (localStorage.getItem('textSize') as 'small' | 'medium' | 'large') || 'medium',
-  );
+  const [textSize, setTextSize] = useFontSize();
 
   const handleTextSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = e.target.value as 'small' | 'medium' | 'large';
     setTextSize(newSize);
     localStorage.setItem('textSize', newSize);
   };
-
-  useEffect(() => {
-    const root = document.documentElement;
-    switch (textSize) {
-      case 'small':
-        root.style.setProperty('--font-size', '12px');
-        break;
-      case 'medium':
-        root.style.setProperty('--font-size', '16px');
-        break;
-      case 'large':
-        root.style.setProperty('--font-size', '20px');
-        break;
-      default:
-        root.style.setProperty('--font-size', '16px');
-    }
-  }, [textSize]);
 
   return (
     <div className={`popup ${darkMode ? 'dark' : ''}`}>

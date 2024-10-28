@@ -1,6 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const useFontSize = (textSize: string) => {
+/**
+ * custom hook that allows the user to change the font size of all text
+ * @returns textSize and setTextSize - the current text size and a function to set the text size
+ */
+const useFontSize = (): [string, React.Dispatch<React.SetStateAction<string>>] => {
+  const [textSize, setTextSize] = useState(() => localStorage.getItem('textSize') || 'medium');
+
   useEffect(() => {
     const root = document.documentElement;
     switch (textSize) {
@@ -16,7 +22,11 @@ const useFontSize = (textSize: string) => {
       default:
         root.style.setProperty('--font-size', '16px');
     }
+
+    localStorage.setItem('textSize', textSize);
   }, [textSize]);
+
+  return [textSize, setTextSize];
 };
 
 export default useFontSize;
