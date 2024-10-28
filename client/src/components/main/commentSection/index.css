@@ -8,7 +8,7 @@
 
 .toggle-button {
   background: none;
-  color: #007bff;
+  color: var(--primary-color);
   border: none;
   font-size: 1rem;
   cursor: pointer;
@@ -17,7 +17,7 @@
 }
 
 .toggle-button:hover {
-  color: #0056b3;
+  color: var(--primary-color);
 }
 
 .comments-container {
@@ -75,7 +75,7 @@
 }
 
 .comment-username:focus {
-  border-color: #007bff;
+  border-color: var(--primary-color);
   outline: none;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .comment-textarea:focus {
-  border-color: #007bff;
+  border-color: var(--primary-color);
   outline: none;
 }
 

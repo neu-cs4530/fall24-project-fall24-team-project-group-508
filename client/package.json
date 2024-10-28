@@ -14,7 +14,9 @@
     "react-latex": "^2.0.0",
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0"
   },
   "scripts": {
     "start": "react-scripts -r @cypress/instrument-cra start",
@@ -58,7 +60,9 @@
     "eslint-plugin-react": "^7.35.0",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0"
   },
   "overrides": {
     "eslint-plugin": "7.0.0",

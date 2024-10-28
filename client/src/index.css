@@ -5,6 +5,8 @@
 
 * {
   font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 html {
@@ -14,4 +16,21 @@ html {
 body,
 #root {
   height: 100%;
+}
+
+/* index.css */
+
+:root {
+  /* Light Mode Colors */
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --primary-color: #007bff;
+  /* Add any other variables needed */
+}
+
+.dark {
+  /* Dark Mode Colors */
+  --background-color: #333;
+  --text-color: #ffffff;
+  --primary-color: #bb86fc;
 }
