@@ -1,7 +1,8 @@
 // AccessibilityPopup.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
+import useFontSize from '@/hooks/useFontSize';
 
 interface AccessibilityPopupProps {
   onClose: () => void;
@@ -15,6 +16,8 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
   const handleTextSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setTextSize(e.target.value);
   };
+
+  useFontSize(textSize);
 
   return (
     <div className={`popup ${darkMode ? 'dark' : ''}`}>
