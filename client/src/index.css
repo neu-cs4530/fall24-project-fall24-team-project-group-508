@@ -6,7 +6,8 @@
   --font-size: 16px;
 }
 
-body {
+body,
+* {
   font-size: var(--font-size);
 }
 
