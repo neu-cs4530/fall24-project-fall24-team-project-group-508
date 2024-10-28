@@ -1,17 +1,14 @@
-import { ActionBar, Portal } from "@chakra-ui/react"
-import { CloseButton } from "./close-button"
-import { forwardRef } from "react"
+import { ActionBar, Portal } from '@chakra-ui/react';
+import { forwardRef } from 'react';
+import { CloseButton } from './close-button';
 
 interface ActionBarContentProps extends ActionBar.ContentProps {
-  portalled?: boolean
-  portalRef?: React.RefObject<HTMLElement>
+  portalled?: boolean;
+  portalRef?: React.RefObject<HTMLElement>;
 }
 
-export const ActionBarContent = forwardRef<
-  HTMLDivElement,
-  ActionBarContentProps
->(function ActionBarContent(props, ref) {
-  const { children, portalled = true, portalRef, ...rest } = props
+export const ActionBarContent = forwardRef<HTMLDivElement, ActionBarContentProps>((props, ref) => {
+  const { children, portalled = true, portalRef, ...rest } = props;
 
   return (
     <Portal disabled={!portalled} container={portalRef}>
@@ -21,20 +18,17 @@ export const ActionBarContent = forwardRef<
         </ActionBar.Content>
       </ActionBar.Positioner>
     </Portal>
-  )
-})
+  );
+});
 
-export const ActionBarCloseTrigger = forwardRef<
-  HTMLButtonElement,
-  ActionBar.CloseTriggerProps
->(function ActionBarCloseTrigger(props, ref) {
-  return (
+export const ActionBarCloseTrigger = forwardRef<HTMLButtonElement, ActionBar.CloseTriggerProps>(
+  (props, ref) => (
     <ActionBar.CloseTrigger {...props} asChild ref={ref}>
-      <CloseButton size="sm" />
+      <CloseButton size='sm' />
     </ActionBar.CloseTrigger>
-  )
-})
+  ),
+);
 
-export const ActionBarRoot = ActionBar.Root
-export const ActionBarSelectionTrigger = ActionBar.SelectionTrigger
-export const ActionBarSeparator = ActionBar.Separator
+export const ActionBarRoot = ActionBar.Root;
+export const ActionBarSelectionTrigger = ActionBar.SelectionTrigger;
+export const ActionBarSeparator = ActionBar.Separator;
