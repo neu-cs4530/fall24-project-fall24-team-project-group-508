@@ -7,15 +7,17 @@
   font-family: Arial, Helvetica, sans-serif;
   color: var(--text-color);
   background-color: var(--background-color);
+  background: var(--background-color);
 }
 
 html {
-  height: 99%;
+  height: 100%;
 }
 
 body,
 #root {
   height: 100%;
+  margin: 0;
 }
 
 /* index.css */
