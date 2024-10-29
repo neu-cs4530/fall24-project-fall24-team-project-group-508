@@ -1,4 +1,5 @@
 // AccessibilityPopup.js
+import React from 'react';
 import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
 import useFontSize from '../../../hooks/useFontSizeEditor';
