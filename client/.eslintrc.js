@@ -30,10 +30,12 @@ module.exports = {
   ignorePatterns: ['/*.*', '*.js'],
   rules: {
     'prettier/prettier': 'error',
+    'react/react-in-jsx-scope': 'off',
     'no-underscore-dangle': 0,
     'no-param-reassign': 0,
     'no-restricted-syntax': 0,
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
     'no-plusplus': 0,
     'class-methods-use-this': 0,
     '@typescript-eslint/no-throw-literal': 0,
