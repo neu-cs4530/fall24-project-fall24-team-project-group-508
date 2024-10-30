@@ -201,6 +201,52 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * Interface representing a User's Account, which contains:
+ * - _id - The unique identifier for the answer. Optional field
+ * - username - The username of the account
+ * - hashedPassword - The securely hashed password of the account
+ */
+export interface Account {
+  _id?: ObjectId;
+  username: string;
+  hashedPassword: string;
+  score: number;
+  dateCreated: Date;
+  questions: ObjectId[];
+  answers: ObjectId[];
+  comments: ObjectId[];
+  upVotedQuestions: ObjectId[];
+  upvotedAnswers: ObjectId[];
+  downvotedQuestions: ObjectId[];
+  downvotedAnswers: ObjectId[];
+  questionDrafts: ObjectId[];
+  answerDrafts: ObjectId[];
+}
+/**
+ * Interface extending the request body when trying to log into an account, which contains:
+ * - username - The username of the account being logged into
+ * - hashedPassword - The password guess for the account
+ */
+export interface LoginRequest extends Request {
+  body: {
+    username: string;
+    hashedPassword: string;
+  };
+}
+/**
+ * Interface extending the request body when trying to create a new account, which contains:
+ * - body - The new account that will be added into the database if possible
+ */
+export interface CreateAccountRequest extends Request {
+  body: Account;
+}
+/**
+ * Type representing the possible responses for an Account-related operation.
+ */
+export type AccountResponse = Account | { error: string };
+
+
+/**
  * Interface representing the possible events that the server can emit to the client.
  */
 export interface ServerToClientEvents {
