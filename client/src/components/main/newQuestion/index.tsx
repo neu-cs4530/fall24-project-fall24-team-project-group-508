@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import useNewQuestion from '../../../hooks/useNewQuestion';
 import Form from '../baseComponents/form';
 import Input from '../baseComponents/input';
@@ -41,6 +42,10 @@ const NewQuestionPage = () => {
         setState={setText}
         err={textErr}
       />
+      <h4>Markdown Preview:</h4>
+      <div className='markdown_preview_container'>
+        <ReactMarkdown>{text}</ReactMarkdown>
+      </div>
       <Input
         title={'Tags'}
         hint={'Add keywords separated by whitespace'}
