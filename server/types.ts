@@ -204,11 +204,13 @@ export interface AnswerUpdatePayload {
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
  * - username - The username of the account
+ * - email - the email of the account
  * - hashedPassword - The securely hashed password of the account
  */
 export interface Account {
   _id?: ObjectId;
   username: string;
+  email: string;
   hashedPassword: string;
 }
 

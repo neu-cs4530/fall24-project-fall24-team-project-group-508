@@ -687,6 +687,12 @@ export const createAccount = async (account : Account): Promise<AccountResponse>
       throw new Error('Account with matching username already exists');
     }
 
+    const existingEmailAccount = await AccountModel.findOne({email : account.email});
+
+    if( existingEmailAccount ) {
+      throw new Error('Account with matching email already exists');
+    }
+
     const newAccount = await AccountModel.create(account);
 
     return newAccount;
