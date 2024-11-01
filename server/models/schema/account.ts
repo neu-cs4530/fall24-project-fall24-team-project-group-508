@@ -12,6 +12,9 @@ const accountSchema: Schema = new Schema(
     username: {
       type: String,
     },
+    email: {
+        type: String,
+    },
     hashedPassword: {
       type: String,
     },
