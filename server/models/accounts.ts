@@ -13,5 +13,4 @@ import { Account } from '../types';
  */
 const AccountModel: Model<Account> = mongoose.model<Account>('Account', accountSchema);
 
-
 export default AccountModel;

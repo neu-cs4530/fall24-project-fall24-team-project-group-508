@@ -1,9 +1,10 @@
 import express, { Response } from 'express';
 import { LoginRequest, FakeSOSocket, CreateAccountRequest } from '../types';
 import { createAccount, loginToAccount } from '../models/application';
+
 const loginController = (socket: FakeSOSocket) => {
   const router = express.Router();
-  
+
   /**
    * Checks if the provided login request contains the required fields.
    *
@@ -12,8 +13,7 @@ const loginController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   const isLoginRequestValid = (req: LoginRequest): boolean =>
-    !!req.body.username &&
-    !!req.body.hashedPassword
+    !!req.body.username && !!req.body.hashedPassword;
 
   /**
    * Checks if the provided create account request contains the required fields.
@@ -22,10 +22,8 @@ const loginController = (socket: FakeSOSocket) => {
    *
    * @returns `true` if the request is valid, otherwise `false`.
    */
-  const isCreateAccountRequestValid = (req: CreateAccountRequest) : boolean =>
-    !!req.body && 
-    req.body.username !== undefined &&
-    req.body.hashedPassword !== undefined
+  const isCreateAccountRequestValid = (req: CreateAccountRequest): boolean =>
+    !!req.body && req.body.username !== undefined && req.body.hashedPassword !== undefined;
 
   /**
    * Handles adding logging in to a specified account. If the request is invalid or the login fails, an error will be returns
