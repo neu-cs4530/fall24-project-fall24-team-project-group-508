@@ -206,12 +206,35 @@ export interface AnswerUpdatePayload {
  * - username - The username of the account
  * - email - the email of the account
  * - hashedPassword - The securely hashed password of the account
+ * - score - The score of the account
+ * - dateCreated - The date and time when the account was created
+ * - questions - Object IDs of questions that have been asked by the user
+ * - answers - Object IDs of answers that have been added by the user
+ * - comments - Object IDs of comments that have been added by the user
+ * - upVotedQuestions - Object IDs of questions that have been upvoted by the user
+ * - upvotedAnswers - Object IDs of answers that have been upvoted by the user
+ * - downvotedQuestions - Object IDs of questions that have been downvoted by the user
+ * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
+ * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
+ * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+
  */
 export interface Account {
   _id?: ObjectId;
   username: string;
   email: string;
   hashedPassword: string;
+  score: number;
+  dateCreated: Date;
+  questions: ObjectId[];
+  answers: ObjectId[];
+  comments: ObjectId[];
+  upVotedQuestions: ObjectId[];
+  upvotedAnswers: ObjectId[];
+  downvotedQuestions: ObjectId[];
+  downvotedAnswers: ObjectId[];
+  questionDrafts: ObjectId[];
+  answerDrafts: ObjectId[];
 }
 
 /**
