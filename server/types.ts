@@ -201,8 +201,72 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * Interface representing a User's Account, which contains:
+ * - _id - The unique identifier for the answer. Optional field
+ * - username - The username of the account
+ * - email - the email of the account
+ * - hashedPassword - The securely hashed password of the account
+ * - score - The score of the account
+ * - dateCreated - The date and time when the account was created
+ * - questions - Object IDs of questions that have been asked by the user
+ * - answers - Object IDs of answers that have been added by the user
+ * - comments - Object IDs of comments that have been added by the user
+ * - upVotedQuestions - Object IDs of questions that have been upvoted by the user
+ * - upvotedAnswers - Object IDs of answers that have been upvoted by the user
+ * - downvotedQuestions - Object IDs of questions that have been downvoted by the user
+ * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
+ * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
+ * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+
+ */
+export interface Account {
+  _id?: ObjectId;
+  username: string;
+  email: string;
+  hashedPassword: string;
+  score: number;
+  dateCreated: Date;
+  questions: ObjectId[];
+  answers: ObjectId[];
+  comments: ObjectId[];
+  upVotedQuestions: ObjectId[];
+  upvotedAnswers: ObjectId[];
+  downvotedQuestions: ObjectId[];
+  downvotedAnswers: ObjectId[];
+  questionDrafts: ObjectId[];
+  answerDrafts: ObjectId[];
+}
+
+/**
+ * Interface extending the request body when trying to log into an account, which contains:
+ * - username - The username of the account being logged into
+ * - hashedPassword - The password guess for the account
+ */
+export interface LoginRequest extends Request {
+  body: {
+    username: string;
+    hashedPassword: string;
+  };
+}
+
+/**
+ * Interface extending the request body when trying to create a new account, which contains:
+ * - body - The new account that will be added into the database if possible
+ */
+export interface CreateAccountRequest extends Request {
+  body: Account;
+}
+
+/**
+ * Type representing the possible responses for an Account-related operation.
+ */
+export type AccountResponse = Account | { error: string };
+
+
+/**
  * Interface representing the possible events that the server can emit to the client.
  */
+//TODO update to add new emited events
 export interface ServerToClientEvents {
   questionUpdate: (question: QuestionResponse) => void;
   answerUpdate: (result: AnswerUpdatePayload) => void;
