@@ -3,7 +3,7 @@ import { LoginRequest, FakeSOSocket, CreateAccountRequest } from '../types';
 import { createAccount, loginToAccount } from '../models/application';
 const loginController = (socket: FakeSOSocket) => {
   const router = express.Router();
-
+  
   /**
    * Checks if the provided login request contains the required fields.
    *

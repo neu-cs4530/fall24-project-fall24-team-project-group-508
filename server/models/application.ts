@@ -5,6 +5,8 @@ import {
   AccountResponse,
   Answer,
   AnswerResponse,
+  Account,
+  AccountResponse,
   Comment,
   CommentResponse,
   OrderType,
@@ -699,4 +701,5 @@ export const createAccount = async (account : Account): Promise<AccountResponse>
   } catch (error) {
     return { error: `Error creating account: ${(error as Error).message}` };
   }
+
 } 
