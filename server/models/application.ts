@@ -1,6 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import {
+  Account,
+  AccountResponse,
   Answer,
   AnswerResponse,
   Account,
@@ -655,18 +657,23 @@ export const getTagCountMap = async (): Promise<Map<string, number> | null | { e
  */
 export const loginToAccount = async (username : string, password : string): Promise<AccountResponse> => {
   try {
+
     const account = await AccountModel.findOne({username : username});
+
     if( ! account ) {
       throw new Error('Account does not exist');
     }
+
     if(account.hashedPassword !== password) {
       throw new Error('Incorrect password');
     }
+
     return account;
   } catch (error) {
     return { error: `Error accessing account: ${(error as Error).message}` };
   }
 } 
+
 /**
  * attempts to create and save an account onto the server if the account does not already exist
  * 
@@ -675,13 +682,24 @@ export const loginToAccount = async (username : string, password : string): Prom
  */
 export const createAccount = async (account : Account): Promise<AccountResponse> => {
   try {
+
     const existingAccount = await AccountModel.findOne({username : account.username});
+
     if( existingAccount ) {
       throw new Error('Account with matching username already exists');
     }
+
+    const existingEmailAccount = await AccountModel.findOne({email : account.email});
+
+    if( existingEmailAccount ) {
+      throw new Error('Account with matching email already exists');
+    }
+
     const newAccount = await AccountModel.create(account);
+
     return newAccount;
   } catch (error) {
     return { error: `Error creating account: ${(error as Error).message}` };
   }
-};
+
+} 

@@ -5,6 +5,7 @@ import { Schema } from 'mongoose';
  * This schema defines the structure for storing accounts in the database.
  * Each account includes the following fields:
  * - `username`: The username of the account
+ * - `email`: the email associated with the account
  * - `hashedPassword`: The password of the account stored in a hash
  */
 const accountSchema: Schema = new Schema(

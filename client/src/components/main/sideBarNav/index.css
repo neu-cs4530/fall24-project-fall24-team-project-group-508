@@ -18,7 +18,7 @@
   border-radius: 5px;
   text-align: center;
   line-height: 40px;
-  color: cornflowerblue;
+  color: var(--primary-color);
 }
 
 .menu_selected {

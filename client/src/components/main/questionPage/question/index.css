@@ -15,7 +15,7 @@
 }
 
 .postTitle {
-  color: cornflowerblue;
+  color: var(--primary-color);
 }
 
 .question_tags {

@@ -1,8 +1,9 @@
 .btn {
-  background: #ffffff;
+  background: var(--background-color);
+  color: var(--text-color);
   border: #000000 1px solid;
 }
 
 .btn:hover {
-  background-color: #007bff;
+  background-color: var(--primary-color);
 }

@@ -217,6 +217,7 @@ export interface AnswerUpdatePayload {
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
  * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+
  */
 export interface Account {
   _id?: ObjectId;
@@ -235,6 +236,7 @@ export interface Account {
   questionDrafts: ObjectId[];
   answerDrafts: ObjectId[];
 }
+
 /**
  * Interface extending the request body when trying to log into an account, which contains:
  * - username - The username of the account being logged into
@@ -246,6 +248,7 @@ export interface LoginRequest extends Request {
     hashedPassword: string;
   };
 }
+
 /**
  * Interface extending the request body when trying to create a new account, which contains:
  * - body - The new account that will be added into the database if possible
@@ -253,6 +256,7 @@ export interface LoginRequest extends Request {
 export interface CreateAccountRequest extends Request {
   body: Account;
 }
+
 /**
  * Type representing the possible responses for an Account-related operation.
  */
@@ -262,6 +266,7 @@ export type AccountResponse = Account | { error: string };
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
+//TODO update to add new emited events
 export interface ServerToClientEvents {
   questionUpdate: (question: QuestionResponse) => void;
   answerUpdate: (result: AnswerUpdatePayload) => void;

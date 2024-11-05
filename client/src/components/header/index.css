@@ -4,10 +4,20 @@
   justify-content: space-around;
   height: 10%;
   width: 100%;
-  background: #dddddd;
+  background: var(--background-color);
 }
 
 .title {
   font-size: 32px;
   font-weight: 800;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  color: var(--primary-color);
 }
