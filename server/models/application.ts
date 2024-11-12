@@ -659,7 +659,6 @@ export const loginToAccount = async (
 ): Promise<AccountResponse> => {
   try {
     const account = await AccountModel.findOne({ username });
-
     if (!account) {
       throw new Error('Account does not exist');
     }
