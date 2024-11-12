@@ -1,5 +1,6 @@
 // DarkModeContext.tsx
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { io, Socket } from 'socket.io-client';
 
 // Define the shape of our context data
 interface DarkModeContextType {
@@ -26,15 +27,46 @@ interface DarkModeProviderProps {
 
 export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    // Connect to the socket server (adjust the URL as needed)
+    const socketInstance = io('http://localhost:4000'); // Change this to your server URL
+    setSocket(socketInstance);
+
+    // Listen for darkMode change from other users
+    socketInstance.on('darkModeChanged', (newMode: boolean) => {
+      setDarkMode(newMode);
+    });
+
+    // Cleanup the socket connection when the component unmounts
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, []);
 
   const toggleDarkMode = () => {
-    setDarkMode(prevMode => !prevMode);
+    setDarkMode(prevMode => {
+      const newMode = !prevMode;
+
+      // Emit the mode change through the socket to the server
+      if (socket) {
+        socket.emit('toggleDarkMode', newMode); // Emit the change to the server
+      }
+
+      return newMode;
+    });
   };
 
   // Apply 'dark' class to body based on darkMode state
   useEffect(() => {
     document.body.classList.toggle('dark', darkMode);
-  }, [darkMode]);
+
+    // Optionally save the darkMode setting to the server
+    if (socket) {
+      socket.emit('saveDarkMode', darkMode); // Save the user's dark mode preference on the server
+    }
+  }, [darkMode, socket]);
 
   return (
     <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>

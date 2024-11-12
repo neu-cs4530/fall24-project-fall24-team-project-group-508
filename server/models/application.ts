@@ -701,3 +701,30 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
     return { error: `Error creating account: ${(error as Error).message}` };
   }
 };
+
+/**
+ * Adds an answer to a question.
+ *
+ * @param {string} qid - The ID of the question to add an answer to
+ * @param {Answer} ans - The answer to add
+ *
+ * @returns Promise<QuestionResponse> - The updated question or an error message
+ */
+export const addSettingToAccount = async (qid: string, ans: Answer): Promise<QuestionResponse> => {
+  try {
+    if (!ans || !ans.text || !ans.ansBy || !ans.ansDateTime) {
+      throw new Error('Invalid answer');
+    }
+    const result = await QuestionModel.findOneAndUpdate(
+      { _id: qid },
+      { $push: { answers: { $each: [ans._id], $position: 0 } } },
+      { new: true },
+    );
+    if (result === null) {
+      throw new Error('Error when adding answer to question');
+    }
+    return result;
+  } catch (error) {
+    return { error: 'Error when adding answer to question' };
+  }
+};
