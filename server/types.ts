@@ -23,6 +23,7 @@ export interface Answer {
   ansBy: string;
   ansDateTime: Date;
   comments: Comment[] | ObjectId[];
+  locked: boolean;
 }
 
 /**
@@ -79,6 +80,7 @@ export interface Question {
   upVotes: string[];
   downVotes: string[];
   comments: Comment[] | ObjectId[];
+  locked: boolean;
 }
 
 /**
@@ -200,6 +202,12 @@ export interface AnswerUpdatePayload {
   answer: AnswerResponse;
 }
 
+
+export enum AccountType {
+  user,
+  moderator,
+  owner,
+} 
 /**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
@@ -235,6 +243,7 @@ export interface Account {
   downvotedAnswers: ObjectId[];
   questionDrafts: ObjectId[];
   answerDrafts: ObjectId[];
+  userType: AccountType;
 }
 
 /**
@@ -257,11 +266,33 @@ export interface CreateAccountRequest extends Request {
   body: Account;
 }
 
+export type ActionTypes = 'pin' | 'remove' | 'lock' | 'promote';
+
 /**
  * Type representing the possible responses for an Account-related operation.
  */
 export type AccountResponse = Account | { error: string };
 
+/**
+ * Interface extending the request body when trying to create a new account, which contains:
+ * - user - the user attempting to take the actions on a post
+ * - actionType - the type of moderator action being taken
+ * - postType - the type of the post that is being actioned
+ * - postID - the objectID of the post
+ */
+export interface ActionRequest extends Request {
+  body: {
+    user: Account;
+    actionType: ActionTypes;
+    postType: 'question' | 'answer' | 'comment';
+    postID: string;
+  }
+}
+
+/**
+ * Type representing the possible responses for an action
+ */
+export type ActionResponse = { confirmation : string } | { error: string }
 
 /**
  * Interface representing the possible events that the server can emit to the client.

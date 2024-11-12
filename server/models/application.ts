@@ -5,14 +5,14 @@ import {
   AccountResponse,
   Answer,
   AnswerResponse,
-  Account,
-  AccountResponse,
   Comment,
   CommentResponse,
+  ActionResponse,
   OrderType,
   Question,
   QuestionResponse,
   Tag,
+  AccountType,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
@@ -703,3 +703,83 @@ export const createAccount = async (account : Account): Promise<AccountResponse>
   }
 
 } 
+
+const findParentPost = async(postType:string, postID:string) : Promise<Question|Answer|null> => {
+  
+  return null;
+}
+
+/**
+ * checks if a user has the ability to perform moderator actions
+ * @param account the account of the user requesting to take the action
+ * @returns true if the user is a moderator, and false if the user 
+ */
+export const canPerformAction = async (account: Account) : Promise<boolean> | never => {
+  try {
+    const existingAccount = await AccountModel.findOne({username : account.username, hashedPassword: account.hashedPassword});
+
+    return !!existingAccount && existingAccount.userType === AccountType.moderator;
+  } catch(error) {
+    throw new Error('Error when determining if user has moderator permissions');
+  }
+}
+
+
+export const pinPost = async (postType: string, postID: string) : Promise<ActionResponse> => {
+  return { error : 'placeholder'}
+}
+
+export const removePost = async (postType: string, postID: string) : Promise<ActionResponse> => {
+  try {
+    if(postType === 'question') {
+      await QuestionModel.deleteOne({ _id: postID })
+    } else if(postType === 'answer') {
+      //parent = QuestionModel.findOne where postID in answer
+      await QuestionModel.$where((q : Question)=>{
+        if(postID in q.answers) {
+          
+          return true;
+        }
+        return false;
+      });
+
+      await QuestionModel.findOneAndUpdate(
+        { $where : (q:Question)=>{return postID in q.answers;}},
+        { $pull: {}})
+    } else {
+
+    }
+  } catch {
+
+  }
+}
+
+export const lockPost = async (postType: string, postID: string) : Promise<ActionResponse> => {
+  if(postType === 'comment') {
+    return { confirmation: 'lock operation succeeded' };
+  }
+
+  try {
+    let result: QuestionResponse | AnswerResponse | null;
+    if(postType === 'question') {
+      result = await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $push: { locked: true } },
+        { new: true },
+      );
+    } else {
+      result = await AnswerModel.findOneAndUpdate(
+        { _id: postID },
+        { $push: { locked: true } },
+        { new: true },
+      );
+    }
+
+    if (result && !('error' in result)) {
+      return { confirmation : 'lock operation succeeded'};
+    } 
+    return !!result ? result : { error : 'lock action failed' };
+  } catch(error) {
+    return { error : 'lock action failed'};
+  }
+}
