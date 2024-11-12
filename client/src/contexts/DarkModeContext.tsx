@@ -31,7 +31,7 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) 
 
   useEffect(() => {
     // Connect to the socket server (adjust the URL as needed)
-    const socketInstance = io('http://localhost:4000'); // Change this to your server URL
+    const socketInstance = io('http://localhost:3000'); // Change this to your server URL
     setSocket(socketInstance);
 
     // Listen for darkMode change from other users
