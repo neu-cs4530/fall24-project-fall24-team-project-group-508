@@ -19,7 +19,7 @@ import loginController from './controller/login';
 dotenv.config();
 
 const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb+srv://descoteauxa:03ssG0OcLftf31wo@db-cs4530-f24-508.pzdc8.mongodb.net'}/fake_so`;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const CLIENT_URL = process.env.CLIENT_URL || 'https://cs4530-f24-508.onrender.com';
 const port = parseInt(process.env.PORT || '8000');
 
 mongoose.connect(MONGO_URL).catch(err => console.log('MongoDB connection error: ', err));
