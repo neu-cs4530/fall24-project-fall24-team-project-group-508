@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
 import useLoginContext from './useLoginContext';
@@ -55,7 +56,12 @@ const useLogin = (isLogin: boolean): UseLogin => {
     setError(null);
 
     try {
-      const endpoint = isLogin ? '/login' : '/createAccount';
+      const endpoint = isLogin
+        ? `${process.env.REACT_APP_SERVER_URL}/login/login`
+        : `${process.env.REACT_APP_SERVER_URL}/login/createAccount`;
+      console.log('API URL:', endpoint);
+      console.log('Request Body:', { username, hashedPassword: password });
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
