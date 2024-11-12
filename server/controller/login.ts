@@ -50,7 +50,7 @@ const loginController = (socket: FakeSOSocket) => {
 
       res.json(account);
     } catch (err: unknown) {
-      res.status(401).send(`${(err as Error).message}`);
+      res.status(401).send(`ERROR: Unable to login to account: ${(err as Error).message}`);
     }
   };
 
@@ -79,7 +79,7 @@ const loginController = (socket: FakeSOSocket) => {
 
       res.json(newAccount);
     } catch (err: unknown) {
-      res.status(401).send(`${(err as Error).message}`);
+      res.status(401).send(`ERROR: Unable to create account: ${(err as Error).message}`);
     }
   };
 

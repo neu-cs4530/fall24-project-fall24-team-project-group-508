@@ -6,22 +6,44 @@ import useLogin from '../../hooks/useLogin';
  * @returns RegisterForm component that contains a form that requires the user to input their name, email, and password, which is then submitted
  */
 const RegisterForm: React.FC = () => {
-  const { handleSubmit } = useLogin();
+  const { username, email, password, handleInputChange, handleSubmit, error } = useLogin(false);
 
   return (
     <form className='auth-form' onSubmit={handleSubmit}>
-      <label>Name</label>
-      <input type='text' placeholder='Enter your name' required />
+      <label>Username</label>
+      <input
+        type='text'
+        name='username'
+        placeholder='Enter your username'
+        value={username}
+        onChange={handleInputChange}
+        required
+      />
 
       <label>Email</label>
-      <input type='email' placeholder='Enter your email' required />
+      <input
+        type='email'
+        name='email'
+        placeholder='Enter your email'
+        value={email}
+        onChange={handleInputChange}
+        required
+      />
 
       <label>Password</label>
-      <input type='password' placeholder='Enter your password' required />
+      <input
+        type='password'
+        name='password'
+        placeholder='Enter your password'
+        value={password}
+        onChange={handleInputChange}
+        required
+      />
 
       <button type='submit' className='auth-btn'>
         Create Account
       </button>
+      {error && <p className='error-box'>{error}</p>}
     </form>
   );
 };
