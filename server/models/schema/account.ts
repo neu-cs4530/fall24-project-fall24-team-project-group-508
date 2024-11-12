@@ -34,6 +34,18 @@ const accessibilitySettingsSchema: Schema = new Schema({
  * - `username`: The username of the account
  * - `email`: the email associated with the account
  * - `hashedPassword`: The password of the account stored in a hash
+ * - `score`: The score of the account
+ * - `dateCreated`: The date and time when the account was created
+ * - `questions`: The questions asked by the user
+ * - `answers`: The answers provided by the user
+ * - `comments`: The comments made by the user
+ * - `upVotedQuestions`: The questions upvoted by the user
+ * - `upvotedAnswers`: The answers upvoted by the user
+ * - `downvotedQuestions`: The questions downvoted by the user
+ * - `downvotedAnswers`: The answers downvoted by the user
+ * - `questionDrafts`: The question drafts created by the user
+ * - `answerDrafts`: The answer drafts created by the user
+ * - `settings`: The accessibility settings of the user
  */
 const accountSchema: Schema = new Schema(
   {
@@ -79,7 +91,15 @@ const accountSchema: Schema = new Schema(
     answerDrafts: {
       type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
     },
-    accessibilitySettings: accessibilitySettingsSchema,
+    settings: {
+      darkMode: Boolean,
+      textSize: {
+        type: String,
+        enum: ['small', 'medium', 'large'],
+      },
+      screenReader: Boolean,
+    },
+    setting2: accessibilitySettingsSchema,
   },
   { collection: 'Account' },
 );

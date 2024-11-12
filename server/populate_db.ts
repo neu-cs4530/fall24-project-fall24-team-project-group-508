@@ -195,7 +195,7 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     answerDrafts: [],
     settings: {
       darkMode: false,
-      textSize: 'small',
+      textSize: 'medium',
       screenReader: false
     }
   };

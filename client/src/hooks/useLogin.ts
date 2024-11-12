@@ -86,6 +86,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
       // const account = await AccountModel.findOne({ username });
       setAccount(data);
       console.log('Account:', data);
+      console.log('Account:', data.settings);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
       setError((err as Error).message);
