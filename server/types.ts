@@ -208,17 +208,8 @@ export interface AnswerUpdatePayload {
  */
 export interface AccessibilitySettings {
   darkMode: boolean;
-  textSize: TextSize;
+  textSize: 'small' | 'medium' | 'large';
   screenReader: boolean;
-}
-
-/**
- * Enum representing the possible text sizes for the user interface.
- */
-export enum TextSize {
-  Small = 'small',
-  Medium = 'medium',
-  Large = 'large'
 }
 
 /**
@@ -238,6 +229,7 @@ export enum TextSize {
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
  * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+ * - settings - The accessibility settings of the user
 
  */
 export interface Account {
@@ -256,7 +248,9 @@ export interface Account {
   downvotedAnswers: ObjectId[];
   questionDrafts: ObjectId[];
   answerDrafts: ObjectId[];
-  settings: AccessibilitySettings;
+  settings: {darkMode: boolean;
+    textSize: 'small' | 'medium' | 'large';
+    screenReader: boolean;};
 }
 
 /**

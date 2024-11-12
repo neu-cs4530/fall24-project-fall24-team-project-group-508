@@ -127,17 +127,8 @@ export interface Question {
  */
 export interface AccessibilitySettings {
   darkMode: boolean;
-  textSize: TextSize;
+  textSize: 'small' | 'medium' | 'large';
   screenReader: boolean;
-}
-
-/**
- * Enum representing the possible text sizes for the user interface.
- */
-export enum TextSize {
-  Small = 'small',
-  Medium = 'medium',
-  Large = 'large',
 }
 
 /**
@@ -157,6 +148,7 @@ export enum TextSize {
  * - downvotedAnswers - An array of answers downvoted by the account.
  * - questionDrafts - An array of question drafts created by the account.
  * - answerDrafts - An array of answer drafts created by the account.
+ * - settings - The accessibility settings of the account.
  */
 export interface Account {
   _id?: string;
@@ -174,7 +166,7 @@ export interface Account {
   downvotedAnswers: Answer[];
   questionDrafts: Question[];
   answerDrafts: Answer[];
-  settings: AccessibilitySettings;
+  settings: { darkMode: boolean; textSize: 'small' | 'medium' | 'large'; screenReader: boolean };
 }
 
 /**
