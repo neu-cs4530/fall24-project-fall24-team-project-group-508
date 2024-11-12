@@ -2,13 +2,13 @@
   margin: 0.5em;
   padding: 0.5em;
   border-radius: 6px;
-  background-color: var(--background-color);
+  background-color: #f9f9f9;
   font-size: 0.9rem;
 }
 
 .toggle-button {
   background: none;
-  color: var(--primary-color);
+  color: #007bff;
   border: none;
   font-size: 1rem;
   cursor: pointer;
@@ -17,7 +17,7 @@
 }
 
 .toggle-button:hover {
-  color: var(--primary-color);
+  color: #0056b3;
 }
 
 .comments-container {
@@ -75,7 +75,7 @@
 }
 
 .comment-username:focus {
-  border-color: var(--primary-color);
+  border-color: #007bff;
   outline: none;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .comment-textarea:focus {
-  border-color: var(--primary-color);
+  border-color: #007bff;
   outline: none;
 }
 
