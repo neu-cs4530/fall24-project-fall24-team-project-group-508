@@ -60,12 +60,13 @@ const useLogin = (isLogin: boolean): UseLogin => {
         ? `${process.env.REACT_APP_SERVER_URL}/login/login`
         : `${process.env.REACT_APP_SERVER_URL}/login/createAccount`;
       console.log('API URL:', endpoint);
-      console.log('Request Body:', { username, hashedPassword: password });
+      console.log('Request Body:', { username, hashedPassword: password, email:email });
 
+      const reqBody = isLogin? JSON.stringify({ username, hashedPassword: password }) : JSON.stringify({ username, hashedPassword: password, email })
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, hashedPassword: password }),
+        body: reqBody,
       });
 
       if (!response.ok) {

@@ -9,11 +9,11 @@ const LoginForm: React.FC = () => {
   const { username, password, handleInputChange, handleSubmit, error } = useLogin(true);
   return (
     <form className='auth-form' onSubmit={handleSubmit}>
-      <label> Email </label>
+      <label> Username </label>
       <input
-        type='email'
+        type='username'
         name='username'
-        placeholder='Enter your email'
+        placeholder='Enter your username'
         value={username}
         onChange={handleInputChange}
         required
