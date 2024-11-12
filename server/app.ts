@@ -14,6 +14,7 @@ import questionController from './controller/question';
 import tagController from './controller/tag';
 import commentController from './controller/comment';
 import { FakeSOSocket } from './types';
+import actionsController from './controller/actions';
 
 dotenv.config();
 
@@ -70,6 +71,7 @@ app.use('/question', questionController(socket));
 app.use('/tag', tagController());
 app.use('/answer', answerController(socket));
 app.use('/comment', commentController(socket));
+app.use('/action', actionsController(socket));
 
 // Export the app instance
 export { app, server, startServer };
