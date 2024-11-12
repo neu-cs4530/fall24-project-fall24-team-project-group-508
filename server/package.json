@@ -2,6 +2,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "lodash.debounce": "^4.0.8",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
     "react-latex": "^2.0.0",
