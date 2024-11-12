@@ -1,6 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import {
+  Account,
+  AccountResponse,
   Answer,
   AnswerResponse,
   Comment,
@@ -14,6 +16,7 @@ import AnswerModel from './answers';
 import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
+import AccountModel from './accounts';
 
 /**
  * Parses tags from a search string.
@@ -640,5 +643,61 @@ export const getTagCountMap = async (): Promise<Map<string, number> | null | { e
     return tmap;
   } catch (error) {
     return { error: 'Error when construction tag map' };
+  }
+};
+
+/**
+ * gets an account from the database with a matching username and password
+ *
+ * @param username the username of the account being logged into
+ * @param password the password of the account being logged into
+ * @returns {Promise<AccountResponse>}  - either the account logged into or an error message describing what failed
+ */
+export const loginToAccount = async (
+  username: string,
+  password: string,
+): Promise<AccountResponse> => {
+  try {
+    const account = await AccountModel.findOne({ username });
+
+    if (!account) {
+      throw new Error('Account does not exist');
+    }
+
+    if (account.hashedPassword !== password) {
+      throw new Error('Incorrect password');
+    }
+
+    return account;
+  } catch (error) {
+    return { error: `Error accessing account: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * attempts to create and save an account onto the server if the account does not already exist
+ *
+ * @param account the account being created
+ * @returns {Promise<AccountResponse>} either the created account, or an error message about the failure that occured
+ */
+export const createAccount = async (account: Account): Promise<AccountResponse> => {
+  try {
+    const existingAccount = await AccountModel.findOne({ username: account.username });
+
+    if (existingAccount) {
+      throw new Error('Account with matching username already exists');
+    }
+
+    const existingEmailAccount = await AccountModel.findOne({ email: account.email });
+
+    if (existingEmailAccount) {
+      throw new Error('Account with matching email already exists');
+    }
+
+    const newAccount = await AccountModel.create(account);
+
+    return newAccount;
+  } catch (error) {
+    return { error: `Error creating account: ${(error as Error).message}` };
   }
 };

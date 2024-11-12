@@ -10,6 +10,7 @@ import TagPage from './main/tagPage';
 import NewQuestionPage from './main/newQuestion';
 import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
+import { DarkModeProvider } from '../contexts/DarkModeContext';
 
 const ProtectedRoute = ({
   user,
@@ -35,28 +36,30 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [user, setUser] = useState<User | null>(null);
 
   return (
-    <LoginContext.Provider value={{ setUser }}>
-      <Routes>
-        {/* Public Route */}
-        <Route path='/' element={<Login />} />
+    <DarkModeProvider>
+      <LoginContext.Provider value={{ setUser }}>
+        <Routes>
+          {/* Public Route */}
+          <Route path='/' element={<Login />} />
 
-        {/* Protected Routes */}
-        {
-          <Route
-            element={
-              <ProtectedRoute user={user} socket={socket}>
-                <Layout />
-              </ProtectedRoute>
-            }>
-            <Route path='/home' element={<QuestionPage />} />
-            <Route path='tags' element={<TagPage />} />
-            <Route path='/question/:qid' element={<AnswerPage />} />
-            <Route path='/new/question' element={<NewQuestionPage />} />
-            <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
-          </Route>
-        }
-      </Routes>
-    </LoginContext.Provider>
+          {/* Protected Routes */}
+          {
+            <Route
+              element={
+                <ProtectedRoute user={user} socket={socket}>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+              <Route path='/home' element={<QuestionPage />} />
+              <Route path='tags' element={<TagPage />} />
+              <Route path='/question/:qid' element={<AnswerPage />} />
+              <Route path='/new/question' element={<NewQuestionPage />} />
+              <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
+            </Route>
+          }
+        </Routes>
+      </LoginContext.Provider>
+    </DarkModeProvider>
   );
 };
 
