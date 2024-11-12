@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
+// import AccountModel from '../../server/models/accounts'; // Adjust the import path as necessary
 import useLoginContext from './useLoginContext';
 /**
  * Interface for the useLogin hook.
@@ -31,7 +32,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const { setUser } = useLoginContext();
+  const { setUser, setAccount } = useLoginContext();
   const navigate = useNavigate();
 
   /**
@@ -82,6 +83,9 @@ const useLogin = (isLogin: boolean): UseLogin => {
 
       const data = await response.json();
       setUser({ username: data.username });
+      // const account = await AccountModel.findOne({ username });
+      setAccount(data);
+      console.log('Account:', data);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
       setError((err as Error).message);

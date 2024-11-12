@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout';
 import Login from './login';
-import { FakeSOSocket, User } from '../types';
+import { Account, FakeSOSocket, User } from '../types';
 import LoginContext from '../contexts/LoginContext';
 import UserContext from '../contexts/UserContext';
 import QuestionPage from './main/questionPage';
@@ -14,18 +14,20 @@ import { DarkModeProvider } from '../contexts/DarkModeContext';
 
 const ProtectedRoute = ({
   user,
+  account,
   socket,
   children,
 }: {
   user: User | null;
+  account: Account | null;
   socket: FakeSOSocket | null;
   children: JSX.Element;
 }) => {
-  if (!user || !socket) {
+  if (!user || !socket || !account) {
     return <Navigate to='/' />;
   }
 
-  return <UserContext.Provider value={{ user, socket }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ user, account, socket }}>{children}</UserContext.Provider>;
 };
 
 /**
@@ -34,10 +36,11 @@ const ProtectedRoute = ({
  */
 const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [account, setAccount] = useState<Account | null>(null);
 
   return (
     <DarkModeProvider>
-      <LoginContext.Provider value={{ setUser }}>
+      <LoginContext.Provider value={{ setUser, setAccount }}>
         <Routes>
           {/* Public Route */}
           <Route path='/' element={<Login />} />
@@ -46,7 +49,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
           {
             <Route
               element={
-                <ProtectedRoute user={user} socket={socket}>
+                <ProtectedRoute user={user} account={account} socket={socket}>
                   <Layout />
                 </ProtectedRoute>
               }>
