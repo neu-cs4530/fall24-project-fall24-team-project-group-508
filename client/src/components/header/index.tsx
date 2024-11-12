@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
-import './index.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
 import useHeader from '../../hooks/useHeader';
-import AccessibilityPopup from './settings';
+import './index.css';
 
 /**
  * Header component that renders the main title and a search bar.
@@ -12,12 +9,6 @@ import AccessibilityPopup from './settings';
  */
 const Header = () => {
   const { val, handleInputChange, handleKeyDown } = useHeader();
-
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const togglePopup = () => {
-    setIsPopupOpen(!isPopupOpen);
-  };
 
   return (
     <div id='header' className='header'>
@@ -31,10 +22,6 @@ const Header = () => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
       />
-      <button onClick={togglePopup} aria-label='Open accessibility settings'>
-        <FontAwesomeIcon icon={faCog} size='lg' />
-      </button>
-      {isPopupOpen && <AccessibilityPopup onClose={togglePopup} />}
     </div>
   );
 };
