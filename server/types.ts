@@ -201,6 +201,27 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: TextSize;
+  screenReader: boolean;
+}
+
+/**
+ * Enum representing the possible text sizes for the user interface.
+ */
+export enum TextSize {
+  Small = 'small',
+  Medium = 'medium',
+  Large = 'large'
+}
+
+/**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
  * - username - The username of the account
@@ -235,6 +256,7 @@ export interface Account {
   downvotedAnswers: ObjectId[];
   questionDrafts: ObjectId[];
   answerDrafts: ObjectId[];
+  settings: AccessibilitySettings;
 }
 
 /**

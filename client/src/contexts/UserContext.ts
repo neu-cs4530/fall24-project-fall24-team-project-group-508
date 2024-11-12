@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { FakeSOSocket, User } from '../types';
+import { FakeSOSocket, User, Account } from '../types';
 
 /**
  * Interface represents the context type for user-related data and a WebSocket connection.
@@ -9,6 +9,7 @@ import { FakeSOSocket, User } from '../types';
  */
 export interface UserContextType {
   user: User;
+  account: Account;
   socket: FakeSOSocket;
 }
 
