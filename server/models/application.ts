@@ -718,8 +718,6 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
   }
 };
 
-} 
-
 const findParentPost = async(postType:string, postID:string) : Promise<Question|Answer|null> => {
   
   return null;
