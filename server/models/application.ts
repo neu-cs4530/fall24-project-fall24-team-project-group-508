@@ -703,28 +703,37 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
 };
 
 /**
- * Adds an answer to a question.
+ * Updates the settings of an account in the database.
  *
- * @param {string} qid - The ID of the question to add an answer to
- * @param {Answer} ans - The answer to add
+ * @param accountId The ID of the account to update.
+ * @param settings The settings object to update.
  *
- * @returns Promise<QuestionResponse> - The updated question or an error message
+ * @returns The updated account object.
+ * @throws Error if the account does not exist or the update fails.
  */
-export const addSettingToAccount = async (qid: string, ans: Answer): Promise<QuestionResponse> => {
+export const updateAccountSettings = async (
+  accountId: string,
+  settings: Account['settings'],
+): Promise<Account> => {
   try {
-    if (!ans || !ans.text || !ans.ansBy || !ans.ansDateTime) {
-      throw new Error('Invalid answer');
+    const account = await AccountModel.findOne({ _id: accountId });
+
+    if (!account) {
+      throw new Error('Account not found');
     }
-    const result = await QuestionModel.findOneAndUpdate(
-      { _id: qid },
-      { $push: { answers: { $each: [ans._id], $position: 0 } } },
-      { new: true },
-    );
-    if (result === null) {
-      throw new Error('Error when adding answer to question');
-    }
-    return result;
-  } catch (error) {
-    return { error: 'Error when adding answer to question' };
+
+    // Update the settings field in the database
+    await AccountModel.findOneAndUpdate({ _id: accountId }, { $set: { settings } });
+
+    // Return the updated account object
+    return {
+      ...account,
+      settings: {
+        ...account.settings,
+        ...settings,
+      },
+    };
+  } catch (err) {
+    throw new Error(`Failed to update account settings: ${(err as Error).message}`);
   }
 };

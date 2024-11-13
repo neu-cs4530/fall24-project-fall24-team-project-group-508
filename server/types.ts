@@ -134,6 +134,14 @@ export interface VoteRequest extends Request {
   };
 }
 
+export interface UpdateSettingRequest {
+  body: {
+    darkMode: boolean;        // Whether dark mode is enabled or not
+    textSize: 'small' | 'medium' | 'large';  // The preferred text size
+    screenReader: boolean;    // Whether screen reader mode is enabled
+  };
+}
+
 /**
  * Interface representing a Comment, which contains:
  * - _id - The unique identifier for the comment. Optional field.
@@ -239,15 +247,15 @@ export interface Account {
   hashedPassword: string;
   score: number;
   dateCreated: Date;
-  questions: ObjectId[];
-  answers: ObjectId[];
-  comments: ObjectId[];
-  upVotedQuestions: ObjectId[];
-  upvotedAnswers: ObjectId[];
-  downvotedQuestions: ObjectId[];
-  downvotedAnswers: ObjectId[];
-  questionDrafts: ObjectId[];
-  answerDrafts: ObjectId[];
+  questions: Question[] | ObjectId[];
+  answers: Answer[] | ObjectId[];
+  comments: Comment[] | ObjectId[];
+  upVotedQuestions: Question[] | ObjectId[];
+  upvotedAnswers: Answer[] | ObjectId[];
+  downvotedQuestions: Question[] | ObjectId[];
+  downvotedAnswers: Answer[] | ObjectId[];
+  questionDrafts: Question[] | ObjectId[];
+  answerDrafts: Answer[] | ObjectId[];
   settings: {darkMode: boolean;
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;};
