@@ -71,6 +71,19 @@ const QuestionView = ({ q }: QuestionProps) => {
             </button>
           ))}
         </div>
+        <div className='question_preset_tags'>
+          {q.presetTags.map((tag, idx) => (
+            <button
+              key={idx}
+              className='question_presettag_button'
+              onClick={e => {
+                e.stopPropagation();
+                clickTag(tag); // assuming presetTags is just a string array
+              }}>
+              {tag}
+            </button>
+          ))}
+        </div>
       </div>
       <div className='lastActivity'>
         <div className='question_author'>{q.askedBy}</div>
