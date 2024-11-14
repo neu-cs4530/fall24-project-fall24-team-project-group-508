@@ -1,6 +1,5 @@
 // DarkModeContext.tsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { Account } from '../types';
 
 interface DarkModeContextProps {
   darkMode: boolean;

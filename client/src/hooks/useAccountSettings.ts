@@ -75,7 +75,6 @@ import useLoginContext from './useLoginContext';
 import updateSettings from '../services/accountService';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import useFontSize from './useFontSizeEditor';
-import { Account } from '../types';
 
 type TextSize = 'small' | 'medium' | 'large';
 
