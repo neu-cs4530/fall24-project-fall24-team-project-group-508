@@ -38,7 +38,6 @@ export const updateAccountSettings = async (
   accountId: string,
   settings: Account['settings'],
 ): Promise<Account> => {
-  console.log('Updating account settings:', settings, 'for account ID:', accountId);
   const response = await fetch(`${ACCOUNT_API_URL}/settings/${accountId}`, {
     method: 'PUT',
     headers: {
@@ -48,7 +47,6 @@ export const updateAccountSettings = async (
   });
 
   if (!response.ok) {
-    console.error('Failed to update account settings:', response, response.statusText);
     throw new Error('Failed to update account settings');
   }
 

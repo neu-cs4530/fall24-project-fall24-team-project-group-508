@@ -11,6 +11,7 @@ import NewQuestionPage from './main/newQuestion';
 import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
 import { DarkModeProvider } from '../contexts/DarkModeContext';
+import { TextSizeProvider } from '../contexts/TextSizeContext';
 
 const ProtectedRoute = ({
   user,
@@ -46,26 +47,32 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
 
   return (
     <DarkModeProvider initialDarkMode={false}>
-      <LoginContext.Provider value={{ setUser, setAccount }}>
-        <Routes>
-          {/* Public Route */}
-          <Route path='/' element={<Login />} />
+      <TextSizeProvider initialTextSize={'medium'}>
+        <LoginContext.Provider value={{ setUser, setAccount }}>
+          <Routes>
+            {/* Public Route */}
+            <Route path='/' element={<Login />} />
 
-          {/* Protected Routes */}
-          <Route
-            element={
-              <ProtectedRoute user={user} account={account} setAccount={setAccount} socket={socket}>
-                <Layout />
-              </ProtectedRoute>
-            }>
-            <Route path='/home' element={<QuestionPage />} />
-            <Route path='tags' element={<TagPage />} />
-            <Route path='/question/:qid' element={<AnswerPage />} />
-            <Route path='/new/question' element={<NewQuestionPage />} />
-            <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
-          </Route>
-        </Routes>
-      </LoginContext.Provider>
+            {/* Protected Routes */}
+            <Route
+              element={
+                <ProtectedRoute
+                  user={user}
+                  account={account}
+                  setAccount={setAccount}
+                  socket={socket}>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+              <Route path='/home' element={<QuestionPage />} />
+              <Route path='tags' element={<TagPage />} />
+              <Route path='/question/:qid' element={<AnswerPage />} />
+              <Route path='/new/question' element={<NewQuestionPage />} />
+              <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
+            </Route>
+          </Routes>
+        </LoginContext.Provider>
+      </TextSizeProvider>
     </DarkModeProvider>
   );
 };

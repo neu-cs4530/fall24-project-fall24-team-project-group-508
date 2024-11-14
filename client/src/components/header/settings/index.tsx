@@ -2,10 +2,9 @@
 import React from 'react';
 import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
-import useAccountSettings from '../../../hooks/useAccountSettings';
 import { Account } from '../../../types';
 import { updateAccountSettings } from '../../../services/accountService';
-import useFontSize from '../../../hooks/useFontSizeEditor';
+import { useTextSize } from '../../../contexts/TextSizeContext';
 
 interface AccessibilityPopupProps {
   account?: Account; // Account can be undefined
@@ -18,16 +17,7 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   setAccount,
   onClose,
 }) => {
-  // const { darkMode, toggleDarkMode } = useDarkMode();
-  // const {
-  //   accountTextSize,
-  //   setAccountTextSize,
-  //   screenReader,
-  //   setScreenReader,
-  //   darkMode: accountDarkMode,
-  //   setDarkMode,
-  // } = useAccountSettings();
-  const [textSize, setTextSize] = useFontSize();
+  const { textSize, setTextSize } = useTextSize();
 
   const { darkMode, toggleDarkMode } = useDarkMode();
 

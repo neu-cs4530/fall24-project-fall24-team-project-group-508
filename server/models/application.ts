@@ -715,13 +715,7 @@ export const updateAccountSettings = async (
   accountId: string,
   settings: Account['settings'],
 ): Promise<Account> => {
-  console.log('Updating account settings:', settings);
-  console.log('Updating account:', accountId);
-  console.log('Updating account:', new ObjectId(accountId));
   try {
-    console.log('Updating account settings:', settings);
-    console.log('Updating account:', accountId);
-    console.log('Updating account:', new ObjectId(accountId));
     const account = await AccountModel.findById(accountId);
 
     if (!account) {
