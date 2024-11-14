@@ -715,8 +715,14 @@ export const updateAccountSettings = async (
   accountId: string,
   settings: Account['settings'],
 ): Promise<Account> => {
+  console.log('Updating account settings:', settings);
+  console.log('Updating account:', accountId);
+  console.log('Updating account:', new ObjectId(accountId));
   try {
-    const account = await AccountModel.findOne({ _id: accountId });
+    console.log('Updating account settings:', settings);
+    console.log('Updating account:', accountId);
+    console.log('Updating account:', new ObjectId(accountId));
+    const account = await AccountModel.findById(accountId);
 
     if (!account) {
       throw new Error('Account not found');
@@ -743,6 +749,9 @@ export const updateAccountSettings2 = async (
   settings: Account['settings'],
 ): Promise<Account> => {
   try {
+    console.log('2Updating account settings:', settings);
+    console.log('2Updating account:', accountId);
+    console.log('2Updating account:', new ObjectId(accountId));
     const account = await AccountModel.findById(accountId);
 
     if (!account) {

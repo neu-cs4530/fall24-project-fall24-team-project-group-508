@@ -55,17 +55,17 @@ const accountController = (socket: FakeSOSocket) => {
   // Define the route for updating settings
   router.put('/settings/:accountId', updateSettingsRoute);
 
-  router.put('/settings/:accountId', async (req, res) => {
-    const { accountId } = req.params;
-    const settings = req.body;
+  // router.put('/settings/:accountId', async (req, res) => {
+  //   const { accountId } = req.params;
+  //   const settings = req.body;
 
-    try {
-      const updatedAccount = await updateAccountSettings(accountId, settings);
-      res.json(updatedAccount);
-    } catch (error) {
-      res.status(500).json({ message: error });
-    }
-  });
+  //   try {
+  //     const updatedAccount = await updateAccountSettings(accountId, settings);
+  //     res.json(updatedAccount);
+  //   } catch (error) {
+  //     res.status(500).json({ message: error });
+  //   }
+  // });
 
   return router;
 };

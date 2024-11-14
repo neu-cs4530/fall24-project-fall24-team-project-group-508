@@ -17,7 +17,7 @@ const updateSettings = async (
   const data = { settings }; // Only send the settings in the body, since we're updating settings specifically.
 
   try {
-    const res = await api.post(`${ACCOUNT_API_URL}/${accountId}/updateSettings`, data);
+    const res = await api.put(`${ACCOUNT_API_URL}/settings/${accountId}`, data);
     if (res.status !== 200) {
       throw new Error("Error while updating an account's settings");
     }
@@ -38,8 +38,8 @@ export const updateAccountSettings = async (
   accountId: string,
   settings: Account['settings'],
 ): Promise<Account> => {
-  console.log('Updating account settings:', settings);
-  const response = await fetch(`/account/settings/${accountId}`, {
+  console.log('Updating account settings:', settings, 'for account ID:', accountId);
+  const response = await fetch(`${ACCOUNT_API_URL}/settings/${accountId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -48,6 +48,7 @@ export const updateAccountSettings = async (
   });
 
   if (!response.ok) {
+    console.error('Failed to update account settings:', response, response.statusText);
     throw new Error('Failed to update account settings');
   }
 
