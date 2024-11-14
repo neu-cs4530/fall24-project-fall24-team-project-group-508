@@ -38,7 +38,8 @@ export const updateAccountSettings = async (
   accountId: string,
   settings: Account['settings'],
 ): Promise<Account> => {
-  const response = await fetch(`/api/account/settings/${accountId}`, {
+  console.log('Updating account settings:', settings);
+  const response = await fetch(`/account/settings/${accountId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

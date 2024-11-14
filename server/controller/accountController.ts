@@ -53,7 +53,7 @@ const accountController = (socket: FakeSOSocket) => {
   };
 
   // Define the route for updating settings
-  router.put('/:accountId/settings', updateSettingsRoute);
+  router.put('/settings/:accountId', updateSettingsRoute);
 
   router.put('/settings/:accountId', async (req, res) => {
     const { accountId } = req.params;
