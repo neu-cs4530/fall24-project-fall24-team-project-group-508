@@ -27,4 +27,31 @@ const updateSettings = async (
   }
 };
 
+/**
+ * Updates account settings by making a request to the server.
+ *
+ * @param accountId The ID of the account to update.
+ * @param settings The settings to update.
+ * @returns The updated account object.
+ */
+export const updateAccountSettings = async (
+  accountId: string,
+  settings: Account['settings'],
+): Promise<Account> => {
+  const response = await fetch(`/api/account/settings/${accountId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(settings),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update account settings');
+  }
+
+  const updatedAccount = await response.json();
+  return updatedAccount;
+};
+
 export default updateSettings;

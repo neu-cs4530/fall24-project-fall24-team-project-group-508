@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
 // import AccountModel from '../../server/models/accounts'; // Adjust the import path as necessary
 import useLoginContext from './useLoginContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
 /**
  * Interface for the useLogin hook.
  * @property username - The current value of the username input.
@@ -34,6 +35,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
   const [error, setError] = useState<string | null>(null);
   const { setUser, setAccount } = useLoginContext();
   const navigate = useNavigate();
+  const { setDarkMode } = useDarkMode();
 
   /**
    * Function to handle the input change event.
@@ -65,7 +67,12 @@ const useLogin = (isLogin: boolean): UseLogin => {
 
       const reqBody = isLogin
         ? JSON.stringify({ username, hashedPassword: password })
-        : JSON.stringify({ username, hashedPassword: password, email });
+        : JSON.stringify({
+            username,
+            hashedPassword: password,
+            email,
+            settings: { darkMode: false, textSize: 'medium', screenReader: false },
+          });
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,6 +92,8 @@ const useLogin = (isLogin: boolean): UseLogin => {
       setUser({ username: data.username });
       // const account = await AccountModel.findOne({ username });
       setAccount(data);
+      // Set dark mode according to user's settings on login
+      setDarkMode(data.settings.darkMode);
       console.log('Account:', data);
       console.log('Account:', data.settings);
       navigate('/home'); // redirect to home page after login/registration

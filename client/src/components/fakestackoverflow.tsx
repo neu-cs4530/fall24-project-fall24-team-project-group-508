@@ -15,11 +15,13 @@ import { DarkModeProvider } from '../contexts/DarkModeContext';
 const ProtectedRoute = ({
   user,
   account,
+  setAccount,
   socket,
   children,
 }: {
   user: User | null;
   account: Account | null;
+  setAccount: (account: Account | null) => void;
   socket: FakeSOSocket | null;
   children: JSX.Element;
 }) => {
@@ -27,7 +29,11 @@ const ProtectedRoute = ({
     return <Navigate to='/' />;
   }
 
-  return <UserContext.Provider value={{ user, account, socket }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, account, setAccount, socket }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 /**
@@ -39,27 +45,25 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [account, setAccount] = useState<Account | null>(null);
 
   return (
-    <DarkModeProvider>
+    <DarkModeProvider initialDarkMode={false}>
       <LoginContext.Provider value={{ setUser, setAccount }}>
         <Routes>
           {/* Public Route */}
           <Route path='/' element={<Login />} />
 
           {/* Protected Routes */}
-          {
-            <Route
-              element={
-                <ProtectedRoute user={user} account={account} socket={socket}>
-                  <Layout />
-                </ProtectedRoute>
-              }>
-              <Route path='/home' element={<QuestionPage />} />
-              <Route path='tags' element={<TagPage />} />
-              <Route path='/question/:qid' element={<AnswerPage />} />
-              <Route path='/new/question' element={<NewQuestionPage />} />
-              <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
-            </Route>
-          }
+          <Route
+            element={
+              <ProtectedRoute user={user} account={account} setAccount={setAccount} socket={socket}>
+                <Layout />
+              </ProtectedRoute>
+            }>
+            <Route path='/home' element={<QuestionPage />} />
+            <Route path='tags' element={<TagPage />} />
+            <Route path='/question/:qid' element={<AnswerPage />} />
+            <Route path='/new/question' element={<NewQuestionPage />} />
+            <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
+          </Route>
         </Routes>
       </LoginContext.Provider>
     </DarkModeProvider>

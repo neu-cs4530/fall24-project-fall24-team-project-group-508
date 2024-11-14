@@ -6,11 +6,13 @@ import { FakeSOSocket, User, Account } from '../types';
  *
  * - user - the current user.
  * - account - the account associated with the current user.
+ * - setAccount - a function to update the current account in the context.
  * - socket - the WebSocket connection associated with the current user.
  */
 export interface UserContextType {
   user: User;
   account: Account;
+  setAccount: (account: Account | null) => void;
   socket: FakeSOSocket;
 }
 

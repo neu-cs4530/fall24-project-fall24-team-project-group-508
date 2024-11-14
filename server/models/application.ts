@@ -737,3 +737,24 @@ export const updateAccountSettings = async (
     throw new Error(`Failed to update account settings: ${(err as Error).message}`);
   }
 };
+
+export const updateAccountSettings2 = async (
+  accountId: string,
+  settings: Account['settings'],
+): Promise<Account> => {
+  try {
+    const account = await AccountModel.findById(accountId);
+
+    if (!account) {
+      throw new Error('Account not found');
+    }
+
+    // Update the settings in the database
+    account.settings = { ...account.settings, ...settings };
+    await account.save();
+
+    return account.toObject() as Account;
+  } catch (err) {
+    throw new Error(`Failed to update account settings: ${(err as Error).message}`);
+  }
+};

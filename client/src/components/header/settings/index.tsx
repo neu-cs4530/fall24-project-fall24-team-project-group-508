@@ -142,13 +142,21 @@ import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
 import useFontSize from '../../../hooks/useFontSizeEditor';
 import useAccountSettings from '../../../hooks/useAccountSettings';
+import { Account } from '../../../types';
+import { updateAccountSettings } from '../../../services/accountService';
 
 interface AccessibilityPopupProps {
+  account?: Account; // Account can be undefined
+  setAccount?: (updatedAccount: Account | null) => void; // Can be undefined
   onClose: () => void;
 }
 
-const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
-  const { darkMode, toggleDarkMode } = useDarkMode();
+const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
+  account,
+  setAccount,
+  onClose,
+}) => {
+  // const { darkMode, toggleDarkMode } = useDarkMode();
   const {
     textSize,
     setTextSize,
@@ -158,9 +166,25 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
     setDarkMode,
   } = useAccountSettings();
 
-  const handleDarkModeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleDarkModeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   toggleDarkMode();
+  //   setDarkMode(e.target.checked);
+  // };
+
+  const { darkMode, toggleDarkMode } = useDarkMode();
+
+  const handleDarkModeChange = async () => {
     toggleDarkMode();
-    setDarkMode(e.target.checked);
+
+    if (account && account._id && setAccount) {
+      const updatedAccount = await updateAccountSettings(account._id, {
+        ...account.settings,
+        darkMode: !darkMode,
+      });
+      setAccount(updatedAccount);
+    } else {
+      console.error('Account ID is undefined');
+    }
   };
 
   return (
@@ -198,8 +222,8 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
             <input
               type='checkbox'
               className='checkbox'
-              checked={accountDarkMode}
-              onChange={handleDarkModeToggle}
+              checked={darkMode}
+              onChange={handleDarkModeChange}
             />
             Dark Mode
           </label>
