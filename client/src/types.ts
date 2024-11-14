@@ -120,6 +120,56 @@ export interface Question {
 }
 
 /**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+/**
+ * Interface representing an account in the application.
+ * - _id - The unique identifier for the account.
+ * - username - The username of the account.
+ * - email - The email address of the account.
+ * - hashedPassword - The hashed password of the account.
+ * - score - The score of the account.
+ * - dateCreated - The date the account was created.
+ * - questions - An array of questions asked by the account.
+ * - answers - An array of answers provided by the account.
+ * - comments - An array of comments made by the account.
+ * - upVotedQuestions - An array of questions upvoted by the account.
+ * - upvotedAnswers - An array of answers upvoted by the account.
+ * - downvotedQuestions - An array of questions downvoted by the account.
+ * - downvotedAnswers - An array of answers downvoted by the account.
+ * - questionDrafts - An array of question drafts created by the account.
+ * - answerDrafts - An array of answer drafts created by the account.
+ * - settings - The accessibility settings of the account.
+ */
+export interface Account {
+  _id?: string;
+  username: string;
+  email: string;
+  hashedPassword: string;
+  score: number;
+  dateCreated: Date;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+  upVotedQuestions: Question[];
+  upvotedAnswers: Answer[];
+  downvotedQuestions: Question[];
+  downvotedAnswers: Answer[];
+  questionDrafts: Question[];
+  answerDrafts: Answer[];
+  settings: { darkMode: boolean; textSize: 'small' | 'medium' | 'large'; screenReader: boolean };
+}
+
+/**
  * Interface representing the payload for a vote update socket event.
  */
 export interface VoteUpdatePayload {
@@ -147,4 +197,5 @@ export interface ServerToClientEvents {
   viewsUpdate: (question: Question) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
+  darkModeUpdate: (mode: boolean) => void;
 }

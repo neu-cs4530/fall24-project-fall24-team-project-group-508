@@ -1,7 +1,10 @@
 /* eslint-disable no-console */
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
+// import AccountModel from '../../server/models/accounts'; // Adjust the import path as necessary
 import useLoginContext from './useLoginContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
+import { useTextSize } from '../contexts/TextSizeContext';
 /**
  * Interface for the useLogin hook.
  * @property username - The current value of the username input.
@@ -31,8 +34,10 @@ const useLogin = (isLogin: boolean): UseLogin => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const { setUser } = useLoginContext();
+  const { setUser, setAccount } = useLoginContext();
   const navigate = useNavigate();
+  const { setDarkMode } = useDarkMode();
+  const { setTextSize } = useTextSize();
 
   /**
    * Function to handle the input change event.
@@ -64,7 +69,12 @@ const useLogin = (isLogin: boolean): UseLogin => {
 
       const reqBody = isLogin
         ? JSON.stringify({ username, hashedPassword: password })
-        : JSON.stringify({ username, hashedPassword: password, email });
+        : JSON.stringify({
+            username,
+            hashedPassword: password,
+            email,
+            settings: { darkMode: false, textSize: 'medium', screenReader: false },
+          });
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,6 +92,13 @@ const useLogin = (isLogin: boolean): UseLogin => {
 
       const data = await response.json();
       setUser({ username: data.username });
+      // const account = await AccountModel.findOne({ username });
+      setAccount(data);
+      // Set dark mode according to user's settings on login
+      setDarkMode(data.settings.darkMode);
+      setTextSize(data.settings.textSize);
+      console.log('Account:', data);
+      console.log('Account:', data.settings);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
       setError((err as Error).message);

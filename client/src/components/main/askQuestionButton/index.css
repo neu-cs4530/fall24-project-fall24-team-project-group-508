@@ -1,0 +1,4 @@
+.bluebtn:hover {
+  background-color: color-mix(in srgb, var(--primary-color) 80%, black);
+  color: var(--text-color);
+}

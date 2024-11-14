@@ -179,9 +179,9 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     throw new Error('Invalid Account Format');
   }
   const account: Account = {
-    username: username, 
-    email: email, 
-    hashedPassword: hashedPassword, 
+    username: username,
+    email: email,
+    hashedPassword: hashedPassword,
     score: 0,
     dateCreated: new Date(),
     questions: [],
@@ -192,7 +192,12 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     downvotedQuestions: [],
     downvotedAnswers: [],
     questionDrafts: [],
-    answerDrafts: []
+    answerDrafts: [],
+    settings: {
+      darkMode: false,
+      textSize: 'medium',
+      screenReader: false
+    }
   };
   return await AccountModel.create(account);
 }

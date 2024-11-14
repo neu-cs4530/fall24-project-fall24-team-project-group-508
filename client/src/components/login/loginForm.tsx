@@ -6,6 +6,8 @@ import useLogin from '../../hooks/useLogin';
  * @returns LoginForm component that contains a form that requires the user to input their email and password, which is then submitted
  */
 const LoginForm: React.FC = () => {
+  const root = document.documentElement;
+  root.style.setProperty('--font-size', '16px');
   const { username, password, handleInputChange, handleSubmit, error } = useLogin(true);
   return (
     <form className='auth-form' onSubmit={handleSubmit}>

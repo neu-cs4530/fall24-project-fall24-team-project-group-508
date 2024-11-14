@@ -701,3 +701,39 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
     return { error: `Error creating account: ${(error as Error).message}` };
   }
 };
+
+/**
+ * Updates the settings of an account in the database.
+ *
+ * @param accountId The ID of the account to update.
+ * @param settings The settings object to update.
+ *
+ * @returns The updated account object.
+ * @throws Error if the account does not exist or the update fails.
+ */
+export const updateAccountSettings = async (
+  accountId: string,
+  settings: Account['settings'],
+): Promise<Account> => {
+  try {
+    const account = await AccountModel.findById(accountId);
+
+    if (!account) {
+      throw new Error('Account not found');
+    }
+
+    // Update the settings field in the database
+    await AccountModel.findOneAndUpdate({ _id: accountId }, { $set: { settings } });
+
+    // Return the updated account object
+    return {
+      ...account,
+      settings: {
+        ...account.settings,
+        ...settings,
+      },
+    };
+  } catch (err) {
+    throw new Error(`Failed to update account settings: ${(err as Error).message}`);
+  }
+};

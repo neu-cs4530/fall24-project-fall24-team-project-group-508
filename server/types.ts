@@ -134,6 +134,14 @@ export interface VoteRequest extends Request {
   };
 }
 
+export interface UpdateSettingRequest {
+  body: {
+    darkMode: boolean;        // Whether dark mode is enabled or not
+    textSize: 'small' | 'medium' | 'large';  // The preferred text size
+    screenReader: boolean;    // Whether screen reader mode is enabled
+  };
+}
+
 /**
  * Interface representing a Comment, which contains:
  * - _id - The unique identifier for the comment. Optional field.
@@ -201,6 +209,18 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+/**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
  * - username - The username of the account
@@ -217,6 +237,7 @@ export interface AnswerUpdatePayload {
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
  * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+ * - settings - The accessibility settings of the user
 
  */
 export interface Account {
@@ -226,15 +247,18 @@ export interface Account {
   hashedPassword: string;
   score: number;
   dateCreated: Date;
-  questions: ObjectId[];
-  answers: ObjectId[];
-  comments: ObjectId[];
-  upVotedQuestions: ObjectId[];
-  upvotedAnswers: ObjectId[];
-  downvotedQuestions: ObjectId[];
-  downvotedAnswers: ObjectId[];
-  questionDrafts: ObjectId[];
-  answerDrafts: ObjectId[];
+  questions: Question[] | ObjectId[];
+  answers: Answer[] | ObjectId[];
+  comments: Comment[] | ObjectId[];
+  upVotedQuestions: Question[] | ObjectId[];
+  upvotedAnswers: Answer[] | ObjectId[];
+  downvotedQuestions: Question[] | ObjectId[];
+  downvotedAnswers: Answer[] | ObjectId[];
+  questionDrafts: Question[] | ObjectId[];
+  answerDrafts: Answer[] | ObjectId[];
+  settings: {darkMode: boolean;
+    textSize: 'small' | 'medium' | 'large';
+    screenReader: boolean;};
 }
 
 /**
@@ -273,4 +297,5 @@ export interface ServerToClientEvents {
   viewsUpdate: (question: QuestionResponse) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
+  darkModeUpdate: (mode: boolean) => void;
 }

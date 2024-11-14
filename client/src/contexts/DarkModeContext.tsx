@@ -1,46 +1,37 @@
 // DarkModeContext.tsx
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
-// Define the shape of our context data
-interface DarkModeContextType {
+interface DarkModeContextProps {
   darkMode: boolean;
   toggleDarkMode: () => void;
+  setDarkMode: (value: boolean) => void;
 }
 
-// Create the context with a default value (it will be overridden by the provider)
-const DarkModeContext = createContext<DarkModeContextType | undefined>(undefined);
+const DarkModeContext = createContext<DarkModeContextProps | undefined>(undefined);
 
-// Custom hook to use the DarkModeContext
-export const useDarkMode = (): DarkModeContextType => {
-  const context = useContext(DarkModeContext);
-  if (!context) {
-    throw new Error('useDarkMode must be used within a DarkModeProvider');
-  }
-  return context;
-};
-
-// Provider component that supplies darkMode state to children
-interface DarkModeProviderProps {
-  children: ReactNode;
-}
-
-export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) => {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+export const DarkModeProvider: React.FC<{
+  initialDarkMode: boolean;
+  children: React.ReactNode;
+}> = ({ initialDarkMode, children }) => {
+  const [darkMode, setDarkMode] = useState(initialDarkMode);
 
   const toggleDarkMode = () => {
     setDarkMode(prevMode => !prevMode);
   };
 
-  // Apply 'dark' class to body based on darkMode state
   useEffect(() => {
     document.body.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
   return (
-    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode, setDarkMode }}>
       {children}
     </DarkModeContext.Provider>
   );
 };
 
-export default DarkModeContext;
+export const useDarkMode = () => {
+  const context = useContext(DarkModeContext);
+  if (!context) throw new Error('useDarkMode must be used within a DarkModeProvider');
+  return context;
+};
