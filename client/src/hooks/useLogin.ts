@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from 'react';
 // import AccountModel from '../../server/models/accounts'; // Adjust the import path as necessary
 import useLoginContext from './useLoginContext';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import useFontSize from './useFontSizeEditor';
 /**
  * Interface for the useLogin hook.
  * @property username - The current value of the username input.
@@ -36,6 +37,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
   const { setUser, setAccount } = useLoginContext();
   const navigate = useNavigate();
   const { setDarkMode } = useDarkMode();
+  const [, setTextSize] = useFontSize();
 
   /**
    * Function to handle the input change event.
@@ -94,6 +96,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
       setAccount(data);
       // Set dark mode according to user's settings on login
       setDarkMode(data.settings.darkMode);
+      setTextSize(data.settings.textSize);
       console.log('Account:', data);
       console.log('Account:', data.settings);
       navigate('/home'); // redirect to home page after login/registration

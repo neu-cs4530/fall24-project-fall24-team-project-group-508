@@ -5,6 +5,7 @@ import { useDarkMode } from '../../../contexts/DarkModeContext';
 import useAccountSettings from '../../../hooks/useAccountSettings';
 import { Account } from '../../../types';
 import { updateAccountSettings } from '../../../services/accountService';
+import useFontSize from '../../../hooks/useFontSizeEditor';
 
 interface AccessibilityPopupProps {
   account?: Account; // Account can be undefined
@@ -18,14 +19,15 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   onClose,
 }) => {
   // const { darkMode, toggleDarkMode } = useDarkMode();
-  const {
-    textSize,
-    setTextSize,
-    screenReader,
-    setScreenReader,
-    darkMode: accountDarkMode,
-    setDarkMode,
-  } = useAccountSettings();
+  // const {
+  //   accountTextSize,
+  //   setAccountTextSize,
+  //   screenReader,
+  //   setScreenReader,
+  //   darkMode: accountDarkMode,
+  //   setDarkMode,
+  // } = useAccountSettings();
+  const [textSize, setTextSize] = useFontSize();
 
   const { darkMode, toggleDarkMode } = useDarkMode();
 
@@ -43,6 +45,22 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
     }
   };
 
+  const handleTextChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = e.target.value as 'small' | 'medium' | 'large';
+    setTextSize(newSize);
+    console.log('New size:', newSize);
+
+    if (account && account._id && setAccount) {
+      const updatedAccount = await updateAccountSettings(account._id, {
+        ...account.settings,
+        textSize: newSize,
+      });
+      setAccount(updatedAccount);
+    } else {
+      console.error('Account ID is undefined');
+    }
+  };
+
   return (
     <div className={`popup ${darkMode ? 'dark' : ''}`}>
       <div className={`popup-content ${darkMode ? 'dark-content' : ''}`}>
@@ -51,9 +69,7 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
         <div className='setting-option'>
           <label className='setting-option'>
             Text Size:
-            <select
-              value={textSize}
-              onChange={e => setTextSize(e.target.value as 'small' | 'medium' | 'large')}>
+            <select value={textSize} onChange={handleTextChange}>
               <option value='small'>Small</option>
               <option value='medium'>Medium</option>
               <option value='large'>Large</option>
@@ -62,12 +78,21 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
         </div>
 
         <div className='setting-option'>
-          <label className='checkbox-label'>
+          {/* <label className='checkbox-label'>
             <input
               type='checkbox'
               className='checkbox'
               checked={screenReader}
               onChange={e => setScreenReader(e.target.checked)}
+            />
+            Screen Reader Mode
+          </label> */}
+          <label className='checkbox-label'>
+            <input
+              type='checkbox'
+              className='checkbox'
+              checked={false}
+              onChange={() => console.log('Screen Reader Mode')}
             />
             Screen Reader Mode
           </label>
