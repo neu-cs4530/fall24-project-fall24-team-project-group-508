@@ -1,5 +1,4 @@
 import { Socket } from 'socket.io-client';
-import { ObjectId } from 'mongodb';
 
 export type FakeSOSocket = Socket<ServerToClientEvents>;
 
