@@ -54,6 +54,55 @@ export interface Tag {
 }
 
 /**
+ * Interface representing a PresetTag, which contains:
+ * - name - The name of the tag.
+ */
+export type PresetTagName =
+  | 'C'
+  | 'C++'
+  | 'Java'
+  | 'Python'
+  | 'JavaScript'
+  | 'HTML'
+  | 'CSS'
+  | 'SQL'
+  | 'MongoDB'
+  | 'React'
+  | 'Angular'
+  | 'Node.js'
+  | 'OOD'
+  | 'SWE'
+  | 'Algorithms'
+  | 'Data Structures'
+  | 'Testing'
+  | 'Debugging'
+  | 'Version Control'
+  | 'Security'
+  | 'Web Development'
+  | 'Mobile Development'
+  | 'Cloud Computing'
+  | 'DevOps'
+  | 'Agile'
+  | 'Scrum'
+  | 'Kanban'
+  | 'CI/CD'
+  | 'Docker'
+  | 'Kubernetes'
+  | 'Microservices'
+  | 'Serverless'
+  | 'RESTful APIs'
+  | 'GraphQL'
+  | 'WebSockets'
+  | 'OAuth'
+  | 'JWT'
+  | 'Cookies'
+  | 'Sessions'
+  | 'SQL Injection'
+  | 'Buffer Overflows'
+  | 'Markdown'
+  | 'Latex';
+
+/**
  * Interface representing a Question document, which contains:
  * - _id - The unique identifier for the question. Optional field.
  * - title - The title of the question.
@@ -66,6 +115,7 @@ export interface Tag {
  * - upVotes - An array of usernames that have upvoted the question.
  * - downVotes - An array of usernames that have downvoted the question.
  * - comments - Object IDs of comments that have been added to the question by users, or comments themselves if populated.
+ * - presetTags - An array of preset tags that can be associated with the question.
  */
 export interface Question {
   _id?: ObjectId;
@@ -79,6 +129,7 @@ export interface Question {
   upVotes: string[];
   downVotes: string[];
   comments: Comment[] | ObjectId[];
+  presetTags: PresetTagName[];
 }
 
 /**

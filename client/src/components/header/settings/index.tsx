@@ -84,7 +84,7 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
               checked={false}
               onChange={() => console.log('Screen Reader Mode')}
             />
-            Screen Reader Mode
+            Text to Speech Enabled
           </label>
         </div>
 
