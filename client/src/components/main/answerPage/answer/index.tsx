@@ -46,35 +46,37 @@ const AnswerView = ({
   moderatorInfo,
 }: AnswerProps) => {
   const assignStyle = () => {
-    let name = 'answer right_padding'
+    let name = 'answer right_padding';
     if (pinned) {
-      name = name + ' pinned';
+      name += ' pinned';
     }
-    if(locked) {
-      name = name + ' locked';
+    if (locked) {
+      name += ' locked';
     }
     return name;
   };
-  return <div className={assignStyle()}>
-    <div>{ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}</div>
-    <div id='answerText' className='answerText'>
-      {handleHyperlink(text)}
+  return (
+    <div className={assignStyle()}>
+      <div>{ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}</div>
+      <div id='answerText' className='answerText'>
+        {handleHyperlink(text)}
+      </div>
+      <div className='answerAuthor'>
+        <div className='answer_author'>{ansBy}</div>
+        <div className='answer_question_meta'>{meta}</div>
+      </div>
+      <CommentSection
+        comments={comments}
+        handleAddComment={handleAddComment}
+        moderatorInfo={{
+          parentType: 'answer',
+          parentID: moderatorInfo._id,
+          _id: undefined,
+          type: 'comment',
+        }}
+      />
     </div>
-    <div className='answerAuthor'>
-      <div className='answer_author'>{ansBy}</div>
-      <div className='answer_question_meta'>{meta}</div>
-    </div>
-    <CommentSection
-      comments={comments}
-      handleAddComment={handleAddComment}
-      moderatorInfo={{
-        parentType: 'answer',
-        parentID: moderatorInfo._id,
-        _id: undefined,
-        type: 'comment',
-      }}
-    />
-  </div>
+  );
 };
 
 export default AnswerView;

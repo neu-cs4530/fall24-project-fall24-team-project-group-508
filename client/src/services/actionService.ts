@@ -16,12 +16,12 @@ const ACTION_API_URL = `${process.env.REACT_APP_SERVER_URL}/action`;
 // postID: string;
 
 export interface TakeActionRequestBody {
-  user: {username: string, hashedPassword: string, email: string}
+  user: { username: string; hashedPassword: string; email: string };
   actionType: 'pin' | 'lock' | 'remove' | 'promote';
   postType: 'question' | 'answer' | 'comment';
   postID: string;
   parentID?: string;
-  parentPostType?:'question' | 'answer' | 'comment';
+  parentPostType?: 'question' | 'answer' | 'comment';
 }
 
 /**
@@ -31,7 +31,7 @@ export interface TakeActionRequestBody {
  * @param ans - The answer object containing the answer details.
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
-const takeUserAction = async (actionInfo:TakeActionRequestBody): Promise<Answer> => {
+const takeUserAction = async (actionInfo: TakeActionRequestBody): Promise<Answer> => {
   const res = await api.post(`${ACTION_API_URL}/takeAction`, actionInfo);
   if (res.status !== 200) {
     throw new Error('Error while taking action');
