@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import useNewQuestion from '../../../hooks/useNewQuestion';
 import Form from '../baseComponents/form';
 import Input from '../baseComponents/input';
 import TextArea from '../baseComponents/textarea';
 import './index.css';
 
-/**
- * NewQuestionPage component allows users to submit a new question with a title,
- * description, tags, and username.
- */
 const NewQuestionPage = () => {
   const {
     title,
@@ -42,9 +41,14 @@ const NewQuestionPage = () => {
         setState={setText}
         err={textErr}
       />
-      <h4>Markdown Preview:</h4>
+      <h4>Question Preview with Markdown and LaTeX:</h4>
       <div className='markdown_preview_container'>
-        <ReactMarkdown>{text}</ReactMarkdown>
+        <ReactMarkdown
+          remarkPlugins={[remarkMath]}
+          rehypePlugins={[rehypeKatex]}
+        >
+          {text}
+        </ReactMarkdown>
       </div>
       <Input
         title={'Tags'}
