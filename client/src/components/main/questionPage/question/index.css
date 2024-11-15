@@ -31,6 +31,23 @@
   padding: 1% 3% 1% 3%;
 }
 
+.question_preset_tags {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1%;
+}
+
+.question_presettag_button {
+  border-width: 2px; /* You can keep the border if needed */
+  outline: 2px solid black; /* Apply outline with 2px width and black color */
+  border-radius: 10%;
+  margin-right: 10px;
+}
+
+.question_presettag_button:focus {
+  outline: 2px solid black; /* Ensure outline is visible when focused */
+}
+
 .question_tag_button:first-child {
   margin-left: 0;
 }

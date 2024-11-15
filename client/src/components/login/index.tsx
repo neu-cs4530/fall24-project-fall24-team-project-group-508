@@ -9,6 +9,8 @@ import RegisterForm from './registerForm';
  */
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const root = document.documentElement;
+  root.style.setProperty('--font-size', '16px');
 
   const toggleForm = () => {
     setIsLogin(!isLogin);

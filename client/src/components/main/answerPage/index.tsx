@@ -35,6 +35,7 @@ const AnswerPage = () => {
         meta={getMetaData(new Date(question.askDateTime))}
         pinned={question.pinned}
         locked={question.locked}
+        presetTags={question.presetTags}
       />
       <CommentSection
         comments={question.comments}

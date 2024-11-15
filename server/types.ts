@@ -56,6 +56,55 @@ export interface Tag {
 }
 
 /**
+ * Interface representing a PresetTag, which contains:
+ * - name - The name of the tag.
+ */
+export type PresetTagName =
+  | 'C'
+  | 'C++'
+  | 'Java'
+  | 'Python'
+  | 'JavaScript'
+  | 'HTML'
+  | 'CSS'
+  | 'SQL'
+  | 'MongoDB'
+  | 'React'
+  | 'Angular'
+  | 'Node.js'
+  | 'OOD'
+  | 'SWE'
+  | 'Algorithms'
+  | 'Data Structures'
+  | 'Testing'
+  | 'Debugging'
+  | 'Version Control'
+  | 'Security'
+  | 'Web Development'
+  | 'Mobile Development'
+  | 'Cloud Computing'
+  | 'DevOps'
+  | 'Agile'
+  | 'Scrum'
+  | 'Kanban'
+  | 'CI/CD'
+  | 'Docker'
+  | 'Kubernetes'
+  | 'Microservices'
+  | 'Serverless'
+  | 'RESTful APIs'
+  | 'GraphQL'
+  | 'WebSockets'
+  | 'OAuth'
+  | 'JWT'
+  | 'Cookies'
+  | 'Sessions'
+  | 'SQL Injection'
+  | 'Buffer Overflows'
+  | 'Markdown'
+  | 'Latex';
+
+/**
  * Interface representing a Question document, which contains:
  * - _id - The unique identifier for the question. Optional field.
  * - title - The title of the question.
@@ -68,6 +117,7 @@ export interface Tag {
  * - upVotes - An array of usernames that have upvoted the question.
  * - downVotes - An array of usernames that have downvoted the question.
  * - comments - Object IDs of comments that have been added to the question by users, or comments themselves if populated.
+ * - presetTags - An array of preset tags that can be associated with the question.
  */
 export interface Question {
   _id?: ObjectId;
@@ -83,6 +133,7 @@ export interface Question {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  presetTags: PresetTagName[];
 }
 
 /**
@@ -135,6 +186,14 @@ export interface VoteRequest extends Request {
   body: {
     qid: string;
     username: string;
+  };
+}
+
+export interface UpdateSettingRequest {
+  body: {
+    darkMode: boolean;        // Whether dark mode is enabled or not
+    textSize: 'small' | 'medium' | 'large';  // The preferred text size
+    screenReader: boolean;    // Whether screen reader mode is enabled
   };
 }
 
@@ -205,6 +264,30 @@ export interface AnswerUpdatePayload {
   answer: AnswerResponse;
 }
 
+/**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+/**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
 
 export enum AccountType {
   user,
@@ -228,6 +311,7 @@ export enum AccountType {
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
  * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+ * - settings - The accessibility settings of the user
 
  */
 export interface Account {
@@ -237,15 +321,18 @@ export interface Account {
   hashedPassword: string;
   score: number;
   dateCreated: Date;
-  questions: ObjectId[];
-  answers: ObjectId[];
-  comments: ObjectId[];
-  upVotedQuestions: ObjectId[];
-  upvotedAnswers: ObjectId[];
-  downvotedQuestions: ObjectId[];
-  downvotedAnswers: ObjectId[];
-  questionDrafts: ObjectId[];
-  answerDrafts: ObjectId[];
+  questions: Question[] | ObjectId[];
+  answers: Answer[] | ObjectId[];
+  comments: Comment[] | ObjectId[];
+  upVotedQuestions: Question[] | ObjectId[];
+  upvotedAnswers: Answer[] | ObjectId[];
+  downvotedQuestions: Question[] | ObjectId[];
+  downvotedAnswers: Answer[] | ObjectId[];
+  questionDrafts: Question[] | ObjectId[];
+  answerDrafts: Answer[] | ObjectId[];
+  settings: {darkMode: boolean;
+    textSize: 'small' | 'medium' | 'large';
+    screenReader: boolean;};
   userType: AccountType;
 }
 
@@ -309,4 +396,5 @@ export interface ServerToClientEvents {
   viewsUpdate: (question: QuestionResponse) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
+  darkModeUpdate: (mode: boolean) => void;
 }
