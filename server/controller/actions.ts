@@ -17,7 +17,7 @@ const actionsController = (socket: FakeSOSocket) => {
     !!req.body.postType &&
     !!req.body.postID
 
-  const isActionRequestCorrect = (actionType : string, postType : string) : boolean => {
+  const isActionRequestCorrect = (postType : string) : boolean => {
     return (postType === 'question' || postType === 'answer' || postType === 'comment');
   }
     
@@ -35,31 +35,32 @@ const actionsController = (socket: FakeSOSocket) => {
       return;
     }
 
-    if (!isActionRequestCorrect(req.body.actionType, req.body.postType)) {
+    if (!isActionRequestCorrect(req.body.postType)) {
       res.status(400).send('incorrect information in action request, must correctly specifiy a post type and action type');
       return;
     }
 
     const actionInfo = req.body;
 
-    const canTakeAction = await canPerformActions(actionInfo.user);
+    // const canTakeAction = await canPerformActions(actionInfo.user);
 
-    if(!canTakeAction) {
-      res.status(401).send('YOU DO NOT HAVE PERMISSION TO TAKE THIS ACTION');
-      return;
-    }
+    // if(!canTakeAction) {
+    //   res.status(401).send('YOU DO NOT HAVE PERMISSION TO TAKE THIS ACTION');
+    //   return;
+    // }
 
     let result : ActionResponse;
     try {
       switch(actionInfo.actionType) {
         case 'pin':
-          result = await pinPost(actionInfo.postType, actionInfo.postID);
+          result = await pinPost(actionInfo.postType, actionInfo.postID, actionInfo.parentID, actionInfo.parentPostType);
           break;
         case 'lock':
           result = await lockPost(actionInfo.postType, actionInfo.postID);
           break;
         case 'remove':
-          result = await removePost(actionInfo.postType, actionInfo.postID);
+          console.log('removing');
+          result = await removePost(actionInfo.postType, actionInfo.postID, actionInfo.parentID, actionInfo.parentPostType);
           break;
         case 'promote':
           res.status(501).send('Promote action is currently unimplemented. This will be changed during sprint 3');
@@ -73,7 +74,15 @@ const actionsController = (socket: FakeSOSocket) => {
         throw new Error(result.error);
       }
 
-      res.json(result);
+      // if('question' in result) {
+      //   socket.emit('questionUpdate', result['question']);
+      // } else if('answer' in result && actionInfo.parentID) {
+      //   socket.emit('answerUpdate', { qid: actionInfo.parentID, answer: result['answer']});
+      // } else if('comment' in result && actionInfo.parentPostType === 'answer' || actionInfo.parentPostType === 'question') {
+      //   socket.emit('commentUpdate', { type: actionInfo.parentPostType, result: null});
+      // }
+
+      res.status(200).json('action completed succesfully');
     } catch (err: unknown) {
       res.status(401).send(`${(err as Error).message}`);
     }

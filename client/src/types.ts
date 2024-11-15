@@ -7,6 +7,8 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
  */
 export interface User {
   username: string;
+  hashedPassword: string;
+  email: string;
 }
 
 /**
@@ -34,9 +36,11 @@ export type OrderType = keyof typeof orderTypeDisplayName;
  * commentDateTime - Time at which the comment was created.
  */
 export interface Comment {
+  _id?: string;
   text: string;
   commentBy: string;
   commentDateTime: Date;
+  pinned: boolean;
 }
 
 /**
@@ -88,6 +92,8 @@ export interface Answer {
   ansBy: string;
   ansDateTime: Date;
   comments: Comment[];
+  pinned: boolean;
+  locked: boolean;
 }
 
 /**
@@ -117,6 +123,8 @@ export interface Question {
   upVotes: string[];
   downVotes: string[];
   comments: Comment[];
+  pinned: boolean;
+  locked: boolean;
 }
 
 /**

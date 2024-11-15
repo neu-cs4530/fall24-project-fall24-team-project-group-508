@@ -49,6 +49,8 @@ const answerController = (socket: FakeSOSocket) => {
 
     const { qid } = req.body;
     const ansInfo: Answer = req.body.ans;
+    ansInfo.locked = false;
+    ansInfo.pinned = false;
 
     try {
       const ansFromDb = await saveAnswer(ansInfo);

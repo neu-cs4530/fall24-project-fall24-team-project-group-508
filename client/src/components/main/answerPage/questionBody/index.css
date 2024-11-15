@@ -19,3 +19,13 @@
   flex-direction: column;
   margin-left: 5%;
 }
+
+.pinned {
+  border-style: solid;
+  border-color: green;
+}
+
+.locked {
+  border-style: dashed;
+  border-color: lightgray;
+}

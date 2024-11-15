@@ -81,7 +81,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
       }
 
       const data = await response.json();
-      setUser({ username: data.username });
+      setUser({ username: data.username, hashedPassword: data.hashedPassword, email: data.email });
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
       setError((err as Error).message);

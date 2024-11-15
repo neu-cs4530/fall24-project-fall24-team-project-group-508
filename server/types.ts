@@ -24,6 +24,7 @@ export interface Answer {
   ansDateTime: Date;
   comments: Comment[] | ObjectId[];
   locked: boolean;
+  pinned: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export interface Question {
   downVotes: string[];
   comments: Comment[] | ObjectId[];
   locked: boolean;
+  pinned: boolean;
 }
 
 /**
@@ -149,6 +151,7 @@ export interface Comment {
   text: string;
   commentBy: string;
   commentDateTime: Date;
+  pinned: boolean;
 }
 
 /**
@@ -286,13 +289,15 @@ export interface ActionRequest extends Request {
     actionType: ActionTypes;
     postType: 'question' | 'answer' | 'comment';
     postID: string;
+    parentPostType?: 'question' | 'answer' | 'comment';
+    parentID?: string;
   }
 }
 
 /**
  * Type representing the possible responses for an action
  */
-export type ActionResponse = { confirmation : string } | { error: string }
+export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { question: Question } | { error: string }
 
 /**
  * Interface representing the possible events that the server can emit to the client.

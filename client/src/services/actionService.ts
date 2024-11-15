@@ -20,6 +20,8 @@ export interface TakeActionRequestBody {
   actionType: 'pin' | 'lock' | 'remove' | 'promote';
   postType: 'question' | 'answer' | 'comment';
   postID: string;
+  parentID?: string;
+  parentPostType?:'question' | 'answer' | 'comment';
 }
 
 /**
@@ -29,7 +31,7 @@ export interface TakeActionRequestBody {
  * @param ans - The answer object containing the answer details.
  * @throws Error Throws an error if the request fails or the response status is not 200.
  */
-const addAnswer = async (actionInfo:TakeActionRequestBody): Promise<Answer> => {
+const takeUserAction = async (actionInfo:TakeActionRequestBody): Promise<Answer> => {
   const res = await api.post(`${ACTION_API_URL}/takeAction`, actionInfo);
   if (res.status !== 200) {
     throw new Error('Error while taking action');
@@ -37,4 +39,4 @@ const addAnswer = async (actionInfo:TakeActionRequestBody): Promise<Answer> => {
   return res.data;
 };
 
-export default addAnswer;
+export default takeUserAction;

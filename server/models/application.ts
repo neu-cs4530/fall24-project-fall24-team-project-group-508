@@ -559,6 +559,10 @@ export const addAnswerToQuestion = async (qid: string, ans: Answer): Promise<Que
     if (!ans || !ans.text || !ans.ansBy || !ans.ansDateTime) {
       throw new Error('Invalid answer');
     }
+    const parent = await QuestionModel.findOne( {id: qid});
+    if (parent?.locked) {
+      throw new Error('Cannot add answers on locked questions');
+    }
     const result = await QuestionModel.findOneAndUpdate(
       { _id: qid },
       { $push: { answers: { $each: [ans._id], $position: 0 } } },
@@ -593,12 +597,20 @@ export const addComment = async (
     }
     let result: QuestionResponse | AnswerResponse | null;
     if (type === 'question') {
+      const parent = await QuestionModel.findOne({ _id:id });
+      if (parent?.locked) {
+        throw new Error('Cannot comment on a locked post');
+      }
       result = await QuestionModel.findOneAndUpdate(
         { _id: id },
         { $push: { comments: { $each: [comment._id] } } },
         { new: true },
       );
     } else {
+      const parent = await AnswerModel.findOne({ _id:id });
+      if (parent?.locked) {
+        throw new Error('Cannot comment on a locked post');
+      }
       result = await AnswerModel.findOneAndUpdate(
         { _id: id },
         { $push: { comments: { $each: [comment._id] } } },
@@ -740,66 +752,140 @@ export const canPerformActions = async (account: Account) : Promise<boolean> | n
 }
 
 
-export const pinPost = async (postType: string, postID: string) : Promise<ActionResponse> => {
-  console.log("PIN NOT IMPLEMENTED");
-  return { error : 'placeholder'}
+export const pinPost = async (postType: string, postID: string, parentID: string | undefined, parentType: string | undefined) : Promise<ActionResponse> => {
+  try {
+    let result: QuestionResponse | AnswerResponse | CommentResponse | null;
+    if(postType === 'question') {
+      result = await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { pinned: true } },
+        { new: true },
+      );
+
+      if(result) {
+        return { question: result };
+      }
+    } else if(postType === 'answer'){
+      result = await AnswerModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { pinned: true } },
+        { new: true },
+      );
+
+      if(result) {
+        return { answer: result };
+      }
+    } else {
+      result = await CommentModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { pinned: true } },
+        { new: true },
+      );
+
+      if(result) {
+        return { comment: result };
+      }
+    }
+
+    return !!result ? result : { error : 'lock action failed' };
+  } catch(error) {
+    return { error : 'lock action failed'};
+  }
 }
 
-export const removePost = async (postType: string, postID: string) : Promise<ActionResponse> => {
-  console.log("REMOVE NOT IMPLEMENTED");
-  return { error: 'placeholder'};
-  // try {
-  //   if(postType === 'question') {
-  //     await QuestionModel.deleteOne({ _id: postID })
-  //   } else if(postType === 'answer') {
-  //     //parent = QuestionModel.findOne where postID in answer
-  //     await QuestionModel.$where((q : Question)=>{
-  //       if(postID in q.answers) {
-          
-  //         return true;
-  //       }
-  //       return false;
-  //     });
+export const removePost = async (postType: string, postID: string, parentID: string | undefined, parentType: string | undefined) : Promise<ActionResponse> => {
+  try {
+    if(postType === 'question') {
+      await QuestionModel.deleteOne({ _id: postID })
+      return {};
+    } else if(postType === 'answer') {
+      //parent = QuestionModel.findOne where postID in answer
+      const parent = await QuestionModel.findOne({ _id: parentID });
+      if(!parent) {
+        throw new Error('invalid parentid' + parentID);
+      }
+      const answers = parent.answers.filter((a)=> {a._id?.toString() !== postID});
 
-  //     await QuestionModel.findOneAndUpdate(
-  //       { $where : (q:Question)=>{return postID in q.answers;}},
-  //       { $pull: {}})
-  //   } else {
+      await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { answers: answers } },
+        { new: true },
+      );
 
-  //   }
-  // } catch {
+      await AnswerModel.deleteOne({ _id: postID})
+      return { answer: parent };
+    } else {
+      //parent = AnswerModel.findOne where postID in answer
+      if(parentType === 'question') {
+        const parent = await QuestionModel.findOne({ _id: parentID });
+        if(!parent) {
+          throw new Error('invalid parentid');
+        }
+        const comments = parent.comments.filter((c)=> {c._id?.toString() !== postID});
 
-  // }
+        await QuestionModel.findOneAndUpdate(
+          { _id: postID },
+          { $set: { comments: comments } },
+          { new: true },
+        );
+  
+        await CommentModel.deleteOne({ _id: postID})
+        return { question: parent }
+      } else {
+        const parent = await AnswerModel.findOne({ _id: parentID });
+        if(!parent) {
+          throw new Error('invalid parentid');
+        }
+        const comments = parent.comments.filter((c)=> {c._id?.toString() !== postID});
+
+        await AnswerModel.findOneAndUpdate(
+          { _id: postID },
+          { $set: { comments: comments } },
+          { new: true },
+        );
+  
+        await CommentModel.deleteOne({ _id: postID})
+        return { answer: parent};
+      }
+    }
+  } catch (error){
+    console.log((error as Error).message);
+    return { error : 'remove action failed'};
+  }
 }
 
 export const lockPost = async (postType: string, postID: string) : Promise<ActionResponse> => {
-  console.log("LOCK NOT IMPLEMENTED");
-  return { error: 'placeholder'}
-  // if(postType === 'comment') {
-  //   return { confirmation: 'lock operation succeeded' };
-  // }
+  if(postType === 'comment') {
+    return {};
+  }
 
-  // try {
-  //   let result: QuestionResponse | AnswerResponse | null;
-  //   if(postType === 'question') {
-  //     result = await QuestionModel.findOneAndUpdate(
-  //       { _id: postID },
-  //       { $push: { locked: true } },
-  //       { new: true },
-  //     );
-  //   } else {
-  //     result = await AnswerModel.findOneAndUpdate(
-  //       { _id: postID },
-  //       { $push: { locked: true } },
-  //       { new: true },
-  //     );
-  //   }
+  try {
+    let result: QuestionResponse | AnswerResponse | null;
+    if(postType === 'question') {
+      result = await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { locked: true } },
+        { new: true },
+      );
 
-  //   if (result && !('error' in result)) {
-  //     return { confirmation : 'lock operation succeeded'};
-  //   } 
-  //   return !!result ? result : { error : 'lock action failed' };
-  // } catch(error) {
-  //   return { error : 'lock action failed'};
-  // }
+      if (result) {
+        return { question: result};
+      }
+    } else {
+      result = await AnswerModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { locked: true } },
+        { new: true },
+      );
+
+      if (result) {
+        return { answer: result};
+      }
+    }
+
+
+    return !!result ? result : { error : 'lock action failed' };
+  } catch(error) {
+    return { error : 'lock action failed'};
+  }
 }

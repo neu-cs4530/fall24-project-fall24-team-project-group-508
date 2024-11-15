@@ -20,6 +20,9 @@ const commentSchema: Schema = new Schema(
     commentDateTime: {
       type: Date,
     },
+    pinned: {
+      type: Boolean,
+    },
   },
   { collection: 'Comment' },
 );

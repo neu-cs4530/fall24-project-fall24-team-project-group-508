@@ -1,0 +1,39 @@
+.action-button {
+    color: gold;
+    border: solid;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 5px;
+    padding-left: 0px;
+    padding-top: 0px;
+    margin: 5px;
+    margin-left: 0px;
+    margin-top: 0px;
+    text-decoration: underline;
+    width: 35px;
+    height: 35px;
+
+}
+
+.lock {
+    background-image: url(../../../../images/lock.png);
+    background-size: cover;
+}
+
+.pin {
+    background-image: url(../../../../images/pin.png);
+    background-size: cover;
+}
+
+.remove {
+    background-image: url(../../../../images/remove.png);
+    background-size: cover;
+}
+
+.button-list {
+    list-style-type: none;
+    padding:0;
+    margin:0;
+    margin-right: 25px;
+}
+
