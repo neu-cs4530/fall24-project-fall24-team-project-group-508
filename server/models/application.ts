@@ -767,11 +767,6 @@ export const updateAccountSettings = async (
   }
 };
 
-// const findParentPost = async(postType:string, postID:string) : Promise<Question|Answer|null> => {
-
-//   return null;
-// }
-
 /**
  * checks if a user has the ability to perform moderator actions
  * @param account the account of the user requesting to take the action
