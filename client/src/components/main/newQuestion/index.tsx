@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import rehypeKatex from 'rehype-katex';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'katex/dist/katex.min.css';
 import useNewQuestion from '../../../hooks/useNewQuestion';
 import Form from '../baseComponents/form';
@@ -43,10 +45,7 @@ const NewQuestionPage = () => {
       />
       <h4>Question Preview with Markdown and LaTeX:</h4>
       <div className='markdown_preview_container'>
-        <ReactMarkdown
-          remarkPlugins={[remarkMath]}
-          rehypePlugins={[rehypeKatex]}
-        >
+        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
           {text}
         </ReactMarkdown>
       </div>
