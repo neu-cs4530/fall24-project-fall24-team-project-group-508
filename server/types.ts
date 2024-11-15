@@ -23,6 +23,8 @@ export interface Answer {
   ansBy: string;
   ansDateTime: Date;
   comments: Comment[] | ObjectId[];
+  locked: boolean;
+  pinned: boolean;
 }
 
 /**
@@ -129,6 +131,8 @@ export interface Question {
   upVotes: string[];
   downVotes: string[];
   comments: Comment[] | ObjectId[];
+  locked: boolean;
+  pinned: boolean;
   presetTags: PresetTagName[];
 }
 
@@ -206,6 +210,7 @@ export interface Comment {
   text: string;
   commentBy: string;
   commentDateTime: Date;
+  pinned: boolean;
 }
 
 /**
@@ -272,6 +277,24 @@ export interface AccessibilitySettings {
 }
 
 /**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+
+export enum AccountType {
+  user,
+  moderator,
+  owner,
+} 
+/**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
  * - username - The username of the account
@@ -310,6 +333,7 @@ export interface Account {
   settings: {darkMode: boolean;
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;};
+  userType: AccountType;
 }
 
 /**
@@ -332,11 +356,35 @@ export interface CreateAccountRequest extends Request {
   body: Account;
 }
 
+export type ActionTypes = 'pin' | 'remove' | 'lock' | 'promote';
+
 /**
  * Type representing the possible responses for an Account-related operation.
  */
 export type AccountResponse = Account | { error: string };
 
+/**
+ * Interface extending the request body when trying to create a new account, which contains:
+ * - user - the user attempting to take the actions on a post
+ * - actionType - the type of moderator action being taken
+ * - postType - the type of the post that is being actioned
+ * - postID - the objectID of the post
+ */
+export interface ActionRequest extends Request {
+  body: {
+    user: Account;
+    actionType: ActionTypes;
+    postType: 'question' | 'answer' | 'comment';
+    postID: string;
+    parentPostType?: 'question' | 'answer' | 'comment';
+    parentID?: string;
+  }
+}
+
+/**
+ * Type representing the possible responses for an action
+ */
+export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { question: Question } | { error: string }
 
 /**
  * Interface representing the possible events that the server can emit to the client.

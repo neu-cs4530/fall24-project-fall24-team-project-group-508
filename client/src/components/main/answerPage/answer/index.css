@@ -16,3 +16,12 @@
 .answer_author {
   color: green;
 }
+
+.pinned {
+  border-style: solid;
+  border-color: green;
+}
+
+.locked {
+  background-color: lightgray;
+}

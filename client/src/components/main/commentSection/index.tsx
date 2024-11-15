@@ -3,6 +3,7 @@ import { getMetaData } from '../../../tool';
 import { Comment } from '../../../types';
 import './index.css';
 import useUserContext from '../../../hooks/useUserContext';
+import ModeratorActionButtons, { ModeratorActionProps } from '../moderatorActions';
 
 /**
  * Interface representing the props for the Comment Section component.
@@ -13,6 +14,7 @@ import useUserContext from '../../../hooks/useUserContext';
 interface CommentSectionProps {
   comments: Comment[];
   handleAddComment: (comment: Comment) => void;
+  moderatorInfo: ModeratorActionProps;
 }
 
 /**
@@ -21,7 +23,7 @@ interface CommentSectionProps {
  * @param comments: an array of Comment objects
  * @param handleAddComment: function to handle the addition of a new comment
  */
-const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => {
+const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSectionProps) => {
   const { user } = useUserContext();
   const [text, setText] = useState<string>('');
   const [textErr, setTextErr] = useState<string>('');
@@ -40,11 +42,19 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
       text,
       commentBy: user.username,
       commentDateTime: new Date(),
+      pinned: false,
     };
 
     handleAddComment(newComment);
     setText('');
     setTextErr('');
+  };
+
+  const assignStyle = (comment: Comment) => {
+    if (comment.pinned) {
+      return 'comment-item pinned';
+    }
+    return 'comment-item';
   };
 
   return (
@@ -58,7 +68,8 @@ const CommentSection = ({ comments, handleAddComment }: CommentSectionProps) => 
           <ul className='comments-list'>
             {comments.length > 0 ? (
               comments.map((comment, index) => (
-                <li key={index} className='comment-item'>
+                <li key={index} className={assignStyle(comment)}>
+                  <div>{ModeratorActionButtons(moderatorInfo, comment._id)}</div>
                   <p className='comment-text'>{comment.text}</p>
                   <small className='comment-meta'>
                     {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}

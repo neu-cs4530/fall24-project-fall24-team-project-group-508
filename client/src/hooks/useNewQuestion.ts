@@ -104,6 +104,8 @@ const useNewQuestion = () => {
       views: [],
       comments: [],
       presetTags,
+      pinned: false,
+      locked: false,
     };
 
     const res = await addQuestion(question);

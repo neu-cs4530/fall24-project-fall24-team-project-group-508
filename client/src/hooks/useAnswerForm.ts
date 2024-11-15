@@ -59,6 +59,8 @@ const useAnswerForm = () => {
       ansBy: user.username,
       ansDateTime: new Date(),
       comments: [],
+      pinned: false,
+      locked: false,
     };
 
     const res = await addAnswer(questionID, answer);

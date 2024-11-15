@@ -88,6 +88,12 @@ const questionSchema: Schema = new Schema(
         default: [],
       },
     ],
+    locked: {
+      type: Boolean,
+    },
+    pinned: {
+      type: Boolean,
+    },
   },
   { collection: 'Question' },
 );

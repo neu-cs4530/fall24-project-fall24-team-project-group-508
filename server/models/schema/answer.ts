@@ -21,6 +21,12 @@ const answerSchema: Schema = new Schema(
       type: Date,
     },
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+    locked: {
+      type: Boolean,
+    },
+    pinned: {
+      type: Boolean,
+    },
   },
   { collection: 'Answer' },
 );

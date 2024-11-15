@@ -20,6 +20,15 @@
   margin-left: 5%;
 }
 
+.pinned {
+  border-style: solid;
+  border-color: green;
+}
+
+.locked {
+  border-style: dashed;
+  border-color: lightgray;
+}
 .tag {
   border-width: 2px; /* You can keep the border if needed */
   outline: 2px solid black; /* Apply outline with 2px width and black color */

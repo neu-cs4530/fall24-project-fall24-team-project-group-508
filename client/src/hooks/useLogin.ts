@@ -91,7 +91,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
       }
 
       const data = await response.json();
-      setUser({ username: data.username });
+      setUser({ username: data.username, hashedPassword: data.hashedPassword, email: data.email });
       // const account = await AccountModel.findOne({ username });
       setAccount(data);
       // Set dark mode according to user's settings on login
