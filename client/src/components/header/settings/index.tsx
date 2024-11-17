@@ -94,7 +94,7 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
               type='checkbox'
               className='checkbox'
               checked={darkMode}
-              onChange={handleDarkModeChange}
+              onChange={toggleDarkMode}
             />
             Dark Mode
           </label>
