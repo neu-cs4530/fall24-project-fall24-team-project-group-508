@@ -43,13 +43,11 @@ const QuestionHeader = ({ titleText, qcnt, setQuestionOrder }: QuestionHeaderPro
 
       <Box role='group' aria-labelledby='order-buttons' sx={{ display: 'flex', gap: 1 }}>
         {Object.keys(orderTypeDisplayName).map((order, idx) => (
-          <Button
+          <OrderButton
             key={idx}
-            variant='outlined'
-            onClick={() => setQuestionOrder(order as OrderType)}
-            aria-label={`Sort by ${orderTypeDisplayName[order as OrderType]}`}>
-            {orderTypeDisplayName[order as OrderType]}
-          </Button>
+            orderType={order as OrderType}
+            setQuestionOrder={setQuestionOrder}
+          />
         ))}
       </Box>
     </Stack>

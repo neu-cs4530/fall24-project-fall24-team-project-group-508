@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip, Typography, useTheme } from '@mui/material';
 import { getMetaData } from '../../../../tool';
 import { Question } from '../../../../types';
 
@@ -45,6 +45,8 @@ const QuestionView = ({ q }: QuestionProps) => {
     navigate(`/question/${questionID}`);
   };
 
+  const theme = useTheme();
+
   return (
     <Box
       role='article'
@@ -54,8 +56,9 @@ const QuestionView = ({ q }: QuestionProps) => {
         'cursor': 'pointer',
         'border': '1px solid #ccc',
         'borderRadius': 1,
+        'transition': 'background-color 0.3s ease',
         '&:hover': {
-          backgroundColor: '#f4f4f4',
+          backgroundColor: theme.palette.action.hover,
         },
       }}
       onClick={() => {
@@ -101,7 +104,7 @@ const QuestionView = ({ q }: QuestionProps) => {
               label={tag}
               onClick={e => {
                 e.stopPropagation();
-                clickTag(tag); // assuming presetTags is just a string array
+                clickTag(tag);
               }}
               sx={{ marginRight: 1, marginBottom: 1, cursor: 'pointer' }}
               variant='outlined'
@@ -112,7 +115,6 @@ const QuestionView = ({ q }: QuestionProps) => {
         </Box>
       </Box>
 
-      {/* Last Activity */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant='body2' color='textSecondary'>
           {q.askedBy}
