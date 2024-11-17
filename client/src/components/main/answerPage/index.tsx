@@ -27,9 +27,7 @@ const AnswerPage = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Voting Component */}
-      <Paper elevation={3} sx={{ mb: 3, p: 2 }}>
-        <VoteComponent question={question} />
-      </Paper>
+      <VoteComponent question={question} />
 
       {/* Answer Header */}
       <Box sx={{ mb: 2 }}>
@@ -42,17 +40,15 @@ const AnswerPage = () => {
       </Box>
 
       {/* Question Body */}
-      <Paper elevation={3} sx={{ mb: 3, p: 2 }}>
-        <QuestionBody
-          views={question.views.length}
-          text={question.text}
-          askby={question.askedBy}
-          meta={getMetaData(new Date(question.askDateTime))}
-          pinned={question.pinned}
-          locked={question.locked}
-          presetTags={question.presetTags}
-        />
-      </Paper>
+      <QuestionBody
+        views={question.views.length}
+        text={question.text}
+        askby={question.askedBy}
+        meta={getMetaData(new Date(question.askDateTime))}
+        pinned={question.pinned}
+        locked={question.locked}
+        presetTags={question.presetTags}
+      />
 
       {/* Comments Section */}
       <Paper elevation={3} sx={{ mb: 3, p: 2 }}>
