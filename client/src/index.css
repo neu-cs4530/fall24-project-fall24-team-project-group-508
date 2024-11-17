@@ -32,16 +32,13 @@ body,
 
 /* index.css */
 
-:root {
-  /* Light Mode Colors */
+/* :root {
   --text-color: #000000;
   --primary-color: #007bff;
-  /* Add any other variables needed */
-}
+} */
 
-.dark {
-  /* Dark Mode Colors */
+/* .dark {
   --background-color: #333;
   --text-color: #ffffff;
   --primary-color: #bb86fc;
-}
+} */

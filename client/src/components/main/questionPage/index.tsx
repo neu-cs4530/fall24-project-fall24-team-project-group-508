@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Typography, Grid, Button } from '@mui/material';
 import './index.css';
 import QuestionHeader from './header';
 import QuestionView from './question';
@@ -13,21 +14,38 @@ const QuestionPage = () => {
   const { titleText, qlist, setQuestionOrder } = useQuestionPage();
 
   return (
-    <>
+    <Box role='main' sx={{ padding: 2 }}>
       <QuestionHeader
         titleText={titleText}
         qcnt={qlist.length}
         setQuestionOrder={setQuestionOrder}
       />
-      <div id='question_list' className='question_list'>
-        {qlist.map((q, idx) => (
-          <QuestionView q={q} key={idx} />
-        ))}
-      </div>
-      {titleText === 'Search Results' && !qlist.length && (
-        <div className='bold_title right_padding'>No Questions Found</div>
-      )}
-    </>
+
+      <Box id='question_list' role='list' sx={{ marginTop: 2 }}>
+        {qlist.length === 0 && titleText === 'Search Results' ? (
+          <Typography variant='h6' sx={{ fontWeight: 'bold', paddingLeft: 2 }}>
+            No Questions Found
+          </Typography>
+        ) : (
+          qlist.map((q, idx) => (
+            <Box key={idx} sx={{ marginBottom: 2 }}>
+              <QuestionView q={q} />
+            </Box>
+          ))
+        )}
+      </Box>
+
+      <Box
+        sx={{
+          marginTop: 3,
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}>
+        <Button variant='contained' color='primary' aria-label='Ask a new question'>
+          Ask a New Question
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
