@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.css';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import OrderButton from './orderButton';
 import { OrderType, orderTypeDisplayName } from '../../../../types';
 import AskQuestionButton from '../../askQuestionButton';
@@ -27,24 +28,32 @@ interface QuestionHeaderProps {
  * @param setQuestionOrder - Function to set the order of questions based on input message.
  */
 const QuestionHeader = ({ titleText, qcnt, setQuestionOrder }: QuestionHeaderProps) => (
-  <div>
-    <div className='space_between right_padding'>
-      <div className='bold_title'>{titleText}</div>
+  <Box>
+    <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+      <Typography variant='h5' component='h1' sx={{ fontWeight: 'bold' }} aria-live='polite'>
+        {titleText}
+      </Typography>
       <AskQuestionButton />
-    </div>
-    <div className='space_between right_padding'>
-      <div id='question_count'>{qcnt} questions</div>
-      <div className='btns'>
+    </Stack>
+
+    <Stack direction='row' justifyContent='space-between' alignItems='center'>
+      <Typography id='question_count' variant='body1' aria-live='polite'>
+        {qcnt} questions
+      </Typography>
+
+      <Box role='group' aria-labelledby='order-buttons' sx={{ display: 'flex', gap: 1 }}>
         {Object.keys(orderTypeDisplayName).map((order, idx) => (
-          <OrderButton
+          <Button
             key={idx}
-            orderType={order as OrderType}
-            setQuestionOrder={setQuestionOrder}
-          />
+            variant='outlined'
+            onClick={() => setQuestionOrder(order as OrderType)}
+            aria-label={`Sort by ${orderTypeDisplayName[order as OrderType]}`}>
+            {orderTypeDisplayName[order as OrderType]}
+          </Button>
         ))}
-      </div>
-    </div>
-  </div>
+      </Box>
+    </Stack>
+  </Box>
 );
 
 export default QuestionHeader;

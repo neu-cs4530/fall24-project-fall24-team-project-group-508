@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.css';
+import { Button } from '@mui/material';
 import { OrderType, orderTypeDisplayName } from '../../../../../types';
 
 /**
@@ -22,13 +23,12 @@ interface OrderButtonProps {
  * @param setQuestionOrder - Callback function to set the order of questions based on the input message.
  */
 const OrderButton = ({ orderType, setQuestionOrder }: OrderButtonProps) => (
-  <button
-    className='btn'
-    onClick={() => {
-      setQuestionOrder(orderType);
-    }}>
+  <Button
+    variant='outlined'
+    onClick={() => setQuestionOrder(orderType)}
+    aria-label={`Set question order to ${orderTypeDisplayName[orderType]}`}>
     {orderTypeDisplayName[orderType]}
-  </button>
+  </Button>
 );
 
 export default OrderButton;

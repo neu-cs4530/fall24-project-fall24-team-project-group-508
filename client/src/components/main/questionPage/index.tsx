@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import './index.css';
 import QuestionHeader from './header';
 import QuestionView from './question';
@@ -33,17 +33,6 @@ const QuestionPage = () => {
             </Box>
           ))
         )}
-      </Box>
-
-      <Box
-        sx={{
-          marginTop: 3,
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}>
-        <Button variant='contained' color='primary' aria-label='Ask a new question'>
-          Ask a New Question
-        </Button>
       </Box>
     </Box>
   );

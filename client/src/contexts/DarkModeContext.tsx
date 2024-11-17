@@ -26,10 +26,6 @@ export const DarkModeProvider: React.FC<{
     },
   });
 
-  useEffect(() => {
-    document.body.classList.toggle('dark', darkMode);
-  }, [darkMode]);
-
   return (
     <DarkModeContext.Provider value={{ darkMode, toggleDarkMode, setDarkMode }}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>

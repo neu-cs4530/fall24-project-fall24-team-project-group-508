@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
+import { Button } from '@mui/material';
 
 /**
  * AskQuestionButton component that renders a button for navigating to the
@@ -18,13 +19,14 @@ const AskQuestionButton = () => {
   };
 
   return (
-    <button
-      className='bluebtn'
-      onClick={() => {
-        handleNewQuestion();
-      }}>
+    <Button
+      variant='contained' // Material UI Button variant, can be 'text', 'outlined', or 'contained'
+      color='primary' // Primary color of the button
+      onClick={handleNewQuestion}
+      style={{ margin: '10px' }} // Optional styling (can also use MUI's sx prop for styling)
+    >
       Ask a Question
-    </button>
+    </Button>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import useLogin from '../../hooks/useLogin';
 
 /**
@@ -11,42 +12,62 @@ const RegisterForm: React.FC = () => {
   const { username, email, password, handleInputChange, handleSubmit, error } = useLogin(false);
 
   return (
-    <form className='auth-form' onSubmit={handleSubmit}>
-      <label>Username</label>
-      <input
-        type='text'
+    <Box
+      component='form'
+      onSubmit={handleSubmit}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+        p: 2,
+      }}>
+      <TextField
+        label='Username'
         name='username'
-        placeholder='Enter your username'
+        type='text'
         value={username}
         onChange={handleInputChange}
+        placeholder='Enter your username'
         required
+        fullWidth
+        variant='outlined'
       />
 
-      <label>Email</label>
-      <input
-        type='email'
+      <TextField
+        label='Email'
         name='email'
-        placeholder='Enter your email'
+        type='email'
         value={email}
         onChange={handleInputChange}
+        placeholder='Enter your email'
         required
+        fullWidth
+        variant='outlined'
       />
 
-      <label>Password</label>
-      <input
-        type='password'
+      <TextField
+        label='Password'
         name='password'
-        placeholder='Enter your password'
+        type='password'
         value={password}
         onChange={handleInputChange}
+        placeholder='Enter your password'
         required
+        fullWidth
+        variant='outlined'
       />
 
-      <button type='submit' className='auth-btn'>
+      <Button type='submit' variant='contained' color='primary' sx={{ mt: 2 }}>
         Create Account
-      </button>
-      {error && <p className='error-box'>{error}</p>}
-    </form>
+      </Button>
+
+      {error && (
+        <Typography color='error' sx={{ mt: 2 }} variant='body2'>
+          {error}
+        </Typography>
+      )}
+    </Box>
   );
 };
 

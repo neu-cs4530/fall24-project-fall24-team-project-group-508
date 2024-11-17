@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './index.css';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import LoginForm from './loginForm';
 import RegisterForm from './registerForm';
 
@@ -17,15 +18,35 @@ const Login = () => {
   };
 
   return (
-    <div className='auth-container'>
-      <div className='auth-card'>
-        <h2>{isLogin ? 'Login' : 'Create Account'}</h2>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        backgroundColor: 'background.default',
+      }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 3,
+          maxWidth: 400,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+        <Typography variant='h5' component='h2' gutterBottom>
+          {isLogin ? 'Login' : 'Create Account'}
+        </Typography>
+
         {isLogin ? <LoginForm /> : <RegisterForm />}
-        <button className='toggle-btn' onClick={toggleForm}>
+
+        <Button variant='outlined' onClick={toggleForm} sx={{ mt: 2 }} aria-live='polite'>
           {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Paper>
+    </Box>
   );
 };
 
