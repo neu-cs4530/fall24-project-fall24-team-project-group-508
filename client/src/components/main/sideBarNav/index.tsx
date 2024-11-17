@@ -15,7 +15,7 @@ const SideBarNav = () => {
     <div
       id='sideBarNav'
       style={{
-        width: 240,
+        width: 150,
         padding: '10px',
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,

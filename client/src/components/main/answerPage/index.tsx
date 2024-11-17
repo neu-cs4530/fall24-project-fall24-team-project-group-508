@@ -51,18 +51,16 @@ const AnswerPage = () => {
       />
 
       {/* Comments Section */}
-      <Paper elevation={3} sx={{ mb: 3, p: 2 }}>
-        <CommentSection
-          comments={question.comments}
-          handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
-          moderatorInfo={{
-            parentType: 'question',
-            parentID: questionID,
-            _id: undefined,
-            type: 'comment',
-          }}
-        />
-      </Paper>
+      <CommentSection
+        comments={question.comments}
+        handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
+        moderatorInfo={{
+          parentType: 'question',
+          parentID: questionID,
+          _id: undefined,
+          type: 'comment',
+        }}
+      />
 
       <Divider sx={{ my: 3 }} />
 

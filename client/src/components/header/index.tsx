@@ -20,7 +20,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position='static'>
+    <AppBar position='fixed'>
       <Toolbar>
         <Box flexGrow={1}>
           <Typography variant='h6' component='div'>

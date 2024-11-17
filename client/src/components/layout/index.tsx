@@ -22,6 +22,7 @@ const Layout = () => {
           minHeight: '100vh',
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.text.primary,
+          marginTop: 5,
         }}>
         {/* Sidebar Navigation */}
         <Box
