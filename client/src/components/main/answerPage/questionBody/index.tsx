@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.css';
+import { Box, Chip, Typography } from '@mui/material';
 import { handleHyperlink } from '../../../../tool';
 import { PresetTagName } from '../../../../types';
 
@@ -49,21 +50,69 @@ const QuestionBody = ({
   }
 
   return (
-    <div id='questionBody' className={questionClassName}>
-      <div className='bold_title answer_question_view'>{views} views</div>
-      <div className='answer_question_text'>{handleHyperlink(text)}</div>
-      <div className='answer_question_tags'>
+    <Box
+      id='questionBody'
+      sx={{
+        p: 2,
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        mb: 2,
+        backgroundColor: pinned ? '#f0f8ff' : '#fff',
+      }}
+      className={questionClassName}
+      role='region'
+      aria-labelledby='question-title'>
+      <Typography
+        id='question-title'
+        variant='h6'
+        component='h2'
+        sx={{ fontWeight: 'bold', mb: 1 }}>
+        {views} views
+      </Typography>
+      <Typography className='answer_question_text' variant='body1' component='div' sx={{ mb: 2 }}>
+        {handleHyperlink(text)}
+      </Typography>
+      <Box
+        className='answer_question_tags'
+        sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
         {presetTags?.map((tag, idx) => (
-          <div key={idx} className='tag'>
-            {tag}
-          </div>
+          <Chip
+            key={idx}
+            label={tag}
+            className='tag'
+            sx={{
+              backgroundColor: '#e0e0e0',
+              fontSize: '0.875rem',
+              cursor: 'default',
+            }}
+            role='listitem'
+            aria-label={`Tag: ${tag}`}
+          />
         ))}
-      </div>
-      <div className='answer_question_right'>
-        <div className='question_author'>{askby}</div>
-        <div className='answer_question_meta'>asked {meta}</div>
-      </div>
-    </div>
+      </Box>
+      <Box
+        className='answer_question_right'
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <Typography
+          className='question_author'
+          variant='body2'
+          component='p'
+          aria-label={`Asked by ${askby}`}>
+          {askby}
+        </Typography>
+        <Typography
+          className='answer_question_meta'
+          variant='caption'
+          component='p'
+          aria-label={`Asked ${meta}`}>
+          asked {meta}
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

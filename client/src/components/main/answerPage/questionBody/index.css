@@ -1,9 +1,7 @@
 .questionBody {
   display: flex;
   flex-direction: row;
-  /* justify-content: space-between;  */
   margin-top: 5%;
-  border-bottom: #000000 1px dashed;
 }
 
 .answer_question_view {
@@ -29,9 +27,12 @@
   border-style: dashed;
   border-color: lightgray;
 }
+
 .tag {
-  border-width: 2px; /* You can keep the border if needed */
-  outline: 2px solid black; /* Apply outline with 2px width and black color */
+  border-width: 2px;
+  /* You can keep the border if needed */
+  outline: 2px solid black;
+  /* Apply outline with 2px width and black color */
   border-radius: 10%;
   padding: 2px;
   margin-bottom: 10px;
