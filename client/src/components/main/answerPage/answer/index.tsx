@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Divider, Typography } from '@mui/material';
 import { handleHyperlink } from '../../../../tool';
 import CommentSection from '../../commentSection';
 import './index.css';
@@ -45,26 +46,43 @@ const AnswerView = ({
   handleAddComment,
   moderatorInfo,
 }: AnswerProps) => {
-  const assignStyle = () => {
-    let name = 'answer right_padding';
-    if (pinned) {
-      name += ' pinned';
-    }
-    if (locked) {
-      name += ' locked';
-    }
-    return name;
+  const dynamicStyles = {
+    display: 'flex',
+    flexDirection: 'row',
+    borderBottom: '1px dashed #000',
+    padding: 2,
+    width: '100%',
+    bgcolor: locked ? 'lightgray' : 'transparent',
+    opacity: locked ? 0.7 : 1,
+    borderColor: pinned ? 'green' : 'transparent',
+    borderStyle: pinned ? 'solid' : 'none',
   };
+
   return (
-    <div className={assignStyle()}>
-      <div>{ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}</div>
-      <div id='answerText' className='answerText'>
-        {handleHyperlink(text)}
-      </div>
-      <div className='answerAuthor'>
-        <div className='answer_author'>{ansBy}</div>
-        <div className='answer_question_meta'>{meta}</div>
-      </div>
+    <Box sx={dynamicStyles}>
+      {/* Moderator Actions */}
+      <Box role='region' aria-label='Moderator actions' sx={{ marginBottom: 1 }}>
+        {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
+      </Box>
+
+      {/* Answer Text */}
+      <Box id='answerText' sx={{ flex: 1 }}>
+        <Typography variant='body1' component='div' sx={{ wordBreak: 'break-word' }}>
+          {handleHyperlink(text)}
+        </Typography>
+      </Box>
+
+      {/* Author and Meta Information */}
+      <Box sx={{ marginLeft: 2 }}>
+        <Typography variant='subtitle2' component='div' sx={{ color: 'green', fontWeight: 'bold' }}>
+          {ansBy}
+        </Typography>
+        <Typography variant='caption' component='div'>
+          {meta}
+        </Typography>
+      </Box>
+
+      {/* Comment Section */}
       <CommentSection
         comments={comments}
         handleAddComment={handleAddComment}
@@ -75,7 +93,7 @@ const AnswerView = ({
           type: 'comment',
         }}
       />
-    </div>
+    </Box>
   );
 };
 
