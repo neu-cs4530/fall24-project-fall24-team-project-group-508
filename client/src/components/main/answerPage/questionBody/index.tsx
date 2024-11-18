@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip, Typography, useTheme } from '@mui/material';
 import { handleHyperlink } from '../../../../tool';
 import { PresetTagName } from '../../../../types';
 
@@ -48,71 +48,89 @@ const QuestionBody = ({
   if (locked) {
     questionClassName += ' locked';
   }
+  const theme = useTheme();
 
   return (
-    <Box
-      id='questionBody'
-      sx={{
-        p: 2,
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        mb: 2,
-        backgroundColor: pinned ? '#f0f8ff' : '#fff',
-      }}
-      className={questionClassName}
-      role='region'
-      aria-labelledby='question-title'>
-      <Typography
-        id='question-title'
-        variant='h6'
-        component='h2'
-        sx={{ fontWeight: 'bold', mb: 1 }}>
-        {views} views
-      </Typography>
-      <Typography className='answer_question_text' variant='body1' component='div' sx={{ mb: 2 }}>
-        {handleHyperlink(text)}
-      </Typography>
+    <div
+      style={{
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+      }}>
       <Box
-        className='answer_question_tags'
-        sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-        {presetTags?.map((tag, idx) => (
-          <Chip
-            key={idx}
-            label={tag}
-            className='tag'
-            sx={{
-              backgroundColor: '#e0e0e0',
-              fontSize: '0.875rem',
-              cursor: 'default',
-            }}
-            role='listitem'
-            aria-label={`Tag: ${tag}`}
-          />
-        ))}
-      </Box>
-      <Box
-        className='answer_question_right'
+        id='questionBody'
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
+          p: 2,
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          mb: 2,
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          borderColor: pinned ? 'blue' : 'transparent',
+        }}
+        className={questionClassName}
+        role='region'
+        aria-labelledby='question-title'>
         <Typography
-          className='question_author'
-          variant='body2'
-          component='p'
-          aria-label={`Asked by ${askby}`}>
-          {askby}
+          id='question-title'
+          variant='h6'
+          component='h2'
+          sx={{ fontWeight: 'bold', mb: 1 }}>
+          {views} views
         </Typography>
-        <Typography
-          className='answer_question_meta'
-          variant='caption'
-          component='p'
-          aria-label={`Asked ${meta}`}>
-          asked {meta}
+        <Typography className='answer_question_text' variant='body1' component='div' sx={{ mb: 2 }}>
+          {handleHyperlink(text)}
         </Typography>
+        <Box
+          className='answer_question_tags'
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+          {presetTags?.map((tag, idx) => (
+            <Chip
+              key={idx}
+              label={tag}
+              className='tag'
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+              }}
+              role='listitem'
+              aria-label={`Tag: ${tag}`}
+            />
+          ))}
+        </Box>
+        <Box
+          className='answer_question_right'
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+          }}>
+          <Typography
+            className='question_author'
+            variant='body2'
+            component='p'
+            aria-label={`Asked by ${askby}`}
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}>
+            {askby}
+          </Typography>
+          <Typography
+            className='answer_question_meta'
+            variant='caption'
+            component='p'
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}
+            aria-label={`Asked ${meta}`}>
+            asked {meta}
+          </Typography>
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 

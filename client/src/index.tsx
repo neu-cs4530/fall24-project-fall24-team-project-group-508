@@ -31,8 +31,6 @@ const App = () => {
     };
   }, [socket, serverURL]);
 
-  const theme = useTheme();
-
   return (
     <Router>
       <DarkModeProvider initialDarkMode={false}>

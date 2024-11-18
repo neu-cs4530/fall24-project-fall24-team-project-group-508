@@ -83,16 +83,18 @@ const AnswerView = ({
       </Box>
 
       {/* Comment Section */}
-      <CommentSection
-        comments={comments}
-        handleAddComment={handleAddComment}
-        moderatorInfo={{
-          parentType: 'answer',
-          parentID: moderatorInfo._id,
-          _id: undefined,
-          type: 'comment',
-        }}
-      />
+      <Box sx={{ width: 350 }}>
+        <CommentSection
+          comments={comments}
+          handleAddComment={handleAddComment}
+          moderatorInfo={{
+            parentType: 'answer',
+            parentID: moderatorInfo._id,
+            _id: undefined,
+            type: 'comment',
+          }}
+        />
+      </Box>
     </Box>
   );
 };

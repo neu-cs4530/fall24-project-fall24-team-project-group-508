@@ -79,7 +79,6 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
           sx={{
             padding: 2,
             width: '100%',
-            maxWidth: '300px',
           }}>
           <List>
             {comments.length > 0 ? (
