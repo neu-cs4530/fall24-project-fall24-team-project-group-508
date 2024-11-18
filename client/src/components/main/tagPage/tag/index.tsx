@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.css';
+import { Box, Typography } from '@mui/material';
 import { TagData } from '../../../../types';
 import useTagSelected from '../../../../hooks/useTagSelected';
 
@@ -26,15 +27,22 @@ const TagView = ({ t, clickTag }: TagProps) => {
   const { tag } = useTagSelected(t);
 
   return (
-    <div
+    <Box
       className='tagNode'
       onClick={() => {
         clickTag(t.name);
       }}>
-      <div className='tagName'>{tag.name}</div>
-      <div className='tagDescription'>{tag.description}</div>
-      <div>{t.qcnt} questions</div>
-    </div>
+      <Typography
+        className='tagName'
+        sx={{
+          fontWeight: 'bold',
+          color: 'primary.main',
+        }}>
+        {tag.name}
+      </Typography>
+      <Typography className='tagDescription'>{tag.description}</Typography>
+      <Typography>{t.qcnt} questions</Typography>
+    </Box>
   );
 };
 
