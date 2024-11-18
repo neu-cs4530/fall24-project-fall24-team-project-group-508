@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import useLogin from '../../hooks/useLogin';
 
 /**

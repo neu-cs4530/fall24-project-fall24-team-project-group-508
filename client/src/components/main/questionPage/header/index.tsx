@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import OrderButton from './orderButton';
 import { OrderType, orderTypeDisplayName } from '../../../../types';
 import AskQuestionButton from '../../askQuestionButton';

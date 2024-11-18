@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import './index.css';
 import QuestionHeader from './header';
 import QuestionView from './question';

@@ -3,7 +3,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
-import { useTheme } from '@mui/material';
 import FakeStackOverflow from './components/fakestackoverflow';
 import { FakeSOSocket } from './types';
 import { DarkModeProvider } from './contexts/DarkModeContext';

@@ -1,5 +1,5 @@
 // DarkModeContext.tsx
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 interface DarkModeContextProps {

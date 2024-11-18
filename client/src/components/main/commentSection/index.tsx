@@ -52,12 +52,16 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
     setTextErr('');
   };
 
-  const assignStyle = (comment: Comment) => {
-    if (comment.pinned) {
-      return 'comment-item pinned';
-    }
-    return 'comment-item';
-  };
+  /**
+   * Dynamically assigns styles to comments based on their pinned status.
+   */
+  const assignStyle = (comment: Comment) => ({
+    border: comment.pinned ? '2px solid blue' : '1px solid #ddd',
+    backgroundColor: comment.pinned ? '#e3f2fd' : 'transparent',
+    padding: 1,
+    marginBottom: 1,
+    borderRadius: '4px',
+  });
 
   return (
     <Box className='comment-section'>
@@ -83,7 +87,7 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
           <List>
             {comments.length > 0 ? (
               comments.map((comment, index) => (
-                <ListItem key={index} sx={{ padding: 1, borderBottom: '1px solid #ddd' }}>
+                <ListItem key={index} sx={assignStyle(comment)}>
                   <Box sx={{ flex: 1 }}>
                     {/* Moderator Actions */}
                     <Box sx={{ marginBottom: 1 }}>

@@ -1,9 +1,7 @@
 import React from 'react';
+import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
 import Select, { ActionMeta, MultiValue } from 'react-select';
 import useNewQuestion from '../../../hooks/useNewQuestion';
-import Form from '../baseComponents/form';
-import Input from '../baseComponents/input';
-import TextArea from '../baseComponents/textarea';
 import './index.css';
 import { PresetTagName } from '../../../types';
 
@@ -81,33 +79,51 @@ const NewQuestionPage = () => {
       setPresetTags(selectedOptions.map(option => option.value as PresetTagName));
     }
   };
+  const theme = useTheme();
+
   return (
-    <Form>
-      <Input
-        title={'Question Title'}
-        hint={'Limit title to 100 characters or less'}
-        id={'formTitleInput'}
-        val={title}
-        setState={setTitle}
-        err={titleErr}
+    <Box
+      component='form'
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+        maxWidth: 600,
+        marginTop: 5,
+      }}>
+      <TextField
+        label='Question Title*'
+        helperText='Limit title to 100 characters or less'
+        id='formTitleInput'
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+        error={!!titleErr}
+        fullWidth
       />
-      <TextArea
-        title={'Question Text'}
-        hint={'Add details'}
-        id={'formTextInput'}
-        val={text}
-        setState={setText}
-        err={textErr}
+      <TextField
+        label='Question Text*'
+        helperText='Add details'
+        id='formTextInput'
+        value={text}
+        onChange={e => setText(e.target.value)}
+        error={!!textErr}
+        multiline
+        rows={4}
+        fullWidth
       />
-      <Input
-        title={'Tags'}
-        hint={'Add keywords separated by whitespace'}
-        id={'formTagInput'}
-        val={tagNames}
-        setState={setTagNames}
-        err={tagErr}
+      <TextField
+        label='Tags*'
+        helperText='Add keywords separated by whitespace'
+        id='formTagInput'
+        value={tagNames}
+        onChange={e => setTagNames(e.target.value)}
+        error={!!tagErr}
+        fullWidth
       />
-      <p className='form_tagLabel'>Or select from the following tags:</p>
+      <Typography variant='body1' className='form_tagLabel'>
+        Or select from the following tags:
+      </Typography>
       <Select
         isMulti
         options={presetTagOptions}
@@ -115,19 +131,30 @@ const NewQuestionPage = () => {
         placeholder='Select up to 5 tags...'
         className='form_tagSelect'
       />
-      <div className='form_tagLimit'> * Limit 5 tags</div>
-      <p className='form_tagLabel'></p>
-      <div className='btn_indicator_container'>
-        <button
-          className='form_postBtn'
-          onClick={() => {
+      <Typography
+        variant='caption'
+        className='form_tagLimit'
+        sx={{
+          backgroundColor: theme.palette.action.hover,
+          color: theme.palette.text.primary,
+        }}>
+        * Limit 5 tags
+      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mt: 2 }}>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={e => {
+            e.preventDefault();
             postQuestion();
           }}>
           Post Question
-        </button>
-        <div className='mandatory_indicator'>* indicates mandatory fields</div>
-      </div>
-    </Form>
+        </Button>
+        <Typography variant='caption' className='mandatory_indicator'>
+          * indicates mandatory fields
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

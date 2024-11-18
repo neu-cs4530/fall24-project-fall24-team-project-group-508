@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { handleHyperlink } from '../../../../tool';
 import CommentSection from '../../commentSection';
 import './index.css';
@@ -61,7 +61,10 @@ const AnswerView = ({
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
-      <Box role='region' aria-label='Moderator actions' sx={{ marginBottom: 1 }}>
+      <Box
+        role='region'
+        aria-label='Moderator actions'
+        sx={{ marginBottom: 1, flexDirection: 'column' }}>
         {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
       </Box>
 
