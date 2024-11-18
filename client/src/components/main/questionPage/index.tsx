@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Typography, useTheme } from '@mui/material';
 import './index.css';
 import QuestionHeader from './header';
 import QuestionView from './question';
@@ -11,23 +12,43 @@ import useQuestionPage from '../../../hooks/useQuestionPage';
  */
 const QuestionPage = () => {
   const { titleText, qlist, setQuestionOrder } = useQuestionPage();
+  const theme = useTheme();
 
   return (
-    <>
-      <QuestionHeader
-        titleText={titleText}
-        qcnt={qlist.length}
-        setQuestionOrder={setQuestionOrder}
-      />
-      <div id='question_list' className='question_list'>
-        {qlist.map((q, idx) => (
-          <QuestionView q={q} key={idx} />
-        ))}
-      </div>
-      {titleText === 'Search Results' && !qlist.length && (
-        <div className='bold_title right_padding'>No Questions Found</div>
-      )}
-    </>
+    <div
+      style={{
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+      }}>
+      <Box role='main' sx={{ padding: 2 }}>
+        <QuestionHeader
+          titleText={titleText}
+          qcnt={qlist.length}
+          setQuestionOrder={setQuestionOrder}
+        />
+
+        <Box id='question_list' role='list' sx={{ marginTop: 2 }}>
+          {qlist.length === 0 && titleText === 'Search Results' ? (
+            <Typography variant='h6' sx={{ fontWeight: 'bold', paddingLeft: 2 }}>
+              No Questions Found
+            </Typography>
+          ) : (
+            qlist.map((q, idx) => (
+              <Box
+                key={idx}
+                sx={{
+                  marginBottom: 1,
+                  padding: 1,
+                  borderRadius: 1,
+                  backgroundColor: theme.palette.background.default,
+                }}>
+                <QuestionView q={q} />
+              </Box>
+            ))
+          )}
+        </Box>
+      </Box>
+    </div>
   );
 };
 

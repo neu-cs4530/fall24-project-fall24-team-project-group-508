@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
-// import AccountModel from '../../server/models/accounts'; // Adjust the import path as necessary
 import useLoginContext from './useLoginContext';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import { useTextSize } from '../contexts/TextSizeContext';
+
 /**
  * Interface for the useLogin hook.
  * @property username - The current value of the username input.
@@ -92,13 +92,14 @@ const useLogin = (isLogin: boolean): UseLogin => {
 
       const data = await response.json();
       setUser({ username: data.username, hashedPassword: data.hashedPassword, email: data.email });
-      // const account = await AccountModel.findOne({ username });
       setAccount(data);
-      // Set dark mode according to user's settings on login
+
+      // Set dark mode and text size according to user's settings on login
       setDarkMode(data.settings.darkMode);
       setTextSize(data.settings.textSize);
+
       console.log('Account:', data);
-      console.log('Account:', data.settings);
+      console.log('Account Settings:', data.settings);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
       setError((err as Error).message);

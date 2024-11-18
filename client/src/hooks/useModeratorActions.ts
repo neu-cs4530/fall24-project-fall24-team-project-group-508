@@ -1,6 +1,6 @@
 import takeUserAction, { TakeActionRequestBody } from '../services/actionService';
-import useLoginContext from './useLoginContext';
-import { User } from '../types';
+// import useLoginContext from './useLoginContext';
+// import { User } from '../types';
 
 /**
  * Custom hook to clean up moderator actions code :)

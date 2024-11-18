@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
+import { Box, Chip, Typography, useTheme } from '@mui/material';
 import { getMetaData } from '../../../../tool';
 import { Question } from '../../../../types';
 
@@ -44,53 +45,85 @@ const QuestionView = ({ q }: QuestionProps) => {
     navigate(`/question/${questionID}`);
   };
 
+  const theme = useTheme();
+
   return (
-    <div
-      className='question right_padding'
+    <Box
+      role='article'
+      sx={{
+        'padding': 2,
+        'marginBottom': 2,
+        'cursor': 'pointer',
+        'border': '1px solid #ccc',
+        'borderRadius': 1,
+        'transition': 'background-color 0.3s ease',
+        '&:hover': {
+          backgroundColor: theme.palette.action.hover,
+        },
+      }}
       onClick={() => {
         if (q._id) {
           handleAnswer(q._id);
         }
       }}>
-      <div className='postStats'>
-        <div>{q.answers.length || 0} answers</div>
-        <div>{q.views.length} views</div>
-      </div>
-      <div className='question_mid'>
-        <div className='postTitle'>{q.title}</div>
-        <div className='question_tags'>
+      {/* Post Stats */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+        <Typography variant='body2'>{q.answers.length || 0} answers</Typography>
+        <Typography variant='body2'>{q.views.length} views</Typography>
+      </Box>
+
+      {/* Question Title and Tags */}
+      <Box sx={{ marginBottom: 1 }}>
+        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+          {q.title}
+        </Typography>
+
+        {/* Question Tags */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: 1 }}>
           {q.tags.map((tag, idx) => (
-            <button
+            <Chip
               key={idx}
-              className='question_tag_button'
+              label={tag.name}
               onClick={e => {
                 e.stopPropagation();
                 clickTag(tag.name);
-              }}>
-              {tag.name}
-            </button>
+              }}
+              sx={{ marginRight: 1, marginBottom: 1, cursor: 'pointer' }}
+              variant='outlined'
+              color='primary'
+              size='small'
+            />
           ))}
-        </div>
-        <div className='question_preset_tags'>
+        </Box>
+
+        {/* Preset Tags */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: 1 }}>
           {q.presetTags.map((tag, idx) => (
-            <button
+            <Chip
               key={idx}
-              className='question_presettag_button'
+              label={tag}
               onClick={e => {
                 e.stopPropagation();
-                clickTag(tag); // assuming presetTags is just a string array
-              }}>
-              {tag}
-            </button>
+                clickTag(tag);
+              }}
+              sx={{ marginRight: 1, marginBottom: 1, cursor: 'pointer' }}
+              variant='outlined'
+              color='secondary'
+              size='small'
+            />
           ))}
-        </div>
-      </div>
-      <div className='lastActivity'>
-        <div className='question_author'>{q.askedBy}</div>
-        <div>&nbsp;</div>
-        <div className='question_meta'>asked {getMetaData(new Date(q.askDateTime))}</div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant='body2' color='textSecondary'>
+          {q.askedBy}
+        </Typography>
+        <Typography variant='body2' color='textSecondary'>
+          asked {getMetaData(new Date(q.askDateTime))}
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,5 +1,19 @@
 /* eslint-disable no-console */
 import React from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  SelectChangeEvent,
+} from '@mui/material';
 import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
 import { Account } from '../../../types';
@@ -35,10 +49,9 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
     }
   };
 
-  const handleTextChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleTextChange = async (e: SelectChangeEvent<string>) => {
     const newSize = e.target.value as 'small' | 'medium' | 'large';
     setTextSize(newSize);
-    console.log('New size:', newSize);
 
     if (account && account._id && setAccount) {
       const updatedAccount = await updateAccountSettings(account._id, {
@@ -52,59 +65,49 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   };
 
   return (
-    <div className={`popup ${darkMode ? 'dark' : ''}`}>
-      <div className={`popup-content ${darkMode ? 'dark-content' : ''}`}>
-        <h2 className='setting-option'>Accessibility Options</h2>
+    <Dialog open onClose={onClose} aria-labelledby='accessibility-dialog-title'>
+      <DialogTitle id='accessibility-dialog-title' sx={{ fontSize: '1.5rem', padding: '16px' }}>
+        Accessibility Options
+      </DialogTitle>
+      <DialogContent sx={{ padding: '16px 24px' }}>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id='text-size-label' sx={{ fontSize: '1.5rem', color: 'inherit' }}>
+            Text Size
+          </InputLabel>
+          <Select
+            labelId='text-size-label'
+            value={textSize}
+            onChange={handleTextChange}
+            sx={{ marginTop: '25px', fontSize: '1rem' }}>
+            <MenuItem value='small'>Small</MenuItem>
+            <MenuItem value='medium'>Medium</MenuItem>
+            <MenuItem value='large'>Large</MenuItem>
+          </Select>
+        </FormControl>
 
-        <div className='setting-option'>
-          <label className='setting-option'>
-            Text Size:
-            <select value={textSize} onChange={handleTextChange}>
-              <option value='small'>Small</option>
-              <option value='medium'>Medium</option>
-              <option value='large'>Large</option>
-            </select>
-          </label>
-        </div>
+        <FormGroup sx={{ marginTop: '10px' }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={darkMode}
+                onChange={handleDarkModeChange}
+                name='darkMode'
+                sx={{ transform: 'scale(1.2)' }}
+              />
+            }
+            label={<span style={{ fontSize: '1rem' }}>Dark Mode</span>}
+          />
+        </FormGroup>
 
-        <div className='setting-option'>
-          {/* <label className='checkbox-label'>
-            <input
-              type='checkbox'
-              className='checkbox'
-              checked={screenReader}
-              onChange={e => setScreenReader(e.target.checked)}
-            />
-            Screen Reader Mode
-          </label> */}
-          <label className='checkbox-label'>
-            <input
-              type='checkbox'
-              className='checkbox'
-              checked={false}
-              onChange={() => console.log('Screen Reader Mode')}
-            />
-            Text to Speech Enabled
-          </label>
-        </div>
-
-        <div className='setting-option'>
-          <label className='checkbox-label'>
-            <input
-              type='checkbox'
-              className='checkbox'
-              checked={darkMode}
-              onChange={handleDarkModeChange}
-            />
-            Dark Mode
-          </label>
-        </div>
-
-        <button onClick={onClose} className='close-btn'>
+        <Button
+          onClick={onClose}
+          variant='contained'
+          color='primary'
+          sx={{ marginTop: '24px', fontSize: '1rem', padding: '8px 16px' }}>
           Close
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 

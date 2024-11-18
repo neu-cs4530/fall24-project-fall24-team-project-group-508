@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Box, Button, List, ListItem, TextField, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getMetaData } from '../../../tool';
 import { Comment } from '../../../types';
 import './index.css';
@@ -50,54 +52,90 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
     setTextErr('');
   };
 
-  const assignStyle = (comment: Comment) => {
-    if (comment.pinned) {
-      return 'comment-item pinned';
-    }
-    return 'comment-item';
-  };
+  /**
+   * Dynamically assigns styles to comments based on their pinned status.
+   */
+  const assignStyle = (comment: Comment) => ({
+    border: comment.pinned ? '2px solid blue' : '1px solid #ddd',
+    backgroundColor: comment.pinned ? '#e3f2fd' : 'transparent',
+    padding: 1,
+    marginBottom: 1,
+    borderRadius: '4px',
+  });
 
   return (
-    <div className='comment-section'>
-      <button className='toggle-button' onClick={() => setShowComments(!showComments)}>
+    <Box className='comment-section'>
+      {/* Toggle button for showing/hiding comments */}
+      <Button
+        variant='contained'
+        onClick={() => setShowComments(!showComments)}
+        sx={{ marginBottom: 2 }}
+        aria-expanded={showComments}
+        aria-controls='comments-container'>
+        <ExpandMoreIcon sx={{ transform: showComments ? 'rotate(180deg)' : 'rotate(0deg)' }} />
         {showComments ? 'Hide Comments' : 'Show Comments'}
-      </button>
+      </Button>
 
+      {/* Comment section */}
       {showComments && (
-        <div className='comments-container'>
-          <ul className='comments-list'>
+        <Box
+          id='comments-container'
+          sx={{
+            padding: 2,
+            width: '100%',
+          }}>
+          <List>
             {comments.length > 0 ? (
               comments.map((comment, index) => (
-                <li key={index} className={assignStyle(comment)}>
-                  <div>{ModeratorActionButtons(moderatorInfo, comment._id)}</div>
-                  <p className='comment-text'>{comment.text}</p>
-                  <small className='comment-meta'>
-                    {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
-                  </small>
-                </li>
+                <ListItem key={index} sx={assignStyle(comment)}>
+                  <Box sx={{ flex: 1 }}>
+                    {/* Moderator Actions */}
+                    <Box sx={{ marginBottom: 1 }}>
+                      {ModeratorActionButtons(moderatorInfo, comment._id)}
+                    </Box>
+                    {/* Comment Text */}
+                    <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+                      {comment.text}
+                    </Typography>
+                    {/* Comment Meta Data */}
+                    <Typography variant='caption' color='textSecondary'>
+                      {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
+                    </Typography>
+                  </Box>
+                </ListItem>
               ))
             ) : (
-              <p className='no-comments'>No comments yet.</p>
+              <Typography variant='body2' color='textSecondary'>
+                No comments yet.
+              </Typography>
             )}
-          </ul>
+          </List>
 
-          <div className='add-comment'>
-            <div className='input-row'>
-              <textarea
-                placeholder='Comment'
-                value={text}
-                onChange={e => setText(e.target.value)}
-                className='comment-textarea'
-              />
-              <button className='add-comment-button' onClick={handleAddCommentClick}>
-                Add Comment
-              </button>
-            </div>
-            {textErr && <small className='error'>{textErr}</small>}
-          </div>
-        </div>
+          {/* Add comment input */}
+          <Box sx={{ marginTop: 2 }}>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              variant='outlined'
+              label='Add a Comment'
+              value={text}
+              onChange={e => setText(e.target.value)}
+              error={!!textErr}
+              helperText={textErr}
+              aria-describedby='comment-error-text'
+            />
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={handleAddCommentClick}
+              sx={{ marginTop: 1 }}>
+              Add Comment
+            </Button>
+          </Box>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
