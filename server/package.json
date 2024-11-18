@@ -23,6 +23,7 @@
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.11",
+    "@types/react": "^18.3.12",
     "@types/react-latex": "^2.0.3",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
