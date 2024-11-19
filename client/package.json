@@ -26,7 +26,7 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^5.1.1",
     "socket.io-client": "^4.7.5",
-    "vfile": "^6.0.3"
+    "unified": "^11.0.5"
   },
   "scripts": {
     "start": "react-scripts -r @cypress/instrument-cra start",
