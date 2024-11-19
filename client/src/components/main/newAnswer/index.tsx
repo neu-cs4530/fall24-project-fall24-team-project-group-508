@@ -1,7 +1,9 @@
 import './index.css';
 import React from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
+import 'katex/dist/katex.min.css';
 import useAnswerForm from '../../../hooks/useAnswerForm';
+import MarkdownPreview from '../markdownPreview';
 
 /**
  * NewAnswerPage component allows users to submit an answer to a specific question.
@@ -42,6 +44,10 @@ const NewAnswerPage = () => {
         aria-describedby='answer-text-helper'
         required
       />
+      <h4>Answer Preview with Markdown and LaTeX Support:</h4>
+      <div className='markdown_preview_container'>
+        <MarkdownPreview text={text} />
+      </div>
 
       {/* Buttons and Mandatory Field Indicator */}
       <Box

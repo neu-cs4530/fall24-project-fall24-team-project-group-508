@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './index.css';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import LoginForm from './loginForm';
 import RegisterForm from './registerForm';
 
 /**
- * Login Component contains two forms: Login and Register. Logine requires the user to enter their email and password, where register requires the user to enter their name, email, and password.
+ * Login Component contains a form that allows the user to input their username, which is then submitted
  * to the application's context through the useLoginContext hook.
  */
 const Login = () => {

@@ -56,6 +56,7 @@ const AnswerPage = () => {
           meta={getMetaData(new Date(question.askDateTime))}
           pinned={question.pinned}
           locked={question.locked}
+          tags={question.tags}
           presetTags={question.presetTags}
         />
 
