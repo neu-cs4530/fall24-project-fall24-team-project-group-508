@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import {
@@ -597,7 +598,7 @@ export const addComment = async (
     }
     let result: QuestionResponse | AnswerResponse | null;
     if (type === 'question') {
-      const parent = await QuestionModel.findOne({ _id:id });
+      const parent = await QuestionModel.findOne({ _id: id });
       if (parent?.locked) {
         throw new Error('Cannot comment on a locked post');
       }
@@ -607,7 +608,7 @@ export const addComment = async (
         { new: true },
       );
     } else {
-      const parent = await AnswerModel.findOne({ _id:id });
+      const parent = await AnswerModel.findOne({ _id: id });
       if (parent?.locked) {
         throw new Error('Cannot comment on a locked post');
       }
@@ -708,7 +709,7 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
       throw new Error('Account with matching email already exists');
     }
 
-    //default initialization for a new account
+    // default initialization for a new account
     account.score = 0;
     account.dateCreated = new Date();
     account.questions = [];
@@ -769,21 +770,31 @@ export const updateAccountSettings = async (
 /**
  * checks if a user has the ability to perform moderator actions
  * @param account the account of the user requesting to take the action
- * @returns true if the user is a moderator, and false if the user 
+ * @returns true if the user is a moderator, and false if the user
  */
-export const canPerformActions = async (account: Account) : Promise<boolean> | never => {
+export const canPerformActions = async (account: Account): Promise<boolean> | never => {
   try {
-    const existingAccount = await AccountModel.findOne({username : account.username, hashedPassword: account.hashedPassword});
+    const existingAccount = await AccountModel.findOne({
+      username: account.username,
+      hashedPassword: account.hashedPassword,
+    });
 
-    return !!existingAccount &&
-       (existingAccount.userType === AccountType.moderator || existingAccount.userType === AccountType.owner);
-  } catch(error) {
+    return (
+      !!existingAccount &&
+      (existingAccount.userType === AccountType.moderator ||
+        existingAccount.userType === AccountType.owner)
+    );
+  } catch (error) {
     throw new Error('Error when determining if user has moderator permissions');
   }
-}
+};
 
-
-export const pinPost = async (postType: string, postID: string, parentID: string | undefined, parentType: string | undefined) : Promise<ActionResponse> => {
+export const pinPost = async (
+  postType: string,
+  postID: string,
+  parentID: string | undefined,
+  parentType: string | undefined,
+): Promise<ActionResponse> => {
   try {
     let result: QuestionResponse | AnswerResponse | CommentResponse | null;
     if(postType === 'question') {
@@ -824,13 +835,18 @@ export const pinPost = async (postType: string, postID: string, parentID: string
       }
     }
 
-    return !!result ? result : { error : 'lock action failed' };
-  } catch(error) {
-    return { error : 'lock action failed'};
+    return result || { error: 'lock action failed' };
+  } catch (error) {
+    return { error: 'lock action failed' };
   }
-}
+};
 
-export const removePost = async (postType: string, postID: string, parentID: string | undefined, parentType: string | undefined) : Promise<ActionResponse> => {
+export const removePost = async (
+  postType: string,
+  postID: string,
+  parentID: string | undefined,
+  parentType: string | undefined,
+): Promise<ActionResponse> => {
   try {
     if(postType === 'question') {
       const result = await QuestionModel.findOneAndDelete({ _id: postID })
@@ -885,14 +901,14 @@ export const removePost = async (postType: string, postID: string, parentID: str
         return { comment: result};
       }
     }
-  } catch (error){
+  } catch (error) {
     console.log((error as Error).message);
-    return { error : 'remove action failed'};
+    return { error: 'remove action failed' };
   }
-}
+};
 
-export const lockPost = async (postType: string, postID: string) : Promise<ActionResponse> => {
-  if(postType === 'comment') {
+export const lockPost = async (postType: string, postID: string): Promise<ActionResponse> => {
+  if (postType === 'comment') {
     return {};
   }
 
@@ -923,9 +939,8 @@ export const lockPost = async (postType: string, postID: string) : Promise<Actio
       }
     }
 
-
-    return !!result ? result : { error : 'lock action failed' };
-  } catch(error) {
-    return { error : 'lock action failed'};
+    return result || { error: 'lock action failed' };
+  } catch (error) {
+    return { error: 'lock action failed' };
   }
-}
+};
