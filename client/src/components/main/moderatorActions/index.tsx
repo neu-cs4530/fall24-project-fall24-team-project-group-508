@@ -15,9 +15,13 @@ const ModeratorActionButtons = (
   const { handlePin, handleLock, handleRemove } = useModeratorActions(info, _id);
   return (
     <ul className='button-list'>
-      <li>
-        <button className='action-button lock' onClick={handleLock}></button>
-      </li>
+      {info.type !== 'comment' ? (
+        <li>
+          <button className='action-button lock' onClick={handleLock}></button>
+        </li>
+      ) : (
+        <div></div>
+      )}
       <li>
         <button className='action-button pin' onClick={handlePin}></button>
       </li>

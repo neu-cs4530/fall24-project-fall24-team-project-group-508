@@ -22,6 +22,7 @@ const AnswerPage = () => {
   }
 
   const pinSortedAnswers = question.answers.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
+  const pinSortedComments = question.comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
 
   return (
     <>
@@ -38,7 +39,7 @@ const AnswerPage = () => {
         presetTags={question.presetTags}
       />
       <CommentSection
-        comments={question.comments}
+        comments={pinSortedComments}
         handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
         moderatorInfo={{
           parentType: 'question',
