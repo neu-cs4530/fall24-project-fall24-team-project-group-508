@@ -46,6 +46,7 @@ const com1: Comment = {
   text: 'com1',
   commentBy: 'com_by1',
   commentDateTime: new Date('2023-11-18T09:25:00'),
+  pinned: false,
 };
 
 const ans1: Answer = {
@@ -54,6 +55,8 @@ const ans1: Answer = {
   ansBy: 'ansBy1',
   ansDateTime: new Date('2023-11-18T09:24:00'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const ans2: Answer = {
@@ -62,6 +65,8 @@ const ans2: Answer = {
   ansBy: 'ansBy2',
   ansDateTime: new Date('2023-11-20T09:24:00'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const ans3: Answer = {
@@ -70,6 +75,8 @@ const ans3: Answer = {
   ansBy: 'ansBy3',
   ansDateTime: new Date('2023-11-19T09:24:00'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const ans4: Answer = {
@@ -78,6 +85,8 @@ const ans4: Answer = {
   ansBy: 'ansBy4',
   ansDateTime: new Date('2023-11-19T09:24:00'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const QUESTIONS: Question[] = [
@@ -93,6 +102,9 @@ const QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
   {
     _id: new ObjectId('65e9b5a995b6c7045a30d823'),
@@ -106,6 +118,9 @@ const QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
   {
     _id: new ObjectId('65e9b9b44c052f0a08ecade0'),
@@ -119,6 +134,9 @@ const QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
   {
     _id: new ObjectId('65e9b716ff0e892116b2de09'),
@@ -132,6 +150,9 @@ const QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
 ];
 
@@ -413,6 +434,9 @@ describe('application module', () => {
           upVotes: [],
           downVotes: [],
           comments: [],
+          presetTags: [],
+          locked: false,
+          pinned: false,
         };
 
         const result = (await saveQuestion(mockQn)) as Question;
@@ -598,6 +622,8 @@ describe('application module', () => {
           ansBy: 'dummyUserId',
           ansDateTime: new Date('2024-06-06'),
           comments: [],
+          locked: false,
+          pinned: false,
         };
 
         const result = (await saveAnswer(mockAnswer)) as Answer;

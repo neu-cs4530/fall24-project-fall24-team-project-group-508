@@ -24,6 +24,8 @@ const ans1: Answer = {
   ansBy: 'answer1_user',
   ansDateTime: new Date('2024-06-09'), // The mock date is string type but in the actual implementation it is a Date type
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const ans2: Answer = {
@@ -32,6 +34,8 @@ const ans2: Answer = {
   ansBy: 'answer2_user',
   ansDateTime: new Date('2024-06-10'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const ans3: Answer = {
@@ -40,6 +44,8 @@ const ans3: Answer = {
   ansBy: 'answer3_user',
   ansDateTime: new Date('2024-06-11'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const ans4: Answer = {
@@ -48,6 +54,8 @@ const ans4: Answer = {
   ansBy: 'answer4_user',
   ansDateTime: new Date('2024-06-14'),
   comments: [],
+  locked: false,
+  pinned: false,
 };
 
 const MOCK_QUESTIONS: Question[] = [
@@ -63,6 +71,9 @@ const MOCK_QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
   {
     _id: new mongoose.Types.ObjectId('65e9b5a995b6c7045a30d823'),
@@ -76,6 +87,9 @@ const MOCK_QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
   {
     _id: new mongoose.Types.ObjectId('34e9b58910afe6e94fc6e99f'),
@@ -89,6 +103,9 @@ const MOCK_QUESTIONS: Question[] = [
     upVotes: [],
     downVotes: [],
     comments: [],
+    locked: false,
+    pinned: false,
+    presetTags: [],
   },
 ];
 

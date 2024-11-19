@@ -35,6 +35,8 @@ describe('POST /addAnswer', () => {
       ansBy: 'dummyUserId',
       ansDateTime: new Date('2024-06-03'),
       comments: [],
+      locked: false,
+      pinned: false,
     };
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);
 
@@ -50,6 +52,9 @@ describe('POST /addAnswer', () => {
       downVotes: [],
       answers: [mockAnswer._id],
       comments: [],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     });
 
     popDocSpy.mockResolvedValueOnce({
@@ -64,6 +69,9 @@ describe('POST /addAnswer', () => {
       downVotes: [],
       answers: [mockAnswer],
       comments: [],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     });
 
     const response = await supertest(app).post('/answer/addAnswer').send(mockReqBody);
@@ -73,6 +81,8 @@ describe('POST /addAnswer', () => {
       _id: validAid.toString(),
       text: 'This is a test answer',
       ansBy: 'dummyUserId',
+      locked: false,
+      pinned: false,
       ansDateTime: mockAnswer.ansDateTime.toISOString(),
       comments: [],
     });
@@ -175,6 +185,8 @@ describe('POST /addAnswer', () => {
       ansBy: 'dummyUserId',
       ansDateTime: new Date('2024-06-03'),
       comments: [],
+      locked: false,
+      pinned: false,
     };
 
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);
@@ -202,6 +214,8 @@ describe('POST /addAnswer', () => {
       ansBy: 'dummyUserId',
       ansDateTime: new Date('2024-06-03'),
       comments: [],
+      locked: false,
+      pinned: false,
     };
 
     const mockQuestion = {
@@ -216,6 +230,9 @@ describe('POST /addAnswer', () => {
       downVotes: [],
       answers: [mockAnswer._id],
       comments: [],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     };
 
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);

@@ -1,6 +1,5 @@
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import debounce from 'lodash.debounce';
 
 /**
  * Custom hook to manage the state and logic for a live search in the header.
@@ -21,17 +20,6 @@ const useHeader = () => {
     navigate(`/home?${searchParams.toString()}`);
   };
 
-  // Debounced version of performSearch to limit excessive navigation calls.
-  const debouncedSearch = debounce(performSearch, 300);
-
-  // Cleanup debounce on unmount
-  useEffect(
-    () => () => {
-      debouncedSearch.cancel();
-    },
-    [debouncedSearch],
-  );
-
   /**
    * Function to handle changes in the input field and initiate live search.
    *
@@ -39,7 +27,7 @@ const useHeader = () => {
    */
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
-    debouncedSearch(e.target.value);
+    performSearch(e.target.value);
   };
 
   return {
