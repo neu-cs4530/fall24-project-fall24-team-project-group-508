@@ -1,7 +1,5 @@
-import React from 'react';
 import './index.css';
 import { Box, Chip, Typography, useTheme } from '@mui/material';
-import { handleHyperlink } from '../../../../tool';
 import { PresetTagName, Tag } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
 

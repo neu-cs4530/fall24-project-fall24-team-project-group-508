@@ -217,7 +217,7 @@ const useAnswerPage = () => {
       socket.off('commentUpdate', handleCommentUpdate);
       socket.off('voteUpdate', handleVoteUpdate);
     };
-  }, [questionID, socket]);
+  }, [navigate, questionID, socket]);
 
   return {
     questionID,

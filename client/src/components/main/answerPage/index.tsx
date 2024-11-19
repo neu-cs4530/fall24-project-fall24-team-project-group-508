@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Button, Divider, Paper, useTheme } from '@mui/material';
 import { getMetaData } from '../../../tool';
 import AnswerView from './answer';
@@ -9,7 +8,7 @@ import QuestionBody from './questionBody';
 import VoteComponent from '../voteComponent';
 import CommentSection from '../commentSection';
 import useAnswerPage from '../../../hooks/useAnswerPage';
-import ModeratorActionButtons, { ModeratorActionProps } from '../moderatorActions';
+import ModeratorActionButtons from '../moderatorActions';
 
 /**
  * AnswerPage component that displays the full content of a question along with its answers.
@@ -30,6 +29,7 @@ const AnswerPage = () => {
 
   return (
     <div
+      className='answer-page'
       style={{
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
