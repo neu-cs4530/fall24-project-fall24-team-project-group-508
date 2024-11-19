@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { validateHyperlink } from '../tool';
 import { addQuestion } from '../services/questionService';
 import useUserContext from './useUserContext';
-import { Question } from '../types';
+import { PresetTagName, Question } from '../types';
 
 /**
  * Custom hook to handle question submission and form validation
@@ -22,6 +22,7 @@ const useNewQuestion = () => {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [tagNames, setTagNames] = useState<string>('');
+  const [presetTags, setPresetTags] = useState<PresetTagName[]>([]);
 
   const [titleErr, setTitleErr] = useState<string>('');
   const [textErr, setTextErr] = useState<string>('');
@@ -102,6 +103,9 @@ const useNewQuestion = () => {
       downVotes: [],
       views: [],
       comments: [],
+      presetTags,
+      pinned: false,
+      locked: false,
     };
 
     const res = await addQuestion(question);
@@ -118,6 +122,8 @@ const useNewQuestion = () => {
     setText,
     tagNames,
     setTagNames,
+    presetTags,
+    setPresetTags,
     titleErr,
     textErr,
     tagErr,

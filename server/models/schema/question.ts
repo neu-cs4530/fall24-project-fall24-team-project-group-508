@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+
 /**
  * Mongoose schema for the Question collection.
  *
@@ -14,6 +15,7 @@ import { Schema } from 'mongoose';
  * - `upVotes`: An array of usernames that have upvoted the question.
  * - `downVotes`: An array of usernames that have downvoted the question.
  * - `comments`: Comments that have been added to the question by users.
+ * - `presetTags`: An array of preset tags that can be associated with the question.
  */
 const questionSchema: Schema = new Schema(
   {
@@ -35,6 +37,63 @@ const questionSchema: Schema = new Schema(
     upVotes: [{ type: String }],
     downVotes: [{ type: String }],
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+    presetTags: [
+      {
+        type: String,
+        enum: [
+          'C',
+          'C++',
+          'Java',
+          'Python',
+          'JavaScript',
+          'HTML',
+          'CSS',
+          'SQL',
+          'MongoDB',
+          'React',
+          'Angular',
+          'Node.js',
+          'OOD',
+          'SWE',
+          'Algorithms',
+          'Data Structures',
+          'Testing',
+          'Debugging',
+          'Version Control',
+          'Security',
+          'Web Development',
+          'Mobile Development',
+          'Cloud Computing',
+          'DevOps',
+          'Agile',
+          'Scrum',
+          'Kanban',
+          'CI/CD',
+          'Docker',
+          'Kubernetes',
+          'Microservices',
+          'Serverless',
+          'RESTful APIs',
+          'GraphQL',
+          'WebSockets',
+          'OAuth',
+          'JWT',
+          'Cookies',
+          'Sessions',
+          'SQL Injection',
+          'Buffer Overflows',
+          'Markdown',
+          'Latex',
+        ],
+        default: [],
+      },
+    ],
+    locked: {
+      type: Boolean,
+    },
+    pinned: {
+      type: Boolean,
+    },
   },
   { collection: 'Question' },
 );

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout';
 import Login from './login';
-import { FakeSOSocket, User } from '../types';
+import { Account, FakeSOSocket, User } from '../types';
 import LoginContext from '../contexts/LoginContext';
 import UserContext from '../contexts/UserContext';
 import QuestionPage from './main/questionPage';
@@ -11,21 +11,30 @@ import NewQuestionPage from './main/newQuestion';
 import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
 import { DarkModeProvider } from '../contexts/DarkModeContext';
+import { TextSizeProvider } from '../contexts/TextSizeContext';
 
 const ProtectedRoute = ({
   user,
+  account,
+  setAccount,
   socket,
   children,
 }: {
   user: User | null;
+  account: Account | null;
+  setAccount: (account: Account | null) => void;
   socket: FakeSOSocket | null;
   children: JSX.Element;
 }) => {
-  if (!user || !socket) {
+  if (!user || !socket || !account) {
     return <Navigate to='/' />;
   }
 
-  return <UserContext.Provider value={{ user, socket }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, account, setAccount, socket }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 /**
@@ -34,19 +43,24 @@ const ProtectedRoute = ({
  */
 const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [account, setAccount] = useState<Account | null>(null);
 
   return (
-    <DarkModeProvider>
-      <LoginContext.Provider value={{ setUser }}>
-        <Routes>
-          {/* Public Route */}
-          <Route path='/' element={<Login />} />
+    <DarkModeProvider initialDarkMode={false}>
+      <TextSizeProvider initialTextSize={'medium'}>
+        <LoginContext.Provider value={{ setUser, setAccount }}>
+          <Routes>
+            {/* Public Route */}
+            <Route path='/' element={<Login />} />
 
-          {/* Protected Routes */}
-          {
+            {/* Protected Routes */}
             <Route
               element={
-                <ProtectedRoute user={user} socket={socket}>
+                <ProtectedRoute
+                  user={user}
+                  account={account}
+                  setAccount={setAccount}
+                  socket={socket}>
                   <Layout />
                 </ProtectedRoute>
               }>
@@ -56,9 +70,9 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
               <Route path='/new/question' element={<NewQuestionPage />} />
               <Route path='/new/answer/:qid' element={<NewAnswerPage />} />
             </Route>
-          }
-        </Routes>
-      </LoginContext.Provider>
+          </Routes>
+        </LoginContext.Provider>
+      </TextSizeProvider>
     </DarkModeProvider>
   );
 };

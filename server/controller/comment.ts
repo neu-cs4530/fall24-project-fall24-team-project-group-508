@@ -68,6 +68,7 @@ const commentController = (socket: FakeSOSocket) => {
     }
 
     try {
+      comment.pinned = false;
       const comFromDb = await saveComment(comment);
 
       if ('error' in comFromDb) {

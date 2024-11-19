@@ -1,22 +1,25 @@
+/* eslint-disable no-console */
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import {
-  Account,
-  AccountResponse,
   Answer,
   AnswerResponse,
   Comment,
   CommentResponse,
+  ActionResponse,
   OrderType,
   Question,
   QuestionResponse,
   Tag,
+  AccountType,
+  AccountResponse,
+  Account,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
-import AccountModel from './accounts';
+import AccountModel from './account';
 
 /**
  * Parses tags from a search string.
@@ -557,6 +560,10 @@ export const addAnswerToQuestion = async (qid: string, ans: Answer): Promise<Que
     if (!ans || !ans.text || !ans.ansBy || !ans.ansDateTime) {
       throw new Error('Invalid answer');
     }
+    const parent = await QuestionModel.findOne({ id: qid });
+    if (parent?.locked) {
+      throw new Error('Cannot add answers on locked questions');
+    }
     const result = await QuestionModel.findOneAndUpdate(
       { _id: qid },
       { $push: { answers: { $each: [ans._id], $position: 0 } } },
@@ -591,12 +598,20 @@ export const addComment = async (
     }
     let result: QuestionResponse | AnswerResponse | null;
     if (type === 'question') {
+      const parent = await QuestionModel.findOne({ _id: id });
+      if (parent?.locked) {
+        throw new Error('Cannot comment on a locked post');
+      }
       result = await QuestionModel.findOneAndUpdate(
         { _id: id },
         { $push: { comments: { $each: [comment._id] } } },
         { new: true },
       );
     } else {
+      const parent = await AnswerModel.findOne({ _id: id });
+      if (parent?.locked) {
+        throw new Error('Cannot comment on a locked post');
+      }
       result = await AnswerModel.findOneAndUpdate(
         { _id: id },
         { $push: { comments: { $each: [comment._id] } } },
@@ -694,10 +709,216 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
       throw new Error('Account with matching email already exists');
     }
 
+    // default initialization for a new account
+    account.score = 0;
+    account.dateCreated = new Date();
+    account.questions = [];
+    account.answers = [];
+    account.comments = [];
+    account.upVotedQuestions = [];
+    account.upvotedAnswers = [];
+    account.downvotedQuestions = [];
+    account.downvotedAnswers = [];
+    account.questionDrafts = [];
+    account.answerDrafts = [];
+    account.userType = AccountType.user;
+
     const newAccount = await AccountModel.create(account);
 
     return newAccount;
   } catch (error) {
     return { error: `Error creating account: ${(error as Error).message}` };
+  }
+};
+
+/**
+ * Updates the settings of an account in the database.
+ *
+ * @param accountId The ID of the account to update.
+ * @param settings The settings object to update.
+ *
+ * @returns The updated account object.
+ * @throws Error if the account does not exist or the update fails.
+ */
+export const updateAccountSettings = async (
+  accountId: string,
+  settings: Account['settings'],
+): Promise<Account> => {
+  try {
+    const account = await AccountModel.findById(accountId);
+
+    if (!account) {
+      throw new Error('Account not found');
+    }
+
+    // Update the settings field in the database
+    await AccountModel.findOneAndUpdate({ _id: accountId }, { $set: { settings } });
+
+    // Return the updated account object
+    return {
+      ...account,
+      settings: {
+        ...account.settings,
+        ...settings,
+      },
+    };
+  } catch (err) {
+    throw new Error(`Failed to update account settings: ${(err as Error).message}`);
+  }
+};
+
+/**
+ * checks if a user has the ability to perform moderator actions
+ * @param account the account of the user requesting to take the action
+ * @returns true if the user is a moderator, and false if the user
+ */
+export const canPerformActions = async (account: Account): Promise<boolean> | never => {
+  try {
+    const existingAccount = await AccountModel.findOne({
+      username: account.username,
+      hashedPassword: account.hashedPassword,
+    });
+
+    return (
+      !!existingAccount &&
+      (existingAccount.userType === AccountType.moderator ||
+        existingAccount.userType === AccountType.owner)
+    );
+  } catch (error) {
+    throw new Error('Error when determining if user has moderator permissions');
+  }
+};
+
+export const pinPost = async (
+  postType: string,
+  postID: string,
+  parentID: string | undefined,
+  parentType: string | undefined,
+): Promise<ActionResponse> => {
+  try {
+    let result: QuestionResponse | AnswerResponse | CommentResponse | null;
+    if (postType === 'question') {
+      result = await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { pinned: true } },
+        { new: true },
+      );
+
+      if (result) {
+        return { question: result };
+      }
+    } else if (postType === 'answer') {
+      result = await AnswerModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { pinned: true } },
+        { new: true },
+      );
+
+      if (result) {
+        return { answer: result };
+      }
+    } else {
+      result = await CommentModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { pinned: true } },
+        { new: true },
+      );
+
+      if (result) {
+        return { comment: result };
+      }
+    }
+
+    return result || { error: 'lock action failed' };
+  } catch (error) {
+    return { error: 'lock action failed' };
+  }
+};
+
+export const removePost = async (
+  postType: string,
+  postID: string,
+  parentID: string | undefined,
+  parentType: string | undefined,
+): Promise<ActionResponse> => {
+  try {
+    if (postType === 'question') {
+      await QuestionModel.deleteOne({ _id: postID });
+      return {};
+    }
+    if (postType === 'answer') {
+      // parent = QuestionModel.findOne where postID in answer
+      const parent = await QuestionModel.findOne({ _id: parentID });
+      if (!parent) {
+        throw new Error(`invalid parentid${parentID}`);
+      }
+      const answers = parent.answers.filter(a => a._id?.toString() !== postID);
+
+      await QuestionModel.findOneAndUpdate({ _id: postID }, { $set: { answers } }, { new: true });
+
+      await AnswerModel.deleteOne({ _id: postID });
+      return { answer: parent };
+    }
+    // parent = AnswerModel.findOne where postID in answer
+    if (parentType === 'question') {
+      const parent = await QuestionModel.findOne({ _id: parentID });
+      if (!parent) {
+        throw new Error('invalid parentid');
+      }
+      const comments = parent.comments.filter(c => c._id?.toString() !== postID);
+
+      await QuestionModel.findOneAndUpdate({ _id: postID }, { $set: { comments } }, { new: true });
+
+      await CommentModel.deleteOne({ _id: postID });
+      return { question: parent };
+    }
+    const parent = await AnswerModel.findOne({ _id: parentID });
+    if (!parent) {
+      throw new Error('invalid parentid');
+    }
+    const comments = parent.comments.filter(c => c._id?.toString() !== postID);
+
+    await AnswerModel.findOneAndUpdate({ _id: postID }, { $set: { comments } }, { new: true });
+
+    await CommentModel.deleteOne({ _id: postID });
+    return { answer: parent };
+  } catch (error) {
+    console.log((error as Error).message);
+    return { error: 'remove action failed' };
+  }
+};
+
+export const lockPost = async (postType: string, postID: string): Promise<ActionResponse> => {
+  if (postType === 'comment') {
+    return {};
+  }
+
+  try {
+    let result: QuestionResponse | AnswerResponse | null;
+    if (postType === 'question') {
+      result = await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { locked: true } },
+        { new: true },
+      );
+
+      if (result) {
+        return { question: result };
+      }
+    } else {
+      result = await AnswerModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { locked: true } },
+        { new: true },
+      );
+
+      if (result) {
+        return { answer: result };
+      }
+    }
+
+    return result || { error: 'lock action failed' };
+  } catch (error) {
+    return { error: 'lock action failed' };
   }
 };

@@ -2,7 +2,6 @@
 .answer {
   display: flex;
   flex-direction: row;
-  border-bottom: #000000 1px dashed;
 }
 
 .answerText {
@@ -15,4 +14,13 @@
 
 .answer_author {
   color: green;
+}
+
+.pinned {
+  border-style: solid;
+  border-color: green;
+}
+
+.locked {
+  background-color: lightgray;
 }

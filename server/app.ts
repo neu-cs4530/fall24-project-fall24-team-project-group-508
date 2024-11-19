@@ -14,15 +14,19 @@ import questionController from './controller/question';
 import tagController from './controller/tag';
 import commentController from './controller/comment';
 import { FakeSOSocket } from './types';
+import actionsController from './controller/actions';
 import loginController from './controller/login';
+import accountController from './controller/accountController';
 
 dotenv.config();
 
-const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'}/fake_so`;
+const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb+srv://descoteauxa:03ssG0OcLftf31wo@db-cs4530-f24-508.pzdc8.mongodb.net'}/fake_so`;
 const CLIENT_URL = process.env.CLIENT_URL || 'https://cs4530-f24-508.onrender.com';
 const port = parseInt(process.env.PORT || '8000');
 
-mongoose.connect(MONGO_URL).catch(err => console.log('MongoDB connection error: ', err));
+mongoose
+  .connect(MONGO_URL)
+  .catch(err => console.log('MongoDB connection error: ', err));
 
 const app = express();
 const server = http.createServer(app);
@@ -71,7 +75,9 @@ app.use('/question', questionController(socket));
 app.use('/tag', tagController());
 app.use('/answer', answerController(socket));
 app.use('/comment', commentController(socket));
+app.use('/action', actionsController(socket));
 app.use('/login', loginController(socket));
+app.use('/account', accountController(socket));
 
 // Export the app instance
 export { app, server, startServer };

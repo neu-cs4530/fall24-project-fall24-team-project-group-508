@@ -1,4 +1,4 @@
-.question {
+/* .question {
   display: flex;
   flex-direction: row;
   border-top: #000000 1px dashed;
@@ -15,7 +15,7 @@
 }
 
 .postTitle {
-  color: var(--primary-color);
+  color: cornflowerblue;
 }
 
 .question_tags {
@@ -47,4 +47,4 @@
 
 .question_meta {
   color: #bbbbbb;
-}
+} */

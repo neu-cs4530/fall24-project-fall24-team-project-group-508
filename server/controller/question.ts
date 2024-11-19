@@ -129,6 +129,8 @@ const questionController = (socket: FakeSOSocket) => {
       return;
     }
     const question: Question = req.body;
+    question.locked = false;
+    question.pinned = false;
     try {
       const questionswithtags: Question = {
         ...question,

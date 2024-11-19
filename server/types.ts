@@ -23,6 +23,8 @@ export interface Answer {
   ansBy: string;
   ansDateTime: Date;
   comments: Comment[] | ObjectId[];
+  locked: boolean;
+  pinned: boolean;
 }
 
 /**
@@ -54,6 +56,55 @@ export interface Tag {
 }
 
 /**
+ * Interface representing a PresetTag, which contains:
+ * - name - The name of the tag.
+ */
+export type PresetTagName =
+  | 'C'
+  | 'C++'
+  | 'Java'
+  | 'Python'
+  | 'JavaScript'
+  | 'HTML'
+  | 'CSS'
+  | 'SQL'
+  | 'MongoDB'
+  | 'React'
+  | 'Angular'
+  | 'Node.js'
+  | 'OOD'
+  | 'SWE'
+  | 'Algorithms'
+  | 'Data Structures'
+  | 'Testing'
+  | 'Debugging'
+  | 'Version Control'
+  | 'Security'
+  | 'Web Development'
+  | 'Mobile Development'
+  | 'Cloud Computing'
+  | 'DevOps'
+  | 'Agile'
+  | 'Scrum'
+  | 'Kanban'
+  | 'CI/CD'
+  | 'Docker'
+  | 'Kubernetes'
+  | 'Microservices'
+  | 'Serverless'
+  | 'RESTful APIs'
+  | 'GraphQL'
+  | 'WebSockets'
+  | 'OAuth'
+  | 'JWT'
+  | 'Cookies'
+  | 'Sessions'
+  | 'SQL Injection'
+  | 'Buffer Overflows'
+  | 'Markdown'
+  | 'Latex';
+
+/**
  * Interface representing a Question document, which contains:
  * - _id - The unique identifier for the question. Optional field.
  * - title - The title of the question.
@@ -66,6 +117,7 @@ export interface Tag {
  * - upVotes - An array of usernames that have upvoted the question.
  * - downVotes - An array of usernames that have downvoted the question.
  * - comments - Object IDs of comments that have been added to the question by users, or comments themselves if populated.
+ * - presetTags - An array of preset tags that can be associated with the question.
  */
 export interface Question {
   _id?: ObjectId;
@@ -79,6 +131,9 @@ export interface Question {
   upVotes: string[];
   downVotes: string[];
   comments: Comment[] | ObjectId[];
+  locked: boolean;
+  pinned: boolean;
+  presetTags: PresetTagName[];
 }
 
 /**
@@ -134,6 +189,14 @@ export interface VoteRequest extends Request {
   };
 }
 
+export interface UpdateSettingRequest {
+  body: {
+    darkMode: boolean;        // Whether dark mode is enabled or not
+    textSize: 'small' | 'medium' | 'large';  // The preferred text size
+    screenReader: boolean;    // Whether screen reader mode is enabled
+  };
+}
+
 /**
  * Interface representing a Comment, which contains:
  * - _id - The unique identifier for the comment. Optional field.
@@ -147,6 +210,7 @@ export interface Comment {
   text: string;
   commentBy: string;
   commentDateTime: Date;
+  pinned: boolean;
 }
 
 /**
@@ -201,6 +265,36 @@ export interface AnswerUpdatePayload {
 }
 
 /**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+/**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+
+export enum AccountType {
+  user,
+  moderator,
+  owner,
+} 
+/**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
  * - username - The username of the account
@@ -217,6 +311,7 @@ export interface AnswerUpdatePayload {
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
  * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+ * - settings - The accessibility settings of the user
 
  */
 export interface Account {
@@ -226,15 +321,19 @@ export interface Account {
   hashedPassword: string;
   score: number;
   dateCreated: Date;
-  questions: ObjectId[];
-  answers: ObjectId[];
-  comments: ObjectId[];
-  upVotedQuestions: ObjectId[];
-  upvotedAnswers: ObjectId[];
-  downvotedQuestions: ObjectId[];
-  downvotedAnswers: ObjectId[];
-  questionDrafts: ObjectId[];
-  answerDrafts: ObjectId[];
+  questions: Question[] | ObjectId[];
+  answers: Answer[] | ObjectId[];
+  comments: Comment[] | ObjectId[];
+  upVotedQuestions: Question[] | ObjectId[];
+  upvotedAnswers: Answer[] | ObjectId[];
+  downvotedQuestions: Question[] | ObjectId[];
+  downvotedAnswers: Answer[] | ObjectId[];
+  questionDrafts: Question[] | ObjectId[];
+  answerDrafts: Answer[] | ObjectId[];
+  settings: {darkMode: boolean;
+    textSize: 'small' | 'medium' | 'large';
+    screenReader: boolean;};
+  userType: AccountType;
 }
 
 /**
@@ -257,20 +356,44 @@ export interface CreateAccountRequest extends Request {
   body: Account;
 }
 
+export type ActionTypes = 'pin' | 'remove' | 'lock' | 'promote';
+
 /**
  * Type representing the possible responses for an Account-related operation.
  */
 export type AccountResponse = Account | { error: string };
 
+/**
+ * Interface extending the request body when trying to create a new account, which contains:
+ * - user - the user attempting to take the actions on a post
+ * - actionType - the type of moderator action being taken
+ * - postType - the type of the post that is being actioned
+ * - postID - the objectID of the post
+ */
+export interface ActionRequest extends Request {
+  body: {
+    user: Account;
+    actionType: ActionTypes;
+    postType: 'question' | 'answer' | 'comment';
+    postID: string;
+    parentPostType?: 'question' | 'answer' | 'comment';
+    parentID?: string;
+  }
+}
+
+/**
+ * Type representing the possible responses for an action
+ */
+export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { question: Question } | { error: string }
 
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
-//TODO update to add new emited events
 export interface ServerToClientEvents {
   questionUpdate: (question: QuestionResponse) => void;
   answerUpdate: (result: AnswerUpdatePayload) => void;
   viewsUpdate: (question: QuestionResponse) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
+  darkModeUpdate: (mode: boolean) => void;
 }

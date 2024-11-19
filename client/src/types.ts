@@ -7,6 +7,8 @@ export type FakeSOSocket = Socket<ServerToClientEvents>;
  */
 export interface User {
   username: string;
+  hashedPassword: string;
+  email: string;
 }
 
 /**
@@ -34,9 +36,11 @@ export type OrderType = keyof typeof orderTypeDisplayName;
  * commentDateTime - Time at which the comment was created.
  */
 export interface Comment {
+  _id?: string;
   text: string;
   commentBy: string;
   commentDateTime: Date;
+  pinned: boolean;
 }
 
 /**
@@ -88,7 +92,58 @@ export interface Answer {
   ansBy: string;
   ansDateTime: Date;
   comments: Comment[];
+  pinned: boolean;
+  locked: boolean;
 }
+
+/**
+ * Interface representing a PresetTag, which contains:
+ * - name - The name of the tag.
+ */
+export type PresetTagName =
+  | 'C'
+  | 'C++'
+  | 'Java'
+  | 'Python'
+  | 'JavaScript'
+  | 'HTML'
+  | 'CSS'
+  | 'SQL'
+  | 'MongoDB'
+  | 'React'
+  | 'Angular'
+  | 'Node.js'
+  | 'OOD'
+  | 'SWE'
+  | 'Algorithms'
+  | 'Data Structures'
+  | 'Testing'
+  | 'Debugging'
+  | 'Version Control'
+  | 'Security'
+  | 'Web Development'
+  | 'Mobile Development'
+  | 'Cloud Computing'
+  | 'DevOps'
+  | 'Agile'
+  | 'Scrum'
+  | 'Kanban'
+  | 'CI/CD'
+  | 'Docker'
+  | 'Kubernetes'
+  | 'Microservices'
+  | 'Serverless'
+  | 'RESTful APIs'
+  | 'GraphQL'
+  | 'WebSockets'
+  | 'OAuth'
+  | 'JWT'
+  | 'Cookies'
+  | 'Sessions'
+  | 'SQL Injection'
+  | 'Buffer Overflows'
+  | 'Markdown'
+  | 'Latex';
 
 /**
  * Interface representing the structure of a Question object.
@@ -104,6 +159,7 @@ export interface Answer {
  * - upVotes - An array of usernames who upvoted the question.
  * - downVotes - An array of usernames who downvoted the question.
  * - comments - Comments associated with the question.
+ * - presetTags - An array of preset tag names associated with the question.
  */
 export interface Question {
   _id?: string;
@@ -117,6 +173,59 @@ export interface Question {
   upVotes: string[];
   downVotes: string[];
   comments: Comment[];
+  pinned: boolean;
+  locked: boolean;
+  presetTags: PresetTagName[];
+}
+
+/**
+ * interface representing the accessibility settings of a user, which contains:
+ * - darkMode - A boolean indicating whether the user prefers dark mode
+ * - textSize - The preferred text size of the user
+ * - screenReader - A boolean indicating whether the user prefers screen reader
+ */
+export interface AccessibilitySettings {
+  darkMode: boolean;
+  textSize: 'small' | 'medium' | 'large';
+  screenReader: boolean;
+}
+
+/**
+ * Interface representing an account in the application.
+ * - _id - The unique identifier for the account.
+ * - username - The username of the account.
+ * - email - The email address of the account.
+ * - hashedPassword - The hashed password of the account.
+ * - score - The score of the account.
+ * - dateCreated - The date the account was created.
+ * - questions - An array of questions asked by the account.
+ * - answers - An array of answers provided by the account.
+ * - comments - An array of comments made by the account.
+ * - upVotedQuestions - An array of questions upvoted by the account.
+ * - upvotedAnswers - An array of answers upvoted by the account.
+ * - downvotedQuestions - An array of questions downvoted by the account.
+ * - downvotedAnswers - An array of answers downvoted by the account.
+ * - questionDrafts - An array of question drafts created by the account.
+ * - answerDrafts - An array of answer drafts created by the account.
+ * - settings - The accessibility settings of the account.
+ */
+export interface Account {
+  _id?: string;
+  username: string;
+  email: string;
+  hashedPassword: string;
+  score: number;
+  dateCreated: Date;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+  upVotedQuestions: Question[];
+  upvotedAnswers: Answer[];
+  downvotedQuestions: Question[];
+  downvotedAnswers: Answer[];
+  questionDrafts: Question[];
+  answerDrafts: Answer[];
+  settings: { darkMode: boolean; textSize: 'small' | 'medium' | 'large'; screenReader: boolean };
 }
 
 /**
@@ -147,4 +256,5 @@ export interface ServerToClientEvents {
   viewsUpdate: (question: Question) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
+  darkModeUpdate: (mode: boolean) => void;
 }

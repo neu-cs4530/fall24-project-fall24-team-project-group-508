@@ -1,71 +1,113 @@
-// AccessibilityPopup.js
+/* eslint-disable no-console */
 import React from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  SelectChangeEvent,
+} from '@mui/material';
 import './index.css';
 import { useDarkMode } from '../../../contexts/DarkModeContext';
-import useFontSize from '../../../hooks/useFontSizeEditor';
+import { Account } from '../../../types';
+import { updateAccountSettings } from '../../../services/accountService';
+import { useTextSize } from '../../../contexts/TextSizeContext';
 
 interface AccessibilityPopupProps {
+  account?: Account; // Account can be undefined
+  setAccount?: (updatedAccount: Account | null) => void; // Can be undefined
   onClose: () => void;
 }
 
-const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({ onClose }) => {
-  const { darkMode, toggleDarkMode } = useDarkMode();
-  const [textSize, setTextSize] = useFontSize();
+const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
+  account,
+  setAccount,
+  onClose,
+}) => {
+  const { textSize, setTextSize } = useTextSize();
 
-  const handleTextSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const { darkMode, toggleDarkMode } = useDarkMode();
+
+  const handleDarkModeChange = async () => {
+    toggleDarkMode();
+
+    if (account && account._id && setAccount) {
+      const updatedAccount = await updateAccountSettings(account._id, {
+        ...account.settings,
+        darkMode: !darkMode,
+      });
+      setAccount(updatedAccount);
+    } else {
+      console.error('Account ID is undefined');
+    }
+  };
+
+  const handleTextChange = async (e: SelectChangeEvent<string>) => {
     const newSize = e.target.value as 'small' | 'medium' | 'large';
     setTextSize(newSize);
-    localStorage.setItem('textSize', newSize);
+
+    if (account && account._id && setAccount) {
+      const updatedAccount = await updateAccountSettings(account._id, {
+        ...account.settings,
+        textSize: newSize,
+      });
+      setAccount(updatedAccount);
+    } else {
+      console.error('Account ID is undefined');
+    }
   };
 
   return (
-    <div className={`popup ${darkMode ? 'dark' : ''}`}>
-      <div className={`popup-content ${darkMode ? 'dark-content' : ''}`}>
-        <h2 className='setting-option'>Accessibility Options</h2>
+    <Dialog open onClose={onClose} aria-labelledby='accessibility-dialog-title'>
+      <DialogTitle id='accessibility-dialog-title' sx={{ fontSize: '1.5rem', padding: '16px' }}>
+        Accessibility Options
+      </DialogTitle>
+      <DialogContent sx={{ padding: '16px 24px' }}>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id='text-size-label' sx={{ fontSize: '1.5rem', color: 'inherit' }}>
+            Text Size
+          </InputLabel>
+          <Select
+            labelId='text-size-label'
+            value={textSize}
+            onChange={handleTextChange}
+            sx={{ marginTop: '25px', fontSize: '1rem' }}>
+            <MenuItem value='small'>Small</MenuItem>
+            <MenuItem value='medium'>Medium</MenuItem>
+            <MenuItem value='large'>Large</MenuItem>
+          </Select>
+        </FormControl>
 
-        {/* Accessibility options, each on its own line */}
-        <div className='setting-option'>
-          <label className='setting-option'>
-            Text Size:
-            <select value={textSize} onChange={handleTextSizeChange}>
-              <option value='small'>Small</option>
-              <option value='medium'>Medium</option>
-              <option value='large'>Large</option>
-            </select>
-          </label>
-        </div>
+        <FormGroup sx={{ marginTop: '10px' }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={darkMode}
+                onChange={handleDarkModeChange}
+                name='darkMode'
+                sx={{ transform: 'scale(1.2)' }}
+              />
+            }
+            label={<span style={{ fontSize: '1rem' }}>Dark Mode</span>}
+          />
+        </FormGroup>
 
-        <div className='setting-option'>
-          <label className='checkbox-label'>
-            <input type='checkbox' className='checkbox' />
-            High Contrast Mode
-          </label>
-        </div>
-
-        <div className='setting-option'>
-          <label className='checkbox-label'>
-            <input
-              type='checkbox'
-              className='checkbox'
-              checked={darkMode}
-              onChange={toggleDarkMode}
-            />
-            Dark Mode
-          </label>
-        </div>
-
-        <div className='setting-option'>
-          <label className='checkbox-label'>
-            <input type='checkbox' className='checkbox' />
-            Screen Reader Mode
-          </label>
-        </div>
-
-        <button onClick={onClose} className='close-btn'>
+        <Button
+          onClick={onClose}
+          variant='contained'
+          color='primary'
+          sx={{ marginTop: '24px', fontSize: '1rem', padding: '8px 16px' }}>
           Close
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 

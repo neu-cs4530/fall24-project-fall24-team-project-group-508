@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import AnswerModel from './models/answers';
 import QuestionModel from './models/questions';
 import TagModel from './models/tags';
-import { Answer, Comment, Question, Tag } from './types';
+import { Account, Answer, Comment, PresetTagName, Question, Tag } from './types';
 import {
   Q1_DESC,
   Q1_TXT,
@@ -46,6 +46,7 @@ import {
   C12_TEXT,
 } from './data/posts_strings';
 import CommentModel from './models/comments';
+import AccountModel from './models/accounts';
 
 // Pass URL of your mongoDB instance as first argument(e.g., mongodb://127.0.0.1:27017/fake_so)
 const userArgs = process.argv.slice(2);
@@ -148,6 +149,7 @@ async function questionCreate(
   askDateTime: Date,
   views: string[],
   comments: Comment[],
+  presetTags: PresetTagName[],
 ): Promise<Question> {
   if (
     title === '' ||
@@ -169,10 +171,38 @@ async function questionCreate(
     upVotes: [],
     downVotes: [],
     comments: comments,
+    presetTags: presetTags,
   };
   return await QuestionModel.create(questionDetail);
 }
 
+async function accountCreate(username: string, email: string, hashedPassword: string) : Promise<Account> {
+  if (username === '' || email === '' || hashedPassword === '') {
+    throw new Error('Invalid Account Format');
+  }
+  const account: Account = {
+    username: username,
+    email: email,
+    hashedPassword: hashedPassword,
+    score: 0,
+    dateCreated: new Date(),
+    questions: [],
+    answers: [],
+    comments: [],
+    upVotedQuestions: [],
+    upvotedAnswers: [],
+    downvotedQuestions: [],
+    downvotedAnswers: [],
+    questionDrafts: [],
+    answerDrafts: [],
+    settings: {
+      darkMode: false,
+      textSize: 'medium',
+      screenReader: false
+    }
+  };
+  return await AccountModel.create(account);
+}
 /**
  * Populates the database with predefined data.
  * Logs the status of the operation to the console.
@@ -217,6 +247,7 @@ const populate = async () => {
       new Date('2022-01-20T03:00:00'),
       ['sana', 'abaya', 'alia'],
       [c9],
+      [],
     );
     await questionCreate(
       Q2_DESC,
@@ -227,6 +258,7 @@ const populate = async () => {
       new Date('2023-01-10T11:24:30'),
       ['mackson3332'],
       [c10],
+      ['C++', 'Java'],
     );
     await questionCreate(
       Q3_DESC,
@@ -237,6 +269,7 @@ const populate = async () => {
       new Date('2023-02-18T01:02:15'),
       ['monkeyABC', 'elephantCDE'],
       [c11],
+      ['OOD', 'Java'],
     );
     await questionCreate(
       Q4_DESC,
@@ -247,7 +280,10 @@ const populate = async () => {
       new Date('2023-03-10T14:28:01'),
       [],
       [c12],
+      ['Python', 'JavaScript'],
     );
+
+    await accountCreate('sana', 'test123@gmail.com', 'test');
 
     console.log('Database populated');
   } catch (err) {

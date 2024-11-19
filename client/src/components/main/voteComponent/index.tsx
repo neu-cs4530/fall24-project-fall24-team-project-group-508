@@ -1,3 +1,4 @@
+import { Box, Button, Typography } from '@mui/material';
 import { downvoteQuestion, upvoteQuestion } from '../../../services/questionService';
 import './index.css';
 import useUserContext from '../../../hooks/useUserContext';
@@ -42,19 +43,37 @@ const VoteComponent = ({ question }: VoteComponentProps) => {
   };
 
   return (
-    <div className='vote-container'>
-      <button
-        className={`vote-button ${voted === 1 ? 'vote-button-upvoted' : ''}`}
-        onClick={() => handleVote('upvote')}>
+    <Box className='vote-container'>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => handleVote('upvote')}
+        sx={{
+          'backgroundColor': voted === 1 ? 'green' : 'gray',
+          '&:hover': {
+            backgroundColor: voted === 1 ? 'darkgreen' : 'gray',
+          },
+          'marginRight': 1,
+        }}>
         Upvote
-      </button>
-      <button
-        className={`vote-button ${voted === -1 ? 'vote-button-downvoted' : ''}`}
-        onClick={() => handleVote('downvote')}>
+      </Button>
+      <Button
+        variant='contained'
+        color='secondary'
+        onClick={() => handleVote('downvote')}
+        sx={{
+          'backgroundColor': voted === -1 ? 'red' : 'gray',
+          '&:hover': {
+            backgroundColor: voted === -1 ? 'darkred' : 'gray',
+          },
+          'marginRight': 1,
+        }}>
         Downvote
-      </button>
-      <span className='vote-count'>{count}</span>
-    </div>
+      </Button>
+      <Typography variant='body1' className='vote-count'>
+        {count}
+      </Typography>
+    </Box>
   );
 };
 

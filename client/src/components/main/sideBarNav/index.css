@@ -1,4 +1,4 @@
-.sideBarNav {
+/* .sideBarNav {
   display: flex;
   flex-direction: column;
   width: 15%;
@@ -18,9 +18,9 @@
   border-radius: 5px;
   text-align: center;
   line-height: 40px;
-  color: var(--primary-color);
+  color: cornflowerblue;
 }
 
 .menu_selected {
   background: #cccccc;
-}
+} */
