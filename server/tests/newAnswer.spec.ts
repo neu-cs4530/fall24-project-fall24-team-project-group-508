@@ -81,6 +81,8 @@ describe('POST /addAnswer', () => {
       _id: validAid.toString(),
       text: 'This is a test answer',
       ansBy: 'dummyUserId',
+      locked: false,
+      pinned: false,
       ansDateTime: mockAnswer.ansDateTime.toISOString(),
       comments: [],
     });

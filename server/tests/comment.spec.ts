@@ -81,6 +81,7 @@ describe('POST /addComment', () => {
       _id: validCid.toString(),
       text: 'This is a test comment',
       commentBy: 'dummyUserId',
+      pinned: false,
       commentDateTime: mockComment.commentDateTime.toISOString(),
     });
   });
@@ -137,6 +138,7 @@ describe('POST /addComment', () => {
       _id: validCid.toString(),
       text: 'This is a test comment',
       commentBy: 'dummyUserId',
+      pinned: false,
       commentDateTime: mockComment.commentDateTime.toISOString(),
     });
   });
