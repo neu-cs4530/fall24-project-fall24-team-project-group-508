@@ -9,7 +9,7 @@ import QuestionBody from './questionBody';
 import VoteComponent from '../voteComponent';
 import CommentSection from '../commentSection';
 import useAnswerPage from '../../../hooks/useAnswerPage';
-import ModeratorActionButtons from '../moderatorActions';
+import ModeratorActionButtons, { ModeratorActionProps } from '../moderatorActions';
 
 /**
  * AnswerPage component that displays the full content of a question along with its answers.
@@ -24,6 +24,9 @@ const AnswerPage = () => {
   }
 
   const pinSortedAnswers = question.answers.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
+  const pinSortedComments = question.comments.sort(
+    (a1, a2) => Number(a2.pinned) - Number(a1.pinned),
+  );
 
   return (
     <div
@@ -45,7 +48,13 @@ const AnswerPage = () => {
 
         {/* Moderator Actions */}
         <Box sx={{ mb: 3 }}>
-          <ModeratorActionButtons type='question' _id={question._id} />
+          {ModeratorActionButtons(
+            {
+              _id: question._id,
+              type: 'question',
+            },
+            question._id,
+          )}
         </Box>
 
         {/* Question Body */}
@@ -62,7 +71,7 @@ const AnswerPage = () => {
 
         {/* Comments Section */}
         <CommentSection
-          comments={question.comments}
+          comments={pinSortedComments}
           handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
           moderatorInfo={{
             parentType: 'question',

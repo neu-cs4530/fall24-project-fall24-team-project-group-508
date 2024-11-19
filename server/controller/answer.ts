@@ -75,6 +75,7 @@ const answerController = (socket: FakeSOSocket) => {
       socket.emit('answerUpdate', {
         qid,
         answer: populatedAns as AnswerResponse,
+        removed: false,
       });
       res.json(ansFromDb);
     } catch (err) {

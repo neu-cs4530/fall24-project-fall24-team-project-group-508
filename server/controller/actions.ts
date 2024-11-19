@@ -1,7 +1,6 @@
 import express, { Response } from 'express';
-import { ActionRequest, FakeSOSocket, ActionResponse } from '../types';
-import { lockPost, pinPost, removePost } from '../models/application';
-
+import { ActionRequest, FakeSOSocket, ActionTypes, ActionResponse, Question, AnswerResponse } from '../types';
+import { canPerformActions, createAccount, lockPost, loginToAccount, pinPost, populateDocument, removePost } from '../models/application';
 const actionsController = (socket: FakeSOSocket) => {
   const router = express.Router();
 
@@ -56,7 +55,7 @@ const actionsController = (socket: FakeSOSocket) => {
 
     let result: ActionResponse;
     try {
-      switch (actionInfo.actionType) {
+       switch(actionInfo.actionType) {
         case 'pin':
           result = await pinPost(
             actionInfo.postType,
@@ -69,14 +68,7 @@ const actionsController = (socket: FakeSOSocket) => {
           result = await lockPost(actionInfo.postType, actionInfo.postID);
           break;
         case 'remove':
-          // eslint-disable-next-line no-console
-          console.log('removing');
-          result = await removePost(
-            actionInfo.postType,
-            actionInfo.postID,
-            actionInfo.parentID,
-            actionInfo.parentPostType,
-          );
+          result = await removePost(actionInfo.postType, actionInfo.postID, actionInfo.parentID, actionInfo.parentPostType);
           break;
         case 'promote':
           res
@@ -89,18 +81,26 @@ const actionsController = (socket: FakeSOSocket) => {
           res.status(501).send(`The action ${actionInfo.actionType} is currently unsupported`);
           return;
       }
+      console.log("POST SWITCH");
 
       if ('error' in result) {
         throw new Error(result.error);
       }
 
-      // if('question' in result) {
-      //   socket.emit('questionUpdate', result['question']);
-      // } else if('answer' in result && actionInfo.parentID) {
-      //   socket.emit('answerUpdate', { qid: actionInfo.parentID, answer: result['answer']});
-      // } else if('comment' in result && actionInfo.parentPostType === 'answer' || actionInfo.parentPostType === 'question') {
-      //   socket.emit('commentUpdate', { type: actionInfo.parentPostType, result: null});
-      // }
+      if('question' in result) {
+        const del = actionInfo.actionType === 'remove';
+        socket.emit('questionUpdate', { quest: (result['question'] as Question), removed: del});
+      } else if('answer' in result && actionInfo.parentID) {
+        const del = actionInfo.actionType === 'remove';
+        let populatedAns = await populateDocument(result['answer']._id?.toString(), 'answer');
+        if(del) {
+          populatedAns = result['answer'];
+        }
+        socket.emit('answerUpdate', { qid: actionInfo.parentID, answer: (populatedAns as AnswerResponse), removed: del});
+      } else if('comment' in result && actionInfo.parentPostType === 'answer' || actionInfo.parentPostType === 'question') {
+        const populatedDoc = await populateDocument(actionInfo.parentID, actionInfo.parentPostType);
+        socket.emit('commentUpdate', { type: actionInfo.parentPostType, result: populatedDoc});
+      }
 
       res.status(200).json('action completed successfully');
     } catch (err: unknown) {

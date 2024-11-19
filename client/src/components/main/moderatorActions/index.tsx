@@ -27,16 +27,20 @@ const ModeratorActionButtons = (
           listStyleType: 'none',
           flexDirection: 'column',
         }}>
-        <ListItem disablePadding>
-          <Button
-            variant='outlined'
-            color='secondary'
-            onClick={handleLock}
-            aria-label='Lock content'
-            sx={{ minWidth: 'auto', padding: '4px' }}>
-            <LockIcon fontSize='small' />
-          </Button>
-        </ListItem>
+        {info.type !== 'comment' ? (
+          <ListItem disablePadding>
+            <Button
+              variant='outlined'
+              color='secondary'
+              onClick={handleLock}
+              aria-label='Lock content'
+              sx={{ minWidth: 'auto', padding: '4px' }}>
+              <LockIcon fontSize='small' />
+            </Button>
+          </ListItem>
+        ) : (
+          <></>
+        )}
         <ListItem disablePadding>
           <Button
             variant='outlined'

@@ -58,6 +58,7 @@ const AnswerView = ({
     borderStyle: pinned ? 'solid' : 'none',
   };
 
+  const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
@@ -88,7 +89,7 @@ const AnswerView = ({
       {/* Comment Section */}
       <Box sx={{ width: 350 }}>
         <CommentSection
-          comments={comments}
+          comments={pinSortedComments}
           handleAddComment={handleAddComment}
           moderatorInfo={{
             parentType: 'answer',

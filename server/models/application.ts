@@ -560,7 +560,7 @@ export const addAnswerToQuestion = async (qid: string, ans: Answer): Promise<Que
     if (!ans || !ans.text || !ans.ansBy || !ans.ansDateTime) {
       throw new Error('Invalid answer');
     }
-    const parent = await QuestionModel.findOne({ id: qid });
+    const parent = await QuestionModel.findOne( {_id: qid});
     if (parent?.locked) {
       throw new Error('Cannot add answers on locked questions');
     }
@@ -797,34 +797,40 @@ export const pinPost = async (
 ): Promise<ActionResponse> => {
   try {
     let result: QuestionResponse | AnswerResponse | CommentResponse | null;
-    if (postType === 'question') {
+    if(postType === 'question') {
+      const q = await QuestionModel.findOne({ _id: postID });
+
       result = await QuestionModel.findOneAndUpdate(
         { _id: postID },
-        { $set: { pinned: true } },
+        { $set: { pinned: !q?.pinned } },
         { new: true },
       );
 
-      if (result) {
+      if(result && q) {
         return { question: result };
       }
-    } else if (postType === 'answer') {
+    } else if(postType === 'answer'){
+      const a = await AnswerModel.findOne({ _id: postID });
+
       result = await AnswerModel.findOneAndUpdate(
         { _id: postID },
-        { $set: { pinned: true } },
+        { $set: { pinned: !a?.pinned } },
         { new: true },
       );
 
-      if (result) {
-        return { answer: result };
+      if(result && a) {
+        return { answer: result};
       }
     } else {
+      const c = await CommentModel.findOne({ _id: postID });
+
       result = await CommentModel.findOneAndUpdate(
         { _id: postID },
-        { $set: { pinned: true } },
+        { $set: { pinned: !c?.pinned } },
         { new: true },
       );
 
-      if (result) {
+      if(result && c) {
         return { comment: result };
       }
     }
@@ -842,46 +848,59 @@ export const removePost = async (
   parentType: string | undefined,
 ): Promise<ActionResponse> => {
   try {
-    if (postType === 'question') {
-      await QuestionModel.deleteOne({ _id: postID });
-      return {};
-    }
-    if (postType === 'answer') {
-      // parent = QuestionModel.findOne where postID in answer
+    if(postType === 'question') {
+      const result = await QuestionModel.findOneAndDelete({ _id: postID })
+      return { question: result};
+    } else if(postType === 'answer') {
+      //parent = QuestionModel.findOne where postID in answer
       const parent = await QuestionModel.findOne({ _id: parentID });
-      if (!parent) {
-        throw new Error(`invalid parentid${parentID}`);
+      if(!parent) {
+        throw new Error('invalid parentid' + parentID);
       }
-      const answers = parent.answers.filter(a => a._id?.toString() !== postID);
+      const answers = parent.answers.filter((a)=> {a._id?.toString() !== postID});
 
-      await QuestionModel.findOneAndUpdate({ _id: postID }, { $set: { answers } }, { new: true });
+      await QuestionModel.findOneAndUpdate(
+        { _id: postID },
+        { $set: { answers: answers } },
+        { new: true },
+      );
 
-      await AnswerModel.deleteOne({ _id: postID });
-      return { answer: parent };
-    }
-    // parent = AnswerModel.findOne where postID in answer
-    if (parentType === 'question') {
-      const parent = await QuestionModel.findOne({ _id: parentID });
-      if (!parent) {
-        throw new Error('invalid parentid');
+      const result = await AnswerModel.findOneAndDelete({ _id: postID})
+      return { answer: result };
+    } else {
+      //parent = AnswerModel.findOne where postID in answer
+      if(parentType === 'question') {
+        const parent = await QuestionModel.findOne({ _id: parentID });
+        if(!parent) {
+          throw new Error('invalid parentid');
+        }
+        const comments = parent.comments.filter((c)=> {c._id?.toString() !== postID});
+
+        await QuestionModel.findOneAndUpdate(
+          { _id: postID },
+          { $set: { comments: comments } },
+          { new: true },
+        );
+  
+        const result = await CommentModel.findOneAndDelete({ _id: postID})
+        return { comment: result }
+      } else {
+        const parent = await AnswerModel.findOne({ _id: parentID });
+        if(!parent) {
+          throw new Error('invalid parentid');
+        }
+        const comments = parent.comments.filter((c)=> {c._id?.toString() !== postID});
+
+        await AnswerModel.findOneAndUpdate(
+          { _id: postID },
+          { $set: { comments: comments } },
+          { new: true },
+        );
+  
+        const result = await CommentModel.findOneAndDelete({ _id: postID})
+        return { comment: result};
       }
-      const comments = parent.comments.filter(c => c._id?.toString() !== postID);
-
-      await QuestionModel.findOneAndUpdate({ _id: postID }, { $set: { comments } }, { new: true });
-
-      await CommentModel.deleteOne({ _id: postID });
-      return { question: parent };
     }
-    const parent = await AnswerModel.findOne({ _id: parentID });
-    if (!parent) {
-      throw new Error('invalid parentid');
-    }
-    const comments = parent.comments.filter(c => c._id?.toString() !== postID);
-
-    await AnswerModel.findOneAndUpdate({ _id: postID }, { $set: { comments } }, { new: true });
-
-    await CommentModel.deleteOne({ _id: postID });
-    return { answer: parent };
   } catch (error) {
     console.log((error as Error).message);
     return { error: 'remove action failed' };
@@ -895,25 +914,28 @@ export const lockPost = async (postType: string, postID: string): Promise<Action
 
   try {
     let result: QuestionResponse | AnswerResponse | null;
-    if (postType === 'question') {
+    if(postType === 'question') {
+      const q = await QuestionModel.findOne({ _id: postID });
+
       result = await QuestionModel.findOneAndUpdate(
         { _id: postID },
-        { $set: { locked: true } },
+        { $set: { locked: !q?.locked } },
         { new: true },
       );
 
-      if (result) {
-        return { question: result };
+      if (result && q) {
+        return { question: result};
       }
     } else {
+      const a = await AnswerModel.findOne({ _id: postID });
       result = await AnswerModel.findOneAndUpdate(
         { _id: postID },
-        { $set: { locked: true } },
+        { $set: { locked: !a?.locked } },
         { new: true },
       );
 
-      if (result) {
-        return { answer: result };
+      if (result && a) {
+        return { answer: result};
       }
     }
 
