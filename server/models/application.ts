@@ -12,11 +12,14 @@ import {
   QuestionResponse,
   Tag,
   AccountType,
+  AccountResponse,
+  Account,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
+import AccountModel from './account';
 
 /**
  * Parses tags from a search string.

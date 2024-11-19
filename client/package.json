@@ -11,19 +11,19 @@
     "@mui/icons-material": "^6.1.7",
     "@mui/material": "^6.1.7",
     "axios": "^1.7.2",
+    "better-react-mathjax": "^2.0.3",
     "lodash.debounce": "^4.0.8",
     "mongodb": "^6.8.0",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-markdown": "^9.0.1",
-    "remark-math": "^1.0.0",
     "react-katex": "^3.0.1",
+    "react-markdown": "^9.0.1",
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.8.3",
-    "socket.io-client": "^4.7.5",
-    "better-react-mathjax": "^2.0.3"
+    "remark-math": "^1.0.6",
+    "socket.io-client": "^4.7.5"
   },
   "scripts": {
     "start": "react-scripts -r @cypress/instrument-cra start",
