@@ -46,8 +46,6 @@ const Input = ({ title, hint, id, mandatory = true, val, setState, err }: InputP
       className='input_input'
       type='text'
       value={val}
-      title={title}
-      placeholder={hint || title}
       onInput={e => {
         setState(e.currentTarget.value);
       }}

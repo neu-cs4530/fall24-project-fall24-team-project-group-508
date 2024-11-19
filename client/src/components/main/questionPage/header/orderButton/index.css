@@ -1,6 +1,5 @@
 .btn {
-  background: var(--background-color);
-  color: var(--text-color);
+  background: #ffffff;
   border: #000000 1px solid;
 }
 

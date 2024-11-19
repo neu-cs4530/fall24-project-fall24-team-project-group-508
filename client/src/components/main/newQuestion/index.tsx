@@ -13,6 +13,12 @@ import {
   FormControl,
   SelectChangeEvent,
 } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import rehypeKatex from 'rehype-katex';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'katex/dist/katex.min.css';
 import useNewQuestion from '../../../hooks/useNewQuestion';
 import './index.css';
 import { PresetTagName } from '../../../types';
@@ -121,6 +127,12 @@ const NewQuestionPage = () => {
         rows={4}
         fullWidth
       />
+      <h4>Question Preview with Markdown and LaTeX:</h4>
+      <div className='markdown_preview_container'>
+        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+          {text}
+        </ReactMarkdown>
+      </div>
       <TextField
         label='Tags*'
         helperText='Add keywords separated by whitespace'

@@ -25,7 +25,7 @@
 }
 
 .bluebtn {
-  background: var(--primary-color);
+  background: #3090e2;
   color: #ffffff;
   border: #000000 1px solid;
   font-size: 20px;
@@ -34,7 +34,7 @@
 }
 
 .bluebtn:hover {
-  background: var(--primary-color);
+  background: #0056b3;
 }
 
 .btn_indicator_container {
@@ -46,7 +46,7 @@
 }
 
 .form_postBtn {
-  background: var(--primary-color);
+  background: #3090e2;
   color: #ffffff;
   padding: 10px 20px;
   border: none;
