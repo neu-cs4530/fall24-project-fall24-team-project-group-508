@@ -1,13 +1,9 @@
 import './index.css';
 import React from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import rehypeKatex from 'rehype-katex';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'katex/dist/katex.min.css';
 import useAnswerForm from '../../../hooks/useAnswerForm';
+import MarkdownPreview from '../markdownPreview';
 
 /**
  * NewAnswerPage component allows users to submit an answer to a specific question.
@@ -50,9 +46,7 @@ const NewAnswerPage = () => {
       />
       <h4>Answer Preview with Markdown and LaTeX Support:</h4>
       <div className='markdown_preview_container'>
-        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-          {text}
-        </ReactMarkdown>
+        <MarkdownPreview text={text} />
       </div>
 
       {/* Buttons and Mandatory Field Indicator */}

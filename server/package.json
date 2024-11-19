@@ -11,7 +11,9 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
     "react-katex": "^3.0.1",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "rehype-katex": "^7.0.1",
+    "katex": "^0.16.11"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
@@ -41,7 +43,8 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "katex": "^0.16.11"
   },
   "scripts": {
     "start": "ts-node server.ts",

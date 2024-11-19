@@ -13,15 +13,10 @@ import {
   FormControl,
   SelectChangeEvent,
 } from '@mui/material';
-import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import rehypeKatex from 'rehype-katex';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'katex/dist/katex.min.css';
 import useNewQuestion from '../../../hooks/useNewQuestion';
-import './index.css';
 import { PresetTagName } from '../../../types';
+import MarkdownPreview from '../markdownPreview';
 
 const NewQuestionPage = () => {
   const {
@@ -127,12 +122,15 @@ const NewQuestionPage = () => {
         rows={4}
         fullWidth
       />
-      <h4>Question Preview with Markdown and LaTeX:</h4>
-      <div className='markdown_preview_container'>
-        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-          {text}
-        </ReactMarkdown>
-      </div>
+      <Typography variant='h6'>Question Preview with Markdown and LaTeX:</Typography>
+      <Box
+        sx={{
+          border: `1px solid ${theme.palette.divider}`,
+          padding: 2,
+          borderRadius: 1,
+        }}>
+        <MarkdownPreview text={text} />
+      </Box>
       <TextField
         label='Tags*'
         helperText='Add keywords separated by whitespace'
@@ -142,9 +140,7 @@ const NewQuestionPage = () => {
         error={!!tagErr}
         fullWidth
       />
-      <Typography variant='body1' className='form_tagLabel'>
-        Or select from the following tags:
-      </Typography>
+      <Typography variant='body1'>Or select from the following tags:</Typography>
       <FormControl fullWidth>
         <InputLabel id='preset-tag-select-label'>Select Tags</InputLabel>
         <Select
@@ -164,7 +160,6 @@ const NewQuestionPage = () => {
       </FormControl>
       <Typography
         variant='caption'
-        className='form_tagLimit'
         sx={{
           backgroundColor: theme.palette.action.hover,
           color: theme.palette.text.primary,
@@ -181,9 +176,7 @@ const NewQuestionPage = () => {
           }}>
           Post Question
         </Button>
-        <Typography variant='caption' className='mandatory_indicator'>
-          * indicates mandatory fields
-        </Typography>
+        <Typography variant='caption'>* indicates mandatory fields</Typography>
       </Box>
     </Box>
   );
