@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { handleHyperlink } from '../../../../tool';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
+import MarkdownPreview from '../../markdownPreview';
 
 /**
  * Interface representing the props for the AnswerView component.
@@ -58,6 +58,7 @@ const AnswerView = ({
     borderStyle: pinned ? 'solid' : 'none',
   };
 
+  const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
@@ -70,9 +71,10 @@ const AnswerView = ({
 
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
-        <Typography variant='body1' component='div' sx={{ wordBreak: 'break-word' }}>
+        <MarkdownPreview text={text} />
+        {/* <Typography variant='body1' component='div' sx={{ wordBreak: 'break-word' }}>
           {handleHyperlink(text)}
-        </Typography>
+        </Typography> */}
       </Box>
 
       {/* Author and Meta Information */}
@@ -88,7 +90,7 @@ const AnswerView = ({
       {/* Comment Section */}
       <Box sx={{ width: 350 }}>
         <CommentSection
-          comments={comments}
+          comments={pinSortedComments}
           handleAddComment={handleAddComment}
           moderatorInfo={{
             parentType: 'answer',

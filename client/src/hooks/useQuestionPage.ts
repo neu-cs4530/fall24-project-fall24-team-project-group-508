@@ -58,16 +58,16 @@ const useQuestionPage = () => {
      *
      * @param question - the updated question object.
      */
-    const handleQuestionUpdate = (question: Question) => {
+    const handleQuestionUpdate = ({ quest }: { quest: Question }) => {
       setQlist(prevQlist => {
-        const questionExists = prevQlist.some(q => q._id === question._id);
+        const questionExists = prevQlist.some(q => q._id === quest._id);
 
         if (questionExists) {
           // Update the existing question
-          return prevQlist.map(q => (q._id === question._id ? question : q));
+          return prevQlist.map(q => (q._id === quest._id ? quest : q));
         }
 
-        return [question, ...prevQlist];
+        return [quest, ...prevQlist];
       });
     };
 

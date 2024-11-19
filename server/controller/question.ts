@@ -151,7 +151,8 @@ const questionController = (socket: FakeSOSocket) => {
         throw new Error(populatedQuestion.error);
       }
 
-      socket.emit('questionUpdate', populatedQuestion as Question);
+      const q = populatedQuestion as Question;
+      socket.emit('questionUpdate', { quest: q, removed: false });
       res.json(result);
     } catch (err: unknown) {
       if (err instanceof Error) {

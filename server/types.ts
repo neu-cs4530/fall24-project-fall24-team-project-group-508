@@ -262,6 +262,17 @@ export interface VoteUpdatePayload {
 export interface AnswerUpdatePayload {
   qid: string;
   answer: AnswerResponse;
+  removed: boolean;
+}
+
+/**
+ * Interface representing the payload for an question update event, which contains:
+ * - question - The quesiton
+ * - removed - if its being removed
+ */
+export interface QuestionUpdatePayload {
+  quest: Question;
+  removed: boolean;
 }
 
 /**
@@ -390,7 +401,7 @@ export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { qu
  * Interface representing the possible events that the server can emit to the client.
  */
 export interface ServerToClientEvents {
-  questionUpdate: (question: QuestionResponse) => void;
+  questionUpdate: (question: QuestionUpdatePayload) => void;
   answerUpdate: (result: AnswerUpdatePayload) => void;
   viewsUpdate: (question: QuestionResponse) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;

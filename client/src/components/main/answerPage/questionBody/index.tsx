@@ -1,8 +1,7 @@
-import React from 'react';
 import './index.css';
 import { Box, Chip, Typography, useTheme } from '@mui/material';
-import { handleHyperlink } from '../../../../tool';
 import { PresetTagName, Tag } from '../../../../types';
+import MarkdownPreview from '../../markdownPreview';
 
 /**
  * Interface representing the props for the QuestionBody component.
@@ -79,9 +78,10 @@ const QuestionBody = ({
           sx={{ fontWeight: 'bold', mb: 1 }}>
           {views} views
         </Typography>
-        <Typography className='answer_question_text' variant='body1' component='div' sx={{ mb: 2 }}>
+        <MarkdownPreview text={text} />
+        {/* <Typography className='answer_question_text' variant='body1' component='div' sx={{ mb: 2 }}>
           {handleHyperlink(text)}
-        </Typography>
+        </Typography> */}
         <Box
           className='answer_question_tags'
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>

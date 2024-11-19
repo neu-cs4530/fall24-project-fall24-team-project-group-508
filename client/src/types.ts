@@ -240,6 +240,7 @@ export interface VoteUpdatePayload {
 export interface AnswerUpdatePayload {
   qid: string;
   answer: Answer;
+  removed: boolean;
 }
 
 export interface CommentUpdatePayload {
@@ -247,11 +248,16 @@ export interface CommentUpdatePayload {
   type: 'question' | 'answer';
 }
 
+export interface QuestionUpdatePayload {
+  quest: Question;
+  removed: boolean;
+}
+
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
 export interface ServerToClientEvents {
-  questionUpdate: (question: Question) => void;
+  questionUpdate: (update: QuestionUpdatePayload) => void;
   answerUpdate: (update: AnswerUpdatePayload) => void;
   viewsUpdate: (question: Question) => void;
   voteUpdate: (vote: VoteUpdatePayload) => void;

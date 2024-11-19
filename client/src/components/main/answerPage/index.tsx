@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Button, Divider, Paper, useTheme } from '@mui/material';
 import { getMetaData } from '../../../tool';
 import AnswerView from './answer';
@@ -24,9 +23,13 @@ const AnswerPage = () => {
   }
 
   const pinSortedAnswers = question.answers.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
+  const pinSortedComments = question.comments.sort(
+    (a1, a2) => Number(a2.pinned) - Number(a1.pinned),
+  );
 
   return (
     <div
+      className='answer-page'
       style={{
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
@@ -45,7 +48,13 @@ const AnswerPage = () => {
 
         {/* Moderator Actions */}
         <Box sx={{ mb: 3 }}>
-          <ModeratorActionButtons type='question' _id={question._id} />
+          {ModeratorActionButtons(
+            {
+              _id: question._id,
+              type: 'question',
+            },
+            question._id,
+          )}
         </Box>
 
         {/* Question Body */}
@@ -62,7 +71,7 @@ const AnswerPage = () => {
 
         {/* Comments Section */}
         <CommentSection
-          comments={question.comments}
+          comments={pinSortedComments}
           handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
           moderatorInfo={{
             parentType: 'question',

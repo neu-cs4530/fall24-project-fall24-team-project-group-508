@@ -85,13 +85,40 @@ const useAnswerPage = () => {
      *
      * @param answer - The updated answer object.
      */
-    const handleAnswerUpdate = ({ qid: id, answer }: { qid: string; answer: Answer }) => {
-      if (id === questionID) {
+    const handleAnswerUpdate = ({
+      qid: id,
+      answer,
+      removed,
+    }: {
+      qid: string;
+      answer: Answer;
+      removed: boolean;
+    }) => {
+      if (id === questionID && !removed) {
         setQuestion(prevQuestion =>
           prevQuestion
             ? // Creates a new Question object with the new answer appended to the end
-              { ...prevQuestion, answers: [...prevQuestion.answers, answer] }
+              {
+                ...prevQuestion,
+                answers: [...prevQuestion.answers, answer].filter(
+                  ans =>
+                    ans._id !== answer._id ||
+                    (Number(ans.pinned) - Number(answer.pinned) === 0 &&
+                      Number(ans.locked) - Number(answer.locked) === 0),
+                ),
+              }
             : prevQuestion,
+        );
+      } else if (id === questionID) {
+        setQuestion(prevQuestion =>
+          prevQuestion
+            ? // Creates a new Question object with the new answer appended to the end
+              {
+                ...prevQuestion,
+                answers: prevQuestion.answers.filter(ans => ans._id !== answer._id),
+              } //
+            : // prevQuestion.answers.filter((ans) => ans._id !== answer._id)
+              prevQuestion,
         );
       }
     };
@@ -160,10 +187,29 @@ const useAnswerPage = () => {
       }
     };
 
+    const handleQuestionRepaint = ({ quest, removed }: { quest: Question; removed: boolean }) => {
+      if (quest._id === questionID) {
+        if (removed) {
+          navigate('/home');
+          return;
+        }
+        setQuestion(prevQuestion =>
+          prevQuestion
+            ? {
+                ...prevQuestion,
+                pinned: quest.pinned,
+                locked: quest.locked,
+              }
+            : prevQuestion,
+        );
+      }
+    };
+
     socket.on('answerUpdate', handleAnswerUpdate);
     socket.on('viewsUpdate', handleViewsUpdate);
     socket.on('commentUpdate', handleCommentUpdate);
     socket.on('voteUpdate', handleVoteUpdate);
+    socket.on('questionUpdate', handleQuestionRepaint);
 
     return () => {
       socket.off('answerUpdate', handleAnswerUpdate);
@@ -171,7 +217,7 @@ const useAnswerPage = () => {
       socket.off('commentUpdate', handleCommentUpdate);
       socket.off('voteUpdate', handleVoteUpdate);
     };
-  }, [questionID, socket]);
+  }, [navigate, questionID, socket]);
 
   return {
     questionID,
