@@ -336,6 +336,9 @@ describe('GET /getQuestionById/:qid', () => {
       tags: [],
       answers: [],
       askDateTime: findq.askDateTime,
+      presetTags: [],
+      locked: false,
+      pinned: false,
     };
 
     // Provide mock question data
@@ -375,6 +378,9 @@ describe('GET /getQuestionById/:qid', () => {
       tags: [],
       answers: [],
       askDateTime: findq.askDateTime,
+      presetTags: [],
+      locked: false,
+      pinned: false,
     };
 
     // Provide mock question data

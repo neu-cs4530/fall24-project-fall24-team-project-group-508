@@ -35,6 +35,7 @@ describe('POST /addComment', () => {
       text: 'This is a test comment',
       commentBy: 'dummyUserId',
       commentDateTime: new Date('2024-06-03'),
+      pinned: false,
     };
 
     saveCommentSpy.mockResolvedValueOnce(mockComment);
@@ -51,6 +52,9 @@ describe('POST /addComment', () => {
       downVotes: [],
       answers: [],
       comments: [mockComment._id],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     } as Question);
 
     popDocSpy.mockResolvedValueOnce({
@@ -65,6 +69,9 @@ describe('POST /addComment', () => {
       downVotes: [],
       answers: [],
       comments: [mockComment],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     });
 
     const response = await supertest(app).post('/comment/addComment').send(mockReqBody);
@@ -96,6 +103,7 @@ describe('POST /addComment', () => {
       text: 'This is a test comment',
       commentBy: 'dummyUserId',
       commentDateTime: new Date('2024-06-03'),
+      pinned: false,
     };
 
     saveCommentSpy.mockResolvedValueOnce(mockComment);
@@ -106,6 +114,9 @@ describe('POST /addComment', () => {
       ansBy: 'dummyUserId',
       ansDateTime: new Date('2024-06-03'),
       comments: [mockComment._id],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     });
 
     popDocSpy.mockResolvedValueOnce({
@@ -114,6 +125,9 @@ describe('POST /addComment', () => {
       ansBy: 'dummyUserId',
       ansDateTime: new Date('2024-06-03'),
       comments: [mockComment],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     });
 
     const response = await supertest(app).post('/comment/addComment').send(mockReqBody);
@@ -305,6 +319,7 @@ describe('POST /addComment', () => {
       text: 'This is a test comment',
       commentBy: 'dummyUserId',
       commentDateTime: new Date('2024-06-03'),
+      pinned: false,
     };
 
     saveCommentSpy.mockResolvedValueOnce(mockComment);
@@ -336,6 +351,7 @@ describe('POST /addComment', () => {
       text: 'This is a test comment',
       commentBy: 'dummyUserId',
       commentDateTime: new Date('2024-06-03'),
+      pinned: false,
     };
 
     const mockQuestion = {
@@ -350,6 +366,9 @@ describe('POST /addComment', () => {
       downVotes: [],
       answers: [],
       comments: [mockComment._id],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     };
 
     saveCommentSpy.mockResolvedValueOnce(mockComment);
