@@ -25,7 +25,8 @@
     "react-select": "^5.8.3",
     "rehype-katex": "^7.0.1",
     "remark-math": "^5.1.1",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "vfile": "^6.0.3"
   },
   "scripts": {
     "start": "react-scripts -r @cypress/instrument-cra start",
