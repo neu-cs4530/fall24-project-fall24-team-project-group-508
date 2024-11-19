@@ -2,7 +2,7 @@ import React from 'react';
 import './index.css';
 import { Box, Chip, Typography, useTheme } from '@mui/material';
 import { handleHyperlink } from '../../../../tool';
-import { PresetTagName } from '../../../../types';
+import { PresetTagName, Tag } from '../../../../types';
 
 /**
  * Interface representing the props for the QuestionBody component.
@@ -19,6 +19,7 @@ interface QuestionBodyProps {
   meta: string;
   pinned: boolean;
   locked: boolean;
+  tags?: Tag[];
   presetTags?: PresetTagName[];
 }
 
@@ -39,6 +40,7 @@ const QuestionBody = ({
   meta,
   pinned,
   locked,
+  tags,
   presetTags,
 }: QuestionBodyProps) => {
   let questionClassName = 'questionBody right_padding';
@@ -83,15 +85,32 @@ const QuestionBody = ({
         <Box
           className='answer_question_tags'
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+          {tags?.map((tag, idx) => (
+            <Chip
+              key={idx}
+              label={tag.name}
+              className='tag'
+              sx={{ marginRight: 1, marginBottom: 1, cursor: 'pointer' }}
+              variant='outlined'
+              color='primary'
+              size='small'
+              role='listitem'
+              aria-label={`Tag: ${tag}`}
+            />
+          ))}
+        </Box>
+        <Box
+          className='answer_question_tags'
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
           {presetTags?.map((tag, idx) => (
             <Chip
               key={idx}
               label={tag}
               className='tag'
-              sx={{
-                backgroundColor: theme.palette.background.paper,
-                color: theme.palette.text.primary,
-              }}
+              sx={{ marginRight: 1, marginBottom: 1, cursor: 'pointer' }}
+              variant='outlined'
+              color='secondary'
+              size='small'
               role='listitem'
               aria-label={`Tag: ${tag}`}
             />
