@@ -1,5 +1,6 @@
 // DarkModeContext.tsx
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 interface DarkModeContextProps {
   darkMode: boolean;
@@ -19,13 +20,15 @@ export const DarkModeProvider: React.FC<{
     setDarkMode(prevMode => !prevMode);
   };
 
-  useEffect(() => {
-    document.body.classList.toggle('dark', darkMode);
-  }, [darkMode]);
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  });
 
   return (
     <DarkModeContext.Provider value={{ darkMode, toggleDarkMode, setDarkMode }}>
-      {children}
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </DarkModeContext.Provider>
   );
 };

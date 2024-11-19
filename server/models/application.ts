@@ -2,8 +2,6 @@
 import { ObjectId } from 'mongodb';
 import { QueryOptions } from 'mongoose';
 import {
-  Account,
-  AccountResponse,
   Answer,
   AnswerResponse,
   Comment,
@@ -14,12 +12,14 @@ import {
   QuestionResponse,
   Tag,
   AccountType,
+  AccountResponse,
+  Account,
 } from '../types';
 import AnswerModel from './answers';
 import QuestionModel from './questions';
 import TagModel from './tags';
 import CommentModel from './comments';
-import AccountModel from './accounts';
+import AccountModel from './account';
 
 /**
  * Parses tags from a search string.

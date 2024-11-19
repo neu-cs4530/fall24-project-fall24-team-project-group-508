@@ -400,7 +400,6 @@ export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { qu
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
-//TODO update to add new emited events
 export interface ServerToClientEvents {
   questionUpdate: (question: QuestionUpdatePayload) => void;
   answerUpdate: (result: AnswerUpdatePayload) => void;

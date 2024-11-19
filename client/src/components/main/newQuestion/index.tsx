@@ -1,16 +1,23 @@
-import React from 'react';
-import Select, { ActionMeta, MultiValue } from 'react-select';
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useTheme,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  InputLabel,
+  FormControl,
+  SelectChangeEvent,
+} from '@mui/material';
+import 'katex/dist/katex.min.css';
 import useNewQuestion from '../../../hooks/useNewQuestion';
-import Form from '../baseComponents/form';
-import Input from '../baseComponents/input';
-import TextArea from '../baseComponents/textarea';
-import './index.css';
 import { PresetTagName } from '../../../types';
+import MarkdownPreview from '../markdownPreview';
 
-/**
- * NewQuestionPage component allows users to submit a new question with a title,
- * description, tags, and username.
- */
 const NewQuestionPage = () => {
   const {
     title,
@@ -26,108 +33,152 @@ const NewQuestionPage = () => {
     postQuestion,
   } = useNewQuestion();
 
-  // List of preset tags for the dropdown
   const presetTagOptions = [
-    { value: 'C', label: 'C' },
-    { value: 'C++', label: 'C++' },
-    { value: 'Java', label: 'Java' },
-    { value: 'Python', label: 'Python' },
-    { value: 'JavaScript', label: 'JavaScript' },
-    { value: 'HTML', label: 'HTML' },
-    { value: 'CSS', label: 'CSS' },
-    { value: 'SQL', label: 'SQL' },
-    { value: 'MongoDB', label: 'MongoDB' },
-    { value: 'React', label: 'React' },
-    { value: 'Angular', label: 'Angular' },
-    { value: 'Node.js', label: 'Node.js' },
-    { value: 'OOD', label: 'OOD' },
-    { value: 'SWE', label: 'SWE' },
-    { value: 'Algorithms', label: 'Algorithms' },
-    { value: 'Data Structures', label: 'Data Structures' },
-    { value: 'Testing', label: 'Testing' },
-    { value: 'Debugging', label: 'Debugging' },
-    { value: 'Version Control', label: 'Version Control' },
-    { value: 'Security', label: 'Security' },
-    { value: 'Web Development', label: 'Web Development' },
-    { value: 'Mobile Development', label: 'Mobile Development' },
-    { value: 'Cloud Computing', label: 'Cloud Computing' },
-    { value: 'DevOps', label: 'DevOps' },
-    { value: 'Agile', label: 'Agile' },
-    { value: 'Scrum', label: 'Scrum' },
-    { value: 'Kanban', label: 'Kanban' },
-    { value: 'CI/CD', label: 'CI/CD' },
-    { value: 'Docker', label: 'Docker' },
-    { value: 'Kubernetes', label: 'Kubernetes' },
-    { value: 'Microservices', label: 'Microservices' },
-    { value: 'Serverless', label: 'Serverless' },
-    { value: 'RESTful APIs', label: 'RESTful APIs' },
-    { value: 'GraphQL', label: 'GraphQL' },
-    { value: 'WebSockets', label: 'WebSockets' },
-    { value: 'OAuth', label: 'OAuth' },
-    { value: 'JWT', label: 'JWT' },
-    { value: 'Cookies', label: 'Cookies' },
-    { value: 'Sessions', label: 'Sessions' },
-    { value: 'SQL Injection', label: 'SQL Injection' },
-    { value: 'Buffer Overflows', label: 'Buffer Overflows' },
-    { value: 'Markdown', label: 'Markdown' },
-    { value: 'Latex', label: 'Latex' },
+    'C',
+    'C++',
+    'Java',
+    'Python',
+    'JavaScript',
+    'HTML',
+    'CSS',
+    'SQL',
+    'MongoDB',
+    'React',
+    'Angular',
+    'Node.js',
+    'OOD',
+    'SWE',
+    'Algorithms',
+    'Data Structures',
+    'Testing',
+    'Debugging',
+    'Version Control',
+    'Security',
+    'Web Development',
+    'Mobile Development',
+    'Cloud Computing',
+    'DevOps',
+    'Agile',
+    'Scrum',
+    'Kanban',
+    'CI/CD',
+    'Docker',
+    'Kubernetes',
+    'Microservices',
+    'Serverless',
+    'RESTful APIs',
+    'GraphQL',
+    'WebSockets',
+    'OAuth',
+    'JWT',
+    'Cookies',
+    'Sessions',
+    'SQL Injection',
+    'Buffer Overflows',
+    'Markdown',
+    'Latex',
   ];
 
-  const handlePresetTagChange = (
-    selectedOptions: MultiValue<{ value: string; label: string }>,
-    actionMeta: ActionMeta<{ value: string; label: string }>,
-  ) => {
-    if (selectedOptions.length <= 5) {
-      setPresetTags(selectedOptions.map(option => option.value as PresetTagName));
+  const [selectedPresetTags, setSelectedPresetTags] = useState<string[]>([]);
+
+  const handlePresetTagChange = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value as string[];
+    if (value.length <= 5) {
+      setSelectedPresetTags(value);
+      setPresetTags(value.map(tag => tag as PresetTagName));
     }
   };
+
+  const theme = useTheme();
+
   return (
-    <Form>
-      <Input
-        title={'Question Title'}
-        hint={'Limit title to 100 characters or less'}
-        id={'formTitleInput'}
-        val={title}
-        setState={setTitle}
-        err={titleErr}
+    <Box
+      component='form'
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+        maxWidth: 600,
+        marginTop: 5,
+      }}>
+      <TextField
+        label='Question Title*'
+        helperText='Limit title to 100 characters or less'
+        id='formTitleInput'
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+        error={!!titleErr}
+        fullWidth
       />
-      <TextArea
-        title={'Question Text'}
-        hint={'Add details'}
-        id={'formTextInput'}
-        val={text}
-        setState={setText}
-        err={textErr}
+      <TextField
+        label='Question Text*'
+        helperText='Add details'
+        id='formTextInput'
+        value={text}
+        onChange={e => setText(e.target.value)}
+        error={!!textErr}
+        multiline
+        rows={4}
+        fullWidth
       />
-      <Input
-        title={'Tags'}
-        hint={'Add keywords separated by whitespace'}
-        id={'formTagInput'}
-        val={tagNames}
-        setState={setTagNames}
-        err={tagErr}
+      <Typography variant='h6'>Question Preview with Markdown and LaTeX:</Typography>
+      <Box
+        sx={{
+          border: `1px solid ${theme.palette.divider}`,
+          padding: 2,
+          borderRadius: 1,
+        }}>
+        <MarkdownPreview text={text} />
+      </Box>
+      <TextField
+        label='Tags*'
+        helperText='Add keywords separated by whitespace'
+        id='formTagInput'
+        value={tagNames}
+        onChange={e => setTagNames(e.target.value)}
+        error={!!tagErr}
+        fullWidth
       />
-      <p className='form_tagLabel'>Or select from the following tags:</p>
-      <Select
-        isMulti
-        options={presetTagOptions}
-        onChange={handlePresetTagChange}
-        placeholder='Select up to 5 tags...'
-        className='form_tagSelect'
-      />
-      <div className='form_tagLimit'> * Limit 5 tags</div>
-      <p className='form_tagLabel'></p>
-      <div className='btn_indicator_container'>
-        <button
-          className='form_postBtn'
-          onClick={() => {
+      <Typography variant='body1'>Or select from the following tags:</Typography>
+      <FormControl fullWidth>
+        <InputLabel id='preset-tag-select-label'>Select Tags</InputLabel>
+        <Select
+          labelId='preset-tag-select-label'
+          id='preset-tag-select'
+          multiple
+          value={selectedPresetTags}
+          onChange={handlePresetTagChange}
+          renderValue={selected => (selected as string[]).join(', ')}>
+          {presetTagOptions.map(tag => (
+            <MenuItem key={tag} value={tag}>
+              <Checkbox checked={selectedPresetTags.includes(tag)} />
+              <ListItemText primary={tag} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Typography
+        variant='caption'
+        sx={{
+          backgroundColor: theme.palette.action.hover,
+          color: theme.palette.text.primary,
+        }}>
+        * Limit 5 tags
+      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mt: 2 }}>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={e => {
+            e.preventDefault();
             postQuestion();
           }}>
           Post Question
-        </button>
-        <div className='mandatory_indicator'>* indicates mandatory fields</div>
-      </div>
-    </Form>
+        </Button>
+        <Typography variant='caption'>* indicates mandatory fields</Typography>
+      </Box>
+    </Box>
   );
 };
 

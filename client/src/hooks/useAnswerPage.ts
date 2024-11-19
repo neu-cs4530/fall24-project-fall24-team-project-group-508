@@ -107,8 +107,7 @@ const useAnswerPage = () => {
                       Number(ans.locked) - Number(answer.locked) === 0),
                 ),
               }
-            :
-              prevQuestion,
+            : prevQuestion,
         );
       } else if (id === questionID) {
         setQuestion(prevQuestion =>
@@ -188,9 +187,9 @@ const useAnswerPage = () => {
       }
     };
 
-    const handleQuestionRepaint = ({ quest, removed }: { quest: Question, removed: boolean }) => {
+    const handleQuestionRepaint = ({ quest, removed }: { quest: Question; removed: boolean }) => {
       if (quest._id === questionID) {
-        if(removed) {
+        if (removed) {
           navigate('/home');
           return;
         }

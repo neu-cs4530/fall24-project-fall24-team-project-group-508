@@ -3,7 +3,7 @@ import { ActionRequest, FakeSOSocket, ActionTypes, ActionResponse, Question, Ans
 import { canPerformActions, createAccount, lockPost, loginToAccount, pinPost, populateDocument, removePost } from '../models/application';
 const actionsController = (socket: FakeSOSocket) => {
   const router = express.Router();
-  
+
   /**
    * Checks if the provided login request contains the required fields.
    *
@@ -12,15 +12,11 @@ const actionsController = (socket: FakeSOSocket) => {
    * @returns `true` if the request is valid, otherwise `false`.
    */
   const isActionRequestValid = (req: ActionRequest): boolean =>
-    !!req.body.user &&
-    !!req.body.actionType &&
-    !!req.body.postType &&
-    !!req.body.postID
+    !!req.body.user && !!req.body.actionType && !!req.body.postType && !!req.body.postID;
 
-  const isActionRequestCorrect = (postType : string) : boolean => {
-    return (postType === 'question' || postType === 'answer' || postType === 'comment');
-  }
-    
+  const isActionRequestCorrect = (postType: string): boolean =>
+    postType === 'question' || postType === 'answer' || postType === 'comment';
+
   /**
    * Handles account creation and adding the new account onto the server. If the request is invalid or the creation fails, an error will be returns
    *
@@ -31,12 +27,20 @@ const actionsController = (socket: FakeSOSocket) => {
    */
   const takeActionRoute = async (req: ActionRequest, res: Response): Promise<void> => {
     if (!isActionRequestValid(req)) {
-      res.status(400).send('Invalid Action request, request must include a user, action type, post type and post id');
+      res
+        .status(400)
+        .send(
+          'Invalid Action request, request must include a user, action type, post type and post id',
+        );
       return;
     }
 
     if (!isActionRequestCorrect(req.body.postType)) {
-      res.status(400).send('incorrect information in action request, must correctly specifiy a post type and action type');
+      res
+        .status(400)
+        .send(
+          'incorrect information in action request, must correctly specifiy a post type and action type',
+        );
       return;
     }
 
@@ -49,12 +53,16 @@ const actionsController = (socket: FakeSOSocket) => {
     //   return;
     // }
 
-    let result : ActionResponse;
+    let result: ActionResponse;
     try {
-      // console.log("ATTEMPTING: " + actionInfo.actionType + ", " + actionInfo.postID + ", " + actionInfo.postType + ", " + actionInfo.parentID + ", " + actionInfo.parentPostType);
-      switch(actionInfo.actionType) {
+       switch(actionInfo.actionType) {
         case 'pin':
-          result = await pinPost(actionInfo.postType, actionInfo.postID, actionInfo.parentID, actionInfo.parentPostType);
+          result = await pinPost(
+            actionInfo.postType,
+            actionInfo.postID,
+            actionInfo.parentID,
+            actionInfo.parentPostType,
+          );
           break;
         case 'lock':
           result = await lockPost(actionInfo.postType, actionInfo.postID);
@@ -63,12 +71,17 @@ const actionsController = (socket: FakeSOSocket) => {
           result = await removePost(actionInfo.postType, actionInfo.postID, actionInfo.parentID, actionInfo.parentPostType);
           break;
         case 'promote':
-          res.status(501).send('Promote action is currently unimplemented. This will be changed during sprint 3');
+          res
+            .status(501)
+            .send(
+              'Promote action is currently unimplemented. This will be changed during sprint 3',
+            );
           return;
         default:
-          res.status(501).send('The action ' + actionInfo.actionType + ' is currently unsupported');
+          res.status(501).send(`The action ${actionInfo.actionType} is currently unsupported`);
           return;
       }
+      console.log("POST SWITCH");
 
       if ('error' in result) {
         throw new Error(result.error);
@@ -89,7 +102,7 @@ const actionsController = (socket: FakeSOSocket) => {
         socket.emit('commentUpdate', { type: actionInfo.parentPostType, result: populatedDoc});
       }
 
-      res.status(200).json('action completed succesfully');
+      res.status(200).json('action completed successfully');
     } catch (err: unknown) {
       res.status(401).send(`${(err as Error).message}`);
     }

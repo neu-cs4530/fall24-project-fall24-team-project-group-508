@@ -27,6 +27,9 @@ const mockQuestion: Question = {
   upVotes: [],
   downVotes: [],
   comments: [],
+  presetTags: [],
+  locked: false,
+  pinned: false,
 };
 
 const simplifyQuestion = (question: Question) => ({
@@ -156,6 +159,9 @@ describe('POST /addQuestion', () => {
       upVotes: [],
       downVotes: [],
       comments: [],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     };
 
     const result: Question = {
@@ -170,6 +176,9 @@ describe('POST /addQuestion', () => {
       upVotes: [],
       downVotes: [],
       comments: [],
+      presetTags: [],
+      locked: false,
+      pinned: false,
     };
 
     // Set up the mock to resolve with unique tags

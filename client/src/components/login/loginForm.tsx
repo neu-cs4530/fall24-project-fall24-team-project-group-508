@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import useLogin from '../../hooks/useLogin';
 
 /**
@@ -6,36 +7,52 @@ import useLogin from '../../hooks/useLogin';
  * @returns LoginForm component that contains a form that requires the user to input their email and password, which is then submitted
  */
 const LoginForm: React.FC = () => {
-  const root = document.documentElement;
-  root.style.setProperty('--font-size', '16px');
   const { username, password, handleInputChange, handleSubmit, error } = useLogin(true);
   return (
-    <form className='auth-form' onSubmit={handleSubmit}>
-      <label> Username </label>
-      <input
-        type='username'
+    <Box
+      component='form'
+      onSubmit={handleSubmit}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+        p: 2,
+      }}>
+      <TextField
+        label='Username'
         name='username'
-        placeholder='Enter your username'
+        type='text'
         value={username}
         onChange={handleInputChange}
+        placeholder='Enter your username'
         required
+        fullWidth
+        variant='outlined'
       />
 
-      <label> Password </label>
-      <input
-        type='password'
+      <TextField
+        label='Password'
         name='password'
-        placeholder='Enter your password'
+        type='password'
         value={password}
         onChange={handleInputChange}
+        placeholder='Enter your password'
         required
+        fullWidth
+        variant='outlined'
       />
 
-      <button type='submit' className='auth-btn'>
+      <Button type='submit' variant='contained' color='primary' sx={{ mt: 2 }}>
         Login
-      </button>
-      {error && <p className='error-box'>{error}</p>}
-    </form>
+      </Button>
+
+      {error && (
+        <Typography color='error' sx={{ mt: 2 }} variant='body2'>
+          {error}
+        </Typography>
+      )}
+    </Box>
   );
 };
 

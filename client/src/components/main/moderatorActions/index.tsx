@@ -1,3 +1,7 @@
+import { Box, Button, List, ListItem } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useModeratorActions from '../../../hooks/useModeratorActions';
 import './index.css';
 
@@ -14,21 +18,51 @@ const ModeratorActionButtons = (
 ): JSX.Element => {
   const { handlePin, handleLock, handleRemove } = useModeratorActions(info, _id);
   return (
-    <ul className='button-list'>
-      {info.type !== 'comment' ? (
-        <li>
-          <button className='action-button lock' onClick={handleLock}></button>
-        </li>
-      ) : (
-        <div></div>
-      )}
-      <li>
-        <button className='action-button pin' onClick={handlePin}></button>
-      </li>
-      <li>
-        <button className='action-button remove' onClick={handleRemove}></button>
-      </li>
-    </ul>
+    <Box component='nav' aria-label='Moderator actions'>
+      <List
+        sx={{
+          display: 'flex',
+          gap: 1,
+          padding: 0,
+          listStyleType: 'none',
+          flexDirection: 'column',
+        }}>
+        {info.type !== 'comment' ? (
+          <ListItem disablePadding>
+            <Button
+              variant='outlined'
+              color='secondary'
+              onClick={handleLock}
+              aria-label='Lock content'
+              sx={{ minWidth: 'auto', padding: '4px' }}>
+              <LockIcon fontSize='small' />
+            </Button>
+          </ListItem>
+        ) : (
+          <></>
+        )}
+        <ListItem disablePadding>
+          <Button
+            variant='outlined'
+            color='primary'
+            onClick={handlePin}
+            aria-label='Pin content'
+            sx={{ minWidth: 'auto', padding: '4px' }}>
+            <PushPinIcon fontSize='small' />
+          </Button>
+        </ListItem>
+        <ListItem disablePadding>
+          <Button
+            variant='outlined'
+            color='error'
+            onClick={handleRemove}
+            aria-label='Remove content'
+            sx={{ minWidth: 'auto', padding: '4px' }}>
+            <DeleteIcon fontSize='small' />
+          </Button>
+        </ListItem>
+      </List>
+    </Box>
   );
 };
 export default ModeratorActionButtons;
