@@ -5,6 +5,7 @@ import CommentSection from '../../commentSection';
 import './index.css';
 import { Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
+import MarkdownPreview from '../../markdownPreview';
 
 /**
  * Interface representing the props for the AnswerView component.
@@ -71,9 +72,10 @@ const AnswerView = ({
 
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
-        <Typography variant='body1' component='div' sx={{ wordBreak: 'break-word' }}>
+        <MarkdownPreview text={text} />
+        {/* <Typography variant='body1' component='div' sx={{ wordBreak: 'break-word' }}>
           {handleHyperlink(text)}
-        </Typography>
+        </Typography> */}
       </Box>
 
       {/* Author and Meta Information */}
