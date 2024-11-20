@@ -9,6 +9,7 @@ export interface User {
   username: string;
   hashedPassword: string;
   email: string;
+  userType: 'user' | 'moderator' | 'owner';
 }
 
 /**
@@ -213,6 +214,7 @@ export interface Account {
   _id?: string;
   username: string;
   email: string;
+  userType: 'user' | 'moderator' | 'owner';
   hashedPassword: string;
   score: number;
   dateCreated: Date;

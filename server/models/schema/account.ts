@@ -1,32 +1,6 @@
 import { Schema } from 'mongoose';
 
 /**
- * Mongoose schema for the settings.
- *
- * This schema defines the structure for storing settings
- * Each setting includes the following fields:
- * - `textSize`: The current text size (small, medium, large)
- * - `darkMode`: the current dark mode setting
- * - `highContrast`: The current high contrast setting
- * - `screenReader`: The current screen reader setting
- */
-const accessibilitySettingsSchema: Schema = new Schema({
-  textSize: {
-    type: String,
-    enum: ['small', 'medium', 'large'],
-  },
-  darkMode: {
-    type: Boolean,
-  },
-  highContrast: {
-    type: Boolean,
-  },
-  screenReader: {
-    type: Boolean,
-  },
-});
-
-/**
  * Mongoose schema for the Account collection.
  *
  * This schema defines the structure for storing accounts in the database.
@@ -57,6 +31,10 @@ const accountSchema: Schema = new Schema(
     },
     hashedPassword: {
       type: String,
+    },
+    userType: {
+      type: String,
+      enum: ['user', 'moderator', 'owner'],
     },
     score: {
       type: Number,
@@ -99,7 +77,6 @@ const accountSchema: Schema = new Schema(
       },
       screenReader: Boolean,
     },
-    setting2: accessibilitySettingsSchema,
   },
   { collection: 'Account' },
 );

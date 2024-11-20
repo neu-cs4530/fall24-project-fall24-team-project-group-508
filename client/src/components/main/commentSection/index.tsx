@@ -90,9 +90,11 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
                 <ListItem key={index} sx={assignStyle(comment)}>
                   <Box sx={{ flex: 1 }}>
                     {/* Moderator Actions */}
-                    <Box sx={{ marginBottom: 1 }}>
-                      {ModeratorActionButtons(moderatorInfo, comment._id)}
-                    </Box>
+                    {(user?.userType === 'moderator' || user?.userType === 'owner') && ( // Only show if userType is 'moderator'
+                      <Box sx={{ marginBottom: 1 }}>
+                        {ModeratorActionButtons(moderatorInfo, comment._id)}
+                      </Box>
+                    )}
                     {/* Comment Text */}
                     <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
                       {comment.text}

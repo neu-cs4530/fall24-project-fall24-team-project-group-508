@@ -11,7 +11,6 @@ import {
   Question,
   QuestionResponse,
   Tag,
-  AccountType,
   AccountResponse,
   Account,
 } from '../types';
@@ -721,7 +720,7 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
     account.downvotedAnswers = [];
     account.questionDrafts = [];
     account.answerDrafts = [];
-    account.userType = AccountType.user;
+    account.userType = 'user';
 
     const newAccount = await AccountModel.create(account);
 
@@ -767,6 +766,42 @@ export const updateAccountSettings = async (
   }
 };
 
+export const getAccounts = async (): Promise<Account[]> => {
+  try {
+    const accounts = await AccountModel.find();
+    return accounts;
+  } catch (error) {
+    throw new Error('Failed to fetch accounts');
+  }
+};
+
+export const updateUserType = async (userID: string, userType: string): Promise<Account> => {
+  try {
+    console.log('userID:', userID);
+    const user = await AccountModel.findById(userID);
+
+    if (!user) {
+      throw new Error('Account not found');
+    }
+    console.log('user:', user);
+    console.log('userType:', userType);
+    console.log('userID:', userID);
+    const account = await AccountModel.findOneAndUpdate(
+      { _id: userID },
+      { $set: { userType } },
+      { new: true },
+    );
+
+    if (!account) {
+      throw new Error('Account not found');
+    }
+
+    return account;
+  } catch (error) {
+    throw new Error(`Failed to update user type: ${error}`);
+  }
+};
+
 /**
  * checks if a user has the ability to perform moderator actions
  * @param account the account of the user requesting to take the action
@@ -781,8 +816,7 @@ export const canPerformActions = async (account: Account): Promise<boolean> | ne
 
     return (
       !!existingAccount &&
-      (existingAccount.userType === AccountType.moderator ||
-        existingAccount.userType === AccountType.owner)
+      (existingAccount.userType === 'moderator' || existingAccount.userType === 'owner')
     );
   } catch (error) {
     throw new Error('Error when determining if user has moderator permissions');

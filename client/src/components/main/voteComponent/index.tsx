@@ -1,4 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { downvoteQuestion, upvoteQuestion } from '../../../services/questionService';
 import './index.css';
 import useUserContext from '../../../hooks/useUserContext';
@@ -55,7 +57,7 @@ const VoteComponent = ({ question }: VoteComponentProps) => {
           },
           'marginRight': 1,
         }}>
-        Upvote
+        <ThumbUpIcon fontSize='small' />
       </Button>
       <Button
         variant='contained'
@@ -68,7 +70,7 @@ const VoteComponent = ({ question }: VoteComponentProps) => {
           },
           'marginRight': 1,
         }}>
-        Downvote
+        <ThumbDownIcon fontSize='small' />
       </Button>
       <Typography variant='body1' className='vote-count'>
         {count}

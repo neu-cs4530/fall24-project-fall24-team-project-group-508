@@ -299,12 +299,6 @@ export interface AccessibilitySettings {
   screenReader: boolean;
 }
 
-
-export enum AccountType {
-  user,
-  moderator,
-  owner,
-} 
 /**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
@@ -330,6 +324,7 @@ export interface Account {
   username: string;
   email: string;
   hashedPassword: string;
+  userType: 'user' | 'moderator' | 'owner';
   score: number;
   dateCreated: Date;
   questions: Question[] | ObjectId[];
@@ -344,7 +339,6 @@ export interface Account {
   settings: {darkMode: boolean;
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;};
-  userType: AccountType;
 }
 
 /**

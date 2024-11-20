@@ -54,4 +54,44 @@ export const updateAccountSettings = async (
   return updatedAccount;
 };
 
+/**
+ * Updates account settings by making a request to the server.
+ *
+ * @param accountId The ID of the account to update.
+ * @param settings The settings to update.
+ * @returns The updated account object.
+ */
+export const updateUserTypes = async (accountId: string, userType: string): Promise<Account> => {
+  const payload = { userType };
+
+  const response = await fetch(`${ACCOUNT_API_URL}/userType/${accountId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update account settings');
+  }
+
+  const updatedAccount = await response.json();
+  return updatedAccount;
+};
+
+/**
+ * Fetches all accounts from the server.
+ *
+ * @returns An array of account objects.
+ */
+export const getAccounts = async (): Promise<Account[]> => {
+  const response = await fetch(`${ACCOUNT_API_URL}/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch accounts');
+  }
+  const accounts = await response.json();
+  return accounts;
+};
+
 export default updateSettings;
