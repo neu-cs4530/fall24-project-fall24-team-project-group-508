@@ -95,6 +95,7 @@ async function commentCreate(
     text: text,
     commentBy: commentBy,
     commentDateTime: commentDateTime,
+    pinned: false
   };
   return await CommentModel.create(commentDetail);
 }
@@ -122,6 +123,8 @@ async function answerCreate(
     ansBy: ansBy,
     ansDateTime: ansDateTime,
     comments: comments,
+    locked: false,
+    pinned: false
   };
   return await AnswerModel.create(answerDetail);
 }
@@ -172,6 +175,8 @@ async function questionCreate(
     downVotes: [],
     comments: comments,
     presetTags: presetTags,
+    locked: false,
+    pinned: false
   };
   return await QuestionModel.create(questionDetail);
 }
@@ -184,6 +189,7 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     username: username,
     email: email,
     hashedPassword: hashedPassword,
+    userType: 'user',
     score: 0,
     dateCreated: new Date(),
     questions: [],

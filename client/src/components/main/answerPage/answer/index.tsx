@@ -5,6 +5,7 @@ import './index.css';
 import { Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
 import MarkdownPreview from '../../markdownPreview';
+import useUserContext from '../../../../hooks/useUserContext';
 
 /**
  * Interface representing the props for the AnswerView component.
@@ -59,15 +60,19 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
+  const { user } = useUserContext();
+
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
-      <Box
-        role='region'
-        aria-label='Moderator actions'
-        sx={{ marginBottom: 1, flexDirection: 'column' }}>
-        {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
-      </Box>
+      {(user?.userType === 'moderator' || user?.userType === 'owner') && ( // Only show if userType is 'moderator'
+        <Box
+          role='region'
+          aria-label='Moderator actions'
+          sx={{ marginBottom: 1, flexDirection: 'column' }}>
+          {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
+        </Box>
+      )}
 
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>

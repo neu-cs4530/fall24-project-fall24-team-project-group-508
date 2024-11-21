@@ -91,7 +91,6 @@
 .comment-textarea {
   flex: 5;
   padding: 0.25em;
-  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.85rem;
   resize: none;

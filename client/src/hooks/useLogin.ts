@@ -73,6 +73,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
             username,
             hashedPassword: password,
             email,
+            userType: 'user',
             settings: { darkMode: false, textSize: 'medium', screenReader: false },
           });
       const response = await fetch(endpoint, {
@@ -91,7 +92,12 @@ const useLogin = (isLogin: boolean): UseLogin => {
       }
 
       const data = await response.json();
-      setUser({ username: data.username, hashedPassword: data.hashedPassword, email: data.email });
+      setUser({
+        username: data.username,
+        hashedPassword: data.hashedPassword,
+        email: data.email,
+        userType: data.userType,
+      });
       setAccount(data);
 
       // Set dark mode and text size according to user's settings on login
