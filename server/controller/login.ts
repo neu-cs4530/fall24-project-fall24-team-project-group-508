@@ -74,6 +74,15 @@ const loginController = (socket: FakeSOSocket) => {
       const newAccount = await createAccount(account);
 
       if ('error' in newAccount) {
+        if (newAccount.error.includes('username')) {
+          res.status(409).send('An account with this username already exists.');
+          return;
+        }
+        if (newAccount.error.includes('email')) {
+          res.status(409).send('An account with this email already exists.');
+          return;
+        }
+
         throw new Error(newAccount.error);
       }
 

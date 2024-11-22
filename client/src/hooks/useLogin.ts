@@ -84,11 +84,19 @@ const useLogin = (isLogin: boolean): UseLogin => {
 
       if (!response.ok) {
         const contentType = response.headers.get('content-type');
-        const message = contentType?.includes('text/html')
-          ? 'Cannot POST to the specified route.'
-          : await response.text();
+        const errorMessage = contentType?.includes('application/json')
+          ? (await response.json()).message || 'An unknown error occurred.'
+          : 'Something went wrong. Please try again later.';
 
-        throw new Error(message);
+        if (response.status === 401) {
+          throw new Error(
+            'Invalid username or password. Please check your credentials and try again.',
+          );
+        } else if (response.status === 404) {
+          throw new Error('This username or email is already in use. Please try a different one.');
+        } else {
+          throw new Error(errorMessage);
+        }
       }
 
       const data = await response.json();
@@ -108,6 +116,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
       console.log('Account Settings:', data.settings);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
+      console.error(err);
       setError((err as Error).message);
     }
   };
