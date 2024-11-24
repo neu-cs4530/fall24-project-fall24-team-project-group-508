@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
@@ -11,8 +11,6 @@ const container = document.getElementById('root');
 
 const App = () => {
   const [socket, setSocket] = useState<FakeSOSocket | null>(null);
-
-  const navigate = useNavigate();
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -31,10 +29,6 @@ const App = () => {
       }
     };
   }, [socket, serverURL]);
-
-  useEffect(() => {
-    navigate('/'); // Redirect to the home page
-  }, [navigate]);
 
   return (
     <Router>
