@@ -46,7 +46,7 @@ import {
   C12_TEXT,
 } from './data/posts_strings';
 import CommentModel from './models/comments';
-import AccountModel from './models/accounts';
+import AccountModel from './models/account';
 
 // Pass URL of your mongoDB instance as first argument(e.g., mongodb://127.0.0.1:27017/fake_so)
 const userArgs = process.argv.slice(2);
