@@ -83,20 +83,8 @@ const useLogin = (isLogin: boolean): UseLogin => {
       });
 
       if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        const errorMessage = contentType?.includes('application/json')
-          ? (await response.json()).message || 'An unknown error occurred.'
-          : 'Something went wrong. Please try again later.';
-
-        if (response.status === 401) {
-          throw new Error(
-            'Invalid username or password. Please check your credentials and try again.',
-          );
-        } else if (response.status === 404) {
-          throw new Error('This username or email is already in use. Please try a different one.');
-        } else {
-          throw new Error(errorMessage);
-        }
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -116,8 +104,19 @@ const useLogin = (isLogin: boolean): UseLogin => {
       console.log('Account Settings:', data.settings);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
-      console.error(err);
-      setError((err as Error).message);
+      console.log('Error:', err);
+      const errorMessage = (err as Error).message;
+      if (errorMessage.includes('Account does not exist')) {
+        setError('Account does not exist. Please register.');
+      } else if (errorMessage.includes('Incorrect password')) {
+        setError('Incorrect password. Please try again.');
+      } else if (errorMessage.includes('username')) {
+        setError('An account with this username already exists.');
+      } else if (errorMessage.includes('email')) {
+        setError('An account with this email already exists.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     }
   };
 
