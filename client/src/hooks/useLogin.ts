@@ -83,12 +83,8 @@ const useLogin = (isLogin: boolean): UseLogin => {
       });
 
       if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        const message = contentType?.includes('text/html')
-          ? 'Cannot POST to the specified route.'
-          : await response.text();
-
-        throw new Error(message);
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -108,7 +104,19 @@ const useLogin = (isLogin: boolean): UseLogin => {
       console.log('Account Settings:', data.settings);
       navigate('/home'); // redirect to home page after login/registration
     } catch (err) {
-      setError((err as Error).message);
+      console.log('Error:', err);
+      const errorMessage = (err as Error).message;
+      if (errorMessage.includes('Account does not exist')) {
+        setError('Account does not exist. Please register.');
+      } else if (errorMessage.includes('Incorrect password')) {
+        setError('Incorrect password. Please try again.');
+      } else if (errorMessage.includes('username')) {
+        setError('An account with this username already exists.');
+      } else if (errorMessage.includes('email')) {
+        setError('An account with this email already exists.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     }
   };
 
