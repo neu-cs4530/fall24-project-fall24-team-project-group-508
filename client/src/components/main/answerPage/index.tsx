@@ -9,6 +9,7 @@ import VoteComponent from '../voteComponent';
 import CommentSection from '../commentSection';
 import useAnswerPage from '../../../hooks/useAnswerPage';
 import ModeratorActionButtons from '../moderatorActions';
+import useUserContext from '../../../hooks/useUserContext';
 
 /**
  * AnswerPage component that displays the full content of a question along with its answers.
@@ -17,6 +18,7 @@ import ModeratorActionButtons from '../moderatorActions';
 const AnswerPage = () => {
   const { questionID, question, handleNewComment, handleNewAnswer } = useAnswerPage();
   const theme = useTheme();
+  const { user } = useUserContext();
 
   if (!question) {
     return null;
@@ -47,15 +49,17 @@ const AnswerPage = () => {
         </Box>
 
         {/* Moderator Actions */}
-        <Box sx={{ mb: 3 }}>
-          {ModeratorActionButtons(
-            {
-              _id: question._id,
-              type: 'question',
-            },
-            question._id,
-          )}
-        </Box>
+        {(user?.userType === 'moderator' || user?.userType === 'owner') && ( // Only show if userType is 'moderator'
+          <Box sx={{ mb: 3 }}>
+            {ModeratorActionButtons(
+              {
+                _id: question._id,
+                type: 'question',
+              },
+              question._id,
+            )}
+          </Box>
+        )}
 
         {/* Question Body */}
         <QuestionBody
