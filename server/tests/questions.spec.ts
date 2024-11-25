@@ -26,6 +26,7 @@ const ans1: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const ans2: Answer = {
@@ -36,6 +37,7 @@ const ans2: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const ans3: Answer = {
@@ -46,6 +48,7 @@ const ans3: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const ans4: Answer = {
@@ -56,6 +59,7 @@ const ans4: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const MOCK_QUESTIONS: Question[] = [
