@@ -63,15 +63,11 @@ const useAnswerPage = () => {
   };
 
   const handleAnswerCorrect = async (ans: Answer) => {
-    console.log('marking correct');
     try {
       if (!qid) {
         throw new Error('Question ID is undefined.');
       }
-      const answer = await updateAnswerCorrect(qid, ans);
-      console.log(answer);
-      console.log(answer.isCorrect);
-      // return answer;
+      await updateAnswerCorrect(qid, ans);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error marking answer as correct:', error);
@@ -111,31 +107,45 @@ const useAnswerPage = () => {
       answer: Answer;
       removed: boolean;
     }) => {
-      if (id === questionID && !removed) {
+      // if (id === questionID && !removed) {
+      //   setQuestion(prevQuestion =>
+      //     prevQuestion
+      //       ? // Creates a new Question object with the new answer appended to the end
+      //         {
+      //           ...prevQuestion,
+      //           answers: [...prevQuestion.answers, answer].filter(
+      //             ans =>
+      //               ans._id !== answer._id ||
+      //               (Number(ans.pinned) - Number(answer.pinned) === 0 &&
+      //                 Number(ans.locked) - Number(answer.locked) === 0),
+      //           ),
+      //         }
+      //       : prevQuestion,
+      //   );
+      // } else if (id === questionID) {
+      //   setQuestion(prevQuestion =>
+      //     prevQuestion
+      //       ? // Creates a new Question object with the new answer appended to the end
+      //         {
+      //           ...prevQuestion,
+      //           answers: prevQuestion.answers.filter(ans => ans._id !== answer._id),
+      //         } //
+      //       : // prevQuestion.answers.filter((ans) => ans._id !== answer._id)
+      //         prevQuestion,
+      //   );
+      // }
+      if (id === questionID) {
         setQuestion(prevQuestion =>
           prevQuestion
-            ? // Creates a new Question object with the new answer appended to the end
-              {
+            ? {
                 ...prevQuestion,
-                answers: [...prevQuestion.answers, answer].filter(
-                  ans =>
-                    ans._id !== answer._id ||
-                    (Number(ans.pinned) - Number(answer.pinned) === 0 &&
-                      Number(ans.locked) - Number(answer.locked) === 0),
-                ),
+                answers: removed
+                  ? // Filter out the removed answer
+                    prevQuestion.answers.filter(ans => ans._id !== answer._id)
+                  : // Map to update or add the answer without duplicating
+                    prevQuestion.answers.map(ans => (ans._id === answer._id ? answer : ans)),
               }
             : prevQuestion,
-        );
-      } else if (id === questionID) {
-        setQuestion(prevQuestion =>
-          prevQuestion
-            ? // Creates a new Question object with the new answer appended to the end
-              {
-                ...prevQuestion,
-                answers: prevQuestion.answers.filter(ans => ans._id !== answer._id),
-              } //
-            : // prevQuestion.answers.filter((ans) => ans._id !== answer._id)
-              prevQuestion,
         );
       }
     };
@@ -222,28 +232,11 @@ const useAnswerPage = () => {
       }
     };
 
-    // const handleAnswerCorrectUpdate = async (ans: Answer) => {
-    //   console.log('marking correct2');
-    //   try {
-    //     if (!qid) {
-    //       throw new Error('Question ID is undefined.');
-    //     }
-    //     const answer = await updateAnswerCorrect(qid, ans);
-    //     console.log(answer);
-    //     console.log(answer.isCorrect);
-    //     // return answer;
-    //   } catch (error) {
-    //     // eslint-disable-next-line no-console
-    //     console.error('Error marking answer as correct:', error);
-    //   }
-    // };
-
     socket.on('answerUpdate', handleAnswerUpdate);
     socket.on('viewsUpdate', handleViewsUpdate);
     socket.on('commentUpdate', handleCommentUpdate);
     socket.on('voteUpdate', handleVoteUpdate);
     socket.on('questionUpdate', handleQuestionRepaint);
-    // socket.on('answerCorrectUpdate', handleAnswerCorrectUpdate);
 
     return () => {
       socket.off('answerUpdate', handleAnswerUpdate);
@@ -251,7 +244,6 @@ const useAnswerPage = () => {
       socket.off('commentUpdate', handleCommentUpdate);
       socket.off('voteUpdate', handleVoteUpdate);
       socket.off('questionUpdate', handleQuestionRepaint);
-      // socket.off('answerCorrectUpdate', handleAnswerCorrectUpdate);
     };
   }, [navigate, qid, questionID, socket]);
 
