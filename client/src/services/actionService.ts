@@ -17,7 +17,7 @@ const ACTION_API_URL = `${process.env.REACT_APP_SERVER_URL}/action`;
 
 export interface TakeActionRequestBody {
   user: { username: string; hashedPassword: string; email: string };
-  actionType: 'pin' | 'lock' | 'remove' | 'promote';
+  actionType: 'pin' | 'lock' | 'remove' | 'promote' | 'check';
   postType: 'question' | 'answer' | 'comment';
   postID: string;
   parentID?: string;

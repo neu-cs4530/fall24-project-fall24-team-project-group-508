@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Comment } from '../../../../types';
@@ -23,8 +25,10 @@ interface AnswerProps {
   comments: Comment[];
   locked: boolean;
   pinned: boolean;
+  isCorrect: boolean;
   handleAddComment: (comment: Comment) => void;
   moderatorInfo: ModeratorActionProps;
+  onMarkCorrect?: () => void;
 }
 
 /**
@@ -44,8 +48,10 @@ const AnswerView = ({
   comments,
   locked,
   pinned,
+  isCorrect,
   handleAddComment,
   moderatorInfo,
+  onMarkCorrect,
 }: AnswerProps) => {
   const dynamicStyles = {
     display: 'flex',
@@ -73,6 +79,30 @@ const AnswerView = ({
           {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
         </Box>
       )}
+
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        {isCorrect && (
+          <Box
+            sx={{
+              color: 'success.main',
+              display: 'flex',
+              alignItems: 'center',
+              mr: 2,
+            }}>
+            <CheckCircleIcon />
+            <Typography sx={{ ml: 1 }}>Correct Answer</Typography>
+          </Box>
+        )}
+        {onMarkCorrect && user?.username === moderatorInfo.parentID && (
+          <Button
+            variant='outlined'
+            color='success'
+            onClick={onMarkCorrect}
+            startIcon={<CheckCircleOutlineIcon />}>
+            Mark as Correct
+          </Button>
+        )}
+      </Box>
 
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>

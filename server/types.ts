@@ -25,6 +25,7 @@ export interface Answer {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  isCorrect: boolean;
 }
 
 /**

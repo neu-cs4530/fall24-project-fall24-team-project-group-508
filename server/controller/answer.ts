@@ -1,6 +1,11 @@
 import express, { Response } from 'express';
 import { Answer, AnswerRequest, AnswerResponse, FakeSOSocket } from '../types';
-import { addAnswerToQuestion, populateDocument, saveAnswer } from '../models/application';
+import {
+  addAnswerToQuestion,
+  markAnswerCorrect,
+  populateDocument,
+  saveAnswer,
+} from '../models/application';
 
 const answerController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -82,6 +87,48 @@ const answerController = (socket: FakeSOSocket) => {
       res.status(500).send(`Error when adding answer: ${(err as Error).message}`);
     }
   };
+
+  /**
+   * Updates an existing answer in the database.
+   *
+   * @param req The AnswerRequest object containing the answer ID and updated answer data.
+   * @param res The HTTP response object used to send back the result of the operation.
+   *
+   * @returns A Promise that resolves to void.
+   */
+  const markAnswerCorrectRoute = async (req: AnswerRequest, res: Response): Promise<void> => {
+    const { qid, ans } = req.body;
+
+    if (!qid || !isAnswerValid(ans)) {
+      res.status(400).send('Invalid request or answer');
+      return;
+    }
+
+    const ansId = String(ans._id);
+    const ansCorrect = ans.isCorrect;
+    try {
+      // Update the answer in the database
+      const updatedAnswer = await markAnswerCorrect(ansId, ansCorrect);
+
+      if ('error' in updatedAnswer) {
+        throw new Error(updatedAnswer.error as string);
+      }
+
+      // Emit the updated answer to connected clients
+      socket.emit('answerUpdate', {
+        qid, // Ensure the answer contains the question ID
+        answer: updatedAnswer as Answer,
+        removed: false,
+      });
+
+      res.json(updatedAnswer);
+    } catch (err) {
+      res.status(500).send(`Error when updating answer: ${(err as Error).message}`);
+    }
+  };
+
+  // Add the updateAnswer endpoint
+  router.put('/updateCorrectAnswer', markAnswerCorrectRoute);
 
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/addAnswer', addAnswer);

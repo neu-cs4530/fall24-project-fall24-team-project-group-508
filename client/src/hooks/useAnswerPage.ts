@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Comment, Answer, Question, VoteData } from '../types';
 import useUserContext from './useUserContext';
 import addComment from '../services/commentService';
 import { getQuestionById } from '../services/questionService';
+import { updateAnswerCorrect } from '../services/answerService';
 
 /**
  * Custom hook for managing the answer page's state, navigation, and real-time updates.
@@ -58,6 +59,19 @@ const useAnswerPage = () => {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error adding comment:', error);
+    }
+  };
+
+  const handleAnswerCorrect = async (ans: Answer) => {
+    try {
+      if (!qid) {
+        throw new Error('Question ID is undefined.');
+      }
+      const answer = await updateAnswerCorrect(qid, ans);
+      // return answer;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error marking answer as correct:', error);
     }
   };
 
@@ -216,6 +230,7 @@ const useAnswerPage = () => {
       socket.off('viewsUpdate', handleViewsUpdate);
       socket.off('commentUpdate', handleCommentUpdate);
       socket.off('voteUpdate', handleVoteUpdate);
+      socket.off('questionUpdate', handleQuestionRepaint);
     };
   }, [navigate, questionID, socket]);
 
@@ -224,6 +239,7 @@ const useAnswerPage = () => {
     question,
     handleNewComment,
     handleNewAnswer,
+    handleAnswerCorrect,
   };
 };
 
