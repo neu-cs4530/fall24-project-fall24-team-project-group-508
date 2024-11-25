@@ -15,6 +15,7 @@ import {
   saveComment,
   addComment,
   addVoteToQuestion,
+  markAnswerCorrect,
 } from '../models/application';
 import { Answer, Question, Tag, Comment } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
@@ -57,6 +58,7 @@ const ans1: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const ans2: Answer = {
@@ -67,6 +69,7 @@ const ans2: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const ans3: Answer = {
@@ -77,6 +80,7 @@ const ans3: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const ans4: Answer = {
@@ -87,6 +91,7 @@ const ans4: Answer = {
   comments: [],
   locked: false,
   pinned: false,
+  isCorrect: false,
 };
 
 const QUESTIONS: Question[] = [
@@ -624,6 +629,7 @@ describe('application module', () => {
           comments: [],
           locked: false,
           pinned: false,
+          isCorrect: false,
         };
 
         const result = (await saveAnswer(mockAnswer)) as Answer;
@@ -907,6 +913,77 @@ describe('application module', () => {
           expect(err).toBeInstanceOf(Error);
           if (err instanceof Error) expect(err.message).toBe('Invalid comment');
         }
+      });
+
+      describe('markAnswerCorrect', () => {
+        test('markAnswerCorrect should mark the answer as correct', async () => {
+          const mockAnswer = {
+            _id: 'someAnswerId',
+            isCorrect: false,
+          };
+
+          mockingoose(AnswerModel).toReturn({ ...mockAnswer, isCorrect: true }, 'findOneAndUpdate');
+          mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+
+          const result = await markAnswerCorrect('someAnswerId', true);
+
+          expect(result).toBeDefined();
+          if (result instanceof Error) {
+            expect(false).toBeTruthy();
+          } else {
+            expect(result.isCorrect).toBe(true);
+          }
+        });
+
+        test('markAnswerCorrect should mark the answer as incorrect', async () => {
+          const mockAnswer = {
+            _id: 'someAnswerId',
+            isCorrect: true,
+          };
+
+          mockingoose(AnswerModel).toReturn(
+            { ...mockAnswer, isCorrect: false },
+            'findOneAndUpdate',
+          );
+          mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+
+          const result = await markAnswerCorrect('someAnswerId', false);
+
+          expect(result).toBeDefined();
+          if (result instanceof Error) {
+            expect(false).toBeTruthy();
+          } else {
+            expect(result.isCorrect).toBe(false);
+          }
+        });
+
+        test('markAnswerCorrect should return an error if the answer is not found', async () => {
+          mockingoose(AnswerModel).toReturn(null, 'findOne');
+
+          try {
+            await markAnswerCorrect('nonExistentId', true);
+          } catch (err: unknown) {
+            expect(err).toBeInstanceOf(Error);
+            if (err instanceof Error) expect(err.message).toBe('mark correct action failed');
+          }
+        });
+
+        test('markAnswerCorrect should return an error if findOneAndUpdate throws an error', async () => {
+          const mockAnswer = {
+            _id: 'someAnswerId',
+            isCorrect: false,
+          };
+
+          mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+          mockingoose(AnswerModel).toReturn(new Error('Database error'), 'findOneAndUpdate');
+
+          try {
+            await markAnswerCorrect('someAnswerId', true);
+          } catch (err: unknown) {
+            expect(err).toBeInstanceOf(Error);
+            if (err instanceof Error) expect(err.message).toBe('mark correct action failed');
+          }
+        });
       });
     });
   });

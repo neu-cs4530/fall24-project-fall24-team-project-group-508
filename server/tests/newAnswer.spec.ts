@@ -37,6 +37,7 @@ describe('POST /addAnswer', () => {
       comments: [],
       locked: false,
       pinned: false,
+      isCorrect: false,
     };
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);
 
@@ -187,6 +188,7 @@ describe('POST /addAnswer', () => {
       comments: [],
       locked: false,
       pinned: false,
+      isCorrect: false,
     };
 
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);
@@ -216,6 +218,7 @@ describe('POST /addAnswer', () => {
       comments: [],
       locked: false,
       pinned: false,
+      isCorrect: false,
     };
 
     const mockQuestion = {
@@ -233,6 +236,7 @@ describe('POST /addAnswer', () => {
       presetTags: [],
       locked: false,
       pinned: false,
+      isCorrect: false,
     };
 
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);

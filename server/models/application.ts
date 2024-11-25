@@ -823,6 +823,14 @@ export const canPerformActions = async (account: Account): Promise<boolean> | ne
   }
 };
 
+/*
+ * Pins or unpins a post (question, answer, or comment) in the database.
+ *
+ * @param {string} postType - The type of the post to pin or unpin.
+ * @param {string} postID - The ID of the post to pin or unpin.
+ *
+ * @returns {Promise<ActionResponse>} - The updated post or an error message if the operation fails.
+ */
 export const pinPost = async (
   postType: string,
   postID: string,
@@ -875,6 +883,15 @@ export const pinPost = async (
   }
 };
 
+/*
+ * removes a post (question, answer, or comment) in the database.
+ *
+ * @param {string} postType - The type of the post to edit.
+ * @param {string} postID - The ID of the post to edit.
+ * @param {string} newText - The new text to replace the existing text.
+ *
+ * @returns {Promise<ActionResponse>} - The deleted post or an error message if the operation fails.
+ */
 export const removePost = async (
   postType: string,
   postID: string,
@@ -940,6 +957,14 @@ export const removePost = async (
   }
 };
 
+/*
+ * Locks or unlocks a question or answer.
+ *
+ * @param {string} postType - The type of the post to lock or unlock.
+ * @param {string} postID - The ID of the post to lock or unlock.
+ *
+ * @returns {Promise<ActionResponse>} - The updated post or an error message if the operation fails.
+ */
 export const lockPost = async (postType: string, postID: string): Promise<ActionResponse> => {
   if (postType === 'comment') {
     return {};
@@ -975,5 +1000,32 @@ export const lockPost = async (postType: string, postID: string): Promise<Action
     return result || { error: 'lock action failed' };
   } catch (error) {
     return { error: 'lock action failed' };
+  }
+};
+
+/*
+ * Marks an answer as correct or incorrect.
+ *
+ * @param {string} aID - The ID of the answer to mark.
+ * @param {boolean} correct - `true` to mark the answer as correct, `false` to mark it as incorrect.
+ *
+ * @returns {Promise<ActionResponse>} - The updated answer or an error message if the operation fails.
+ */
+export const markAnswerCorrect = async (aID: string, correct: boolean): Promise<Answer | Error> => {
+  try {
+    const a = await AnswerModel.findOne({ _id: aID });
+
+    const result = await AnswerModel.findOneAndUpdate(
+      { _id: aID },
+      { $set: { isCorrect: correct } },
+      { new: true },
+    );
+
+    if (result && a) {
+      return result;
+    }
+    return new Error('mark correct action failed');
+  } catch {
+    throw new Error('mark correct action failed');
   }
 };

@@ -25,6 +25,7 @@ export interface Answer {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  isCorrect: boolean;
 }
 
 /**
@@ -401,4 +402,5 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  answerCorrectUpdate: (ans: Answer) => void;
 }

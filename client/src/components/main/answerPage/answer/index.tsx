@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Comment } from '../../../../types';
@@ -23,8 +25,11 @@ interface AnswerProps {
   comments: Comment[];
   locked: boolean;
   pinned: boolean;
+  isCorrect: boolean;
+  qAskedBy: string;
   handleAddComment: (comment: Comment) => void;
   moderatorInfo: ModeratorActionProps;
+  onMarkCorrect?: () => void;
 }
 
 /**
@@ -44,8 +49,11 @@ const AnswerView = ({
   comments,
   locked,
   pinned,
+  isCorrect,
+  qAskedBy,
   handleAddComment,
   moderatorInfo,
+  onMarkCorrect,
 }: AnswerProps) => {
   const dynamicStyles = {
     display: 'flex',
@@ -60,7 +68,7 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
-  const { user } = useUserContext();
+  const { user, account } = useUserContext();
 
   return (
     <Box sx={dynamicStyles}>
@@ -74,6 +82,35 @@ const AnswerView = ({
         </Box>
       )}
 
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        {isCorrect && (
+          <Box
+            sx={{
+              color: 'success.main',
+              display: 'flex',
+              alignItems: 'center',
+              mr: 2,
+            }}>
+            <CheckCircleIcon />
+            <Typography sx={{ ml: 1 }}>Correct Answer</Typography>
+          </Box>
+        )}
+        {onMarkCorrect && !isCorrect && account.username === qAskedBy && (
+          <Button
+            variant='outlined'
+            color='success'
+            onClick={onMarkCorrect}
+            startIcon={<CheckCircleOutlineIcon />}>
+            Mark as Correct
+          </Button>
+        )}
+        {onMarkCorrect && isCorrect && account.username === qAskedBy && (
+          <Button variant='outlined' color='warning' onClick={onMarkCorrect}>
+            Un-Mark as Correct
+          </Button>
+        )}
+      </Box>
+      <Box> </Box>
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
         <MarkdownPreview text={text} />
