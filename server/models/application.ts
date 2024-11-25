@@ -1029,3 +1029,11 @@ export const markAnswerCorrect = async (aID: string, correct: boolean): Promise<
     throw new Error('mark correct action failed');
   }
 };
+
+export const getAccount = async (userName: string): Promise<Account> => {
+  const account = await AccountModel.findOne({ username: userName });
+  if (!account) {
+    throw new Error('Account not found');
+  }
+  return account;
+};
