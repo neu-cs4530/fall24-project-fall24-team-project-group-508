@@ -105,21 +105,18 @@ const answerController = (socket: FakeSOSocket) => {
     }
 
     const ansId = String(ans._id);
-    const ansCorrect = ans.isCorrect;
+    const ansCorrect = !ans.isCorrect;
     try {
       // Update the answer in the database
       const updatedAnswer = await markAnswerCorrect(ansId, ansCorrect);
-
+      socket.emit('answerUpdate', {
+        qid,
+        answer: updatedAnswer as AnswerResponse,
+        removed: false,
+      });
       if ('error' in updatedAnswer) {
         throw new Error(updatedAnswer.error as string);
       }
-
-      // Emit the updated answer to connected clients
-      socket.emit('answerUpdate', {
-        qid, // Ensure the answer contains the question ID
-        answer: updatedAnswer as Answer,
-        removed: false,
-      });
 
       res.json(updatedAnswer);
     } catch (err) {

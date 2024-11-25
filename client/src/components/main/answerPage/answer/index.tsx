@@ -26,6 +26,7 @@ interface AnswerProps {
   locked: boolean;
   pinned: boolean;
   isCorrect: boolean;
+  qAskedBy: string;
   handleAddComment: (comment: Comment) => void;
   moderatorInfo: ModeratorActionProps;
   onMarkCorrect?: () => void;
@@ -49,6 +50,7 @@ const AnswerView = ({
   locked,
   pinned,
   isCorrect,
+  qAskedBy,
   handleAddComment,
   moderatorInfo,
   onMarkCorrect,
@@ -66,7 +68,7 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
-  const { user } = useUserContext();
+  const { user, account } = useUserContext();
 
   return (
     <Box sx={dynamicStyles}>
@@ -93,7 +95,7 @@ const AnswerView = ({
             <Typography sx={{ ml: 1 }}>Correct Answer</Typography>
           </Box>
         )}
-        {onMarkCorrect && user?.username === moderatorInfo.parentID && (
+        {onMarkCorrect && !isCorrect && account.username === qAskedBy && (
           <Button
             variant='outlined'
             color='success'
@@ -102,8 +104,13 @@ const AnswerView = ({
             Mark as Correct
           </Button>
         )}
+        {onMarkCorrect && isCorrect && account.username === qAskedBy && (
+          <Button variant='outlined' color='warning' onClick={onMarkCorrect}>
+            Un-Mark as Correct
+          </Button>
+        )}
       </Box>
-
+      <Box> </Box>
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
         <MarkdownPreview text={text} />

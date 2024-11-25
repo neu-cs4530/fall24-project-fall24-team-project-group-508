@@ -107,6 +107,7 @@ const AnswerPage = () => {
               locked={a.locked}
               pinned={a.pinned}
               isCorrect={a.isCorrect}
+              qAskedBy={question.askedBy}
               handleAddComment={(comment: Comment) => handleNewComment(comment, 'answer', a._id)}
               moderatorInfo={{
                 parentType: 'question',
@@ -115,7 +116,9 @@ const AnswerPage = () => {
                 type: 'answer',
               }}
               onMarkCorrect={
-                user?.username === question.askedBy ? () => handleAnswerCorrect(a) : undefined
+                user?.username === question.askedBy
+                  ? () => handleAnswerCorrect({ ...a, isCorrect: a.isCorrect })
+                  : undefined
               }
             />
           </Paper>

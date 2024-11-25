@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Comment, Answer, Question, VoteData } from '../types';
 import useUserContext from './useUserContext';
 import addComment from '../services/commentService';
@@ -63,11 +63,14 @@ const useAnswerPage = () => {
   };
 
   const handleAnswerCorrect = async (ans: Answer) => {
+    console.log('marking correct');
     try {
       if (!qid) {
         throw new Error('Question ID is undefined.');
       }
       const answer = await updateAnswerCorrect(qid, ans);
+      console.log(answer);
+      console.log(answer.isCorrect);
       // return answer;
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -219,11 +222,28 @@ const useAnswerPage = () => {
       }
     };
 
+    // const handleAnswerCorrectUpdate = async (ans: Answer) => {
+    //   console.log('marking correct2');
+    //   try {
+    //     if (!qid) {
+    //       throw new Error('Question ID is undefined.');
+    //     }
+    //     const answer = await updateAnswerCorrect(qid, ans);
+    //     console.log(answer);
+    //     console.log(answer.isCorrect);
+    //     // return answer;
+    //   } catch (error) {
+    //     // eslint-disable-next-line no-console
+    //     console.error('Error marking answer as correct:', error);
+    //   }
+    // };
+
     socket.on('answerUpdate', handleAnswerUpdate);
     socket.on('viewsUpdate', handleViewsUpdate);
     socket.on('commentUpdate', handleCommentUpdate);
     socket.on('voteUpdate', handleVoteUpdate);
     socket.on('questionUpdate', handleQuestionRepaint);
+    // socket.on('answerCorrectUpdate', handleAnswerCorrectUpdate);
 
     return () => {
       socket.off('answerUpdate', handleAnswerUpdate);
@@ -231,8 +251,9 @@ const useAnswerPage = () => {
       socket.off('commentUpdate', handleCommentUpdate);
       socket.off('voteUpdate', handleVoteUpdate);
       socket.off('questionUpdate', handleQuestionRepaint);
+      // socket.off('answerCorrectUpdate', handleAnswerCorrectUpdate);
     };
-  }, [navigate, questionID, socket]);
+  }, [navigate, qid, questionID, socket]);
 
   return {
     questionID,

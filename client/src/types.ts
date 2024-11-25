@@ -271,4 +271,5 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  answerCorrectUpdate: (ans: Answer) => void;
 }

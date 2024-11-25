@@ -27,6 +27,9 @@ const answerSchema: Schema = new Schema(
     pinned: {
       type: Boolean,
     },
+    isCorrect: {
+      type: Boolean,
+    },
   },
   { collection: 'Answer' },
 );
