@@ -241,6 +241,7 @@ export const filterQuestionsByAskedBy = (qlist: Question[], askedBy: string): Qu
 
 /**
  * Filters questions based on a search string containing tags and/or keywords.
+ * Prioritizes questions with the 'Markdown' tag before all others.
  *
  * @param {Question[]} qlist - The list of questions to filter
  * @param {string} search - The search string containing tags and/or keywords
