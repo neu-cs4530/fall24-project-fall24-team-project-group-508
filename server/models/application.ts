@@ -254,21 +254,30 @@ export const filterQuestionsBySearch = (qlist: Question[], search: string): Ques
   if (!qlist || qlist.length === 0) {
     return [];
   }
-  return qlist.filter((q: Question) => {
+  const filteredQuestions = qlist.filter((q: Question) => {
     if (searchKeyword.length === 0 && searchTags.length === 0) {
       return true;
     }
-
     if (searchKeyword.length === 0) {
       return checkTagInQuestion(q, searchTags);
     }
-
     if (searchTags.length === 0) {
       return checkKeywordInQuestion(q, searchKeyword);
     }
-
-    return checkKeywordInQuestion(q, searchKeyword) || checkTagInQuestion(q, searchTags);
+    return checkTagInQuestion(q, searchKeyword) || checkKeywordInQuestion(q, searchTags);
   });
+  const prioritizedQuestions = filteredQuestions.sort((a, b) => {
+    const aMarkdownQ = a.tags.some(tag => tag.name === 'Markdown');
+    const bMarkdownQ = b.tags.some(tag => tag.name === 'Markdown');
+    if (aMarkdownQ && !bMarkdownQ) {
+      return -1;
+    }
+    if (!aMarkdownQ && bMarkdownQ) {
+      return 1;
+    }
+    return 0;
+  });
+  return prioritizedQuestions;
 };
 
 /**
