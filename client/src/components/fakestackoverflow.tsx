@@ -10,7 +10,7 @@ import TagPage from './main/tagPage';
 import NewQuestionPage from './main/newQuestion';
 import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
-import { DarkModeProvider } from '../contexts/DarkModeContext';
+import { CustomThemeProvider } from '../contexts/ThemeContext';
 import { TextSizeProvider } from '../contexts/TextSizeContext';
 
 const ProtectedRoute = ({
@@ -46,7 +46,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [account, setAccount] = useState<Account | null>(null);
 
   return (
-    <DarkModeProvider initialDarkMode={false}>
+    <CustomThemeProvider initialTheme='light'>
       <TextSizeProvider initialTextSize={'medium'}>
         <LoginContext.Provider value={{ setUser, setAccount }}>
           <Routes>
@@ -73,7 +73,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
           </Routes>
         </LoginContext.Provider>
       </TextSizeProvider>
-    </DarkModeProvider>
+    </CustomThemeProvider>
   );
 };
 

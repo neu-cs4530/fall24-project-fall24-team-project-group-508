@@ -70,7 +70,10 @@ const accountSchema: Schema = new Schema(
       type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
     },
     settings: {
-      darkMode: Boolean,
+      theme: {
+        type: String,
+        enum: ['light', 'dark', 'northeastern'],
+      },
       textSize: {
         type: String,
         enum: ['small', 'medium', 'large'],

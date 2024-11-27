@@ -19,7 +19,9 @@ const accountController = (socket: FakeSOSocket) => {
    */
   const isSettingRequestValid = (req: UpdateSettingRequest): boolean =>
     req.body &&
-    typeof req.body.darkMode === 'boolean' &&
+    (req.body.theme === 'light' ||
+      req.body.theme === 'dark' ||
+      req.body.theme === 'northeastern') &&
     (req.body.textSize === 'small' ||
       req.body.textSize === 'medium' ||
       req.body.textSize === 'large') &&

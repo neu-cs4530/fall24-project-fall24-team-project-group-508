@@ -233,7 +233,11 @@ export interface Account {
   downvotedAnswers: Answer[];
   questionDrafts: Question[];
   answerDrafts: Answer[];
-  settings: { darkMode: boolean; textSize: 'small' | 'medium' | 'large'; screenReader: boolean };
+  settings: {
+    theme: 'light' | 'dark' | 'northeastern' | 'oceanic' | 'highContrast' | 'colorblindFriendly';
+    textSize: 'small' | 'medium' | 'large';
+    screenReader: boolean;
+  };
 }
 
 /**
