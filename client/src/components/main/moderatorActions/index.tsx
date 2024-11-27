@@ -22,8 +22,10 @@ const ModeratorActionButtons = (
       component='nav'
       aria-label='Moderator actions'
       sx={{
-        display: 'inline-block', // Makes the container inline
+        // display: 'inline-block', // Makes the container inline
         whiteSpace: 'nowrap', // Prevents wrapping
+        display: 'flex',
+        flexDirection: info.type === 'answer' ? 'column' : 'row', // Vertical for answers, horizontal otherwise
       }}>
       {info.type !== 'comment' && (
         <Button
@@ -40,7 +42,7 @@ const ModeratorActionButtons = (
         color='primary'
         onClick={handlePin}
         aria-label='Pin content'
-        sx={{ margin: '0 4px', padding: '4px' }}>
+        sx={{ margin: '4px 4px', padding: '4px' }}>
         <PushPinIcon fontSize='small' />
       </Button>
       <Button
@@ -48,7 +50,7 @@ const ModeratorActionButtons = (
         color='error'
         onClick={handleRemove}
         aria-label='Remove content'
-        sx={{ margin: '0 4px', padding: '4px' }}>
+        sx={{ margin: '0px 4px', padding: '4px' }}>
         <DeleteIcon fontSize='small' />
       </Button>
     </Box>
