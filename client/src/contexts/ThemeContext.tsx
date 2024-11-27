@@ -189,6 +189,69 @@ const colorblindFriendlyTheme = createTheme({
   },
 });
 
+const greyscaleTheme = createTheme({
+  palette: {
+    primary: { main: '#6c757d' }, // Medium Grey for primary actions
+    secondary: { main: '#adb5bd' }, // Light Grey for secondary actions
+    background: {
+      default: '#f8f9fa', // Light Grey for backgrounds
+      paper: '#e9ecef', // Slightly darker grey for surfaces
+    },
+    text: {
+      primary: '#212529', // Dark Grey for primary text
+      secondary: '#495057', // Medium Grey for secondary text
+    },
+    error: { main: '#868e96' }, // Grey for errors (subtle feedback in this theme)
+    warning: { main: '#adb5bd' }, // Light Grey for warnings
+    success: { main: '#6c757d' }, // Medium Grey for success
+    info: { main: '#ced4da' }, // Light Grey for informational elements
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+    h1: {
+      fontSize: '2.4rem',
+      fontWeight: 700,
+      color: '#212529', // Dark Grey for headers
+    },
+    body1: {
+      fontSize: '1rem',
+      color: '#495057', // Medium Grey for body text
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          'textTransform': 'none',
+          'backgroundColor': '#6c757d', // Medium Grey for buttons
+          'color': '#f8f9fa', // Light Grey for text
+          '&:hover': {
+            backgroundColor: '#5a6268', // Slightly darker grey on hover
+          },
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#343a40', // Dark Grey for app bars
+          color: '#f8f9fa', // Light Grey for text
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          'color': '#495057', // Medium Grey for links
+          '&:hover': {
+            color: '#212529', // Dark Grey on hover
+          },
+        },
+      },
+    },
+  },
+});
+
 const themes = {
   light: lightTheme,
   dark: darkTheme,
@@ -196,6 +259,7 @@ const themes = {
   oceanic: oceanicTheme,
   highContrast: highContrastTheme,
   colorblindFriendly: colorblindFriendlyTheme,
+  greyscale: greyscaleTheme,
 };
 
 export const CustomThemeProvider: React.FC<{

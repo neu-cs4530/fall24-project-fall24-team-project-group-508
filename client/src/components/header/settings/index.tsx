@@ -39,7 +39,8 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
       | 'northeastern'
       | 'oceanic'
       | 'highContrast'
-      | 'colorblindFriendly';
+      | 'colorblindFriendly'
+      | 'greyscale';
     switchTheme(newTheme);
 
     if (account && account._id && setAccount) {
@@ -104,6 +105,7 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
             <MenuItem value='oceanic'>Oceanic</MenuItem>
             <MenuItem value='highContrast'>High Contrast</MenuItem>
             <MenuItem value='colorblindFriendly'>Colorblind Friendly</MenuItem>
+            <MenuItem value='greyscale'>Greyscale</MenuItem>
           </Select>
         </FormControl>
 

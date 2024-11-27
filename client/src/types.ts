@@ -234,7 +234,14 @@ export interface Account {
   questionDrafts: Question[];
   answerDrafts: Answer[];
   settings: {
-    theme: 'light' | 'dark' | 'northeastern' | 'oceanic' | 'highContrast' | 'colorblindFriendly';
+    theme:
+      | 'light'
+      | 'dark'
+      | 'northeastern'
+      | 'oceanic'
+      | 'highContrast'
+      | 'colorblindFriendly'
+      | 'greyscale';
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;
   };
