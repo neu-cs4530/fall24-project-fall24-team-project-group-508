@@ -72,7 +72,7 @@ const accountSchema: Schema = new Schema(
     settings: {
       theme: {
         type: String,
-        enum: ['light', 'dark', 'northeastern'],
+        enum: ['light', 'dark', 'northeastern, oceanic, highContrast, colorblindFriendly'],
       },
       textSize: {
         type: String,

@@ -21,7 +21,10 @@ const accountController = (socket: FakeSOSocket) => {
     req.body &&
     (req.body.theme === 'light' ||
       req.body.theme === 'dark' ||
-      req.body.theme === 'northeastern') &&
+      req.body.theme === 'northeastern' ||
+      req.body.theme === 'oceanic' ||
+      req.body.theme === 'highContrast' ||
+      req.body.theme === 'colorblindFriendly') &&
     (req.body.textSize === 'small' ||
       req.body.textSize === 'medium' ||
       req.body.textSize === 'large') &&
