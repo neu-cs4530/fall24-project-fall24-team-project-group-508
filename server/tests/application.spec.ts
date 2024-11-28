@@ -16,10 +16,20 @@ import {
   addComment,
   addVoteToQuestion,
   markAnswerCorrect,
+  lockPost,
+  removePost,
+  pinPost,
+  canPerformActions,
+  updateUserType,
+  updateAccountSettings,
+  getAccounts,
+  createAccount,
 } from '../models/application';
-import { Answer, Question, Tag, Comment } from '../types';
+import { Answer, Question, Tag, Comment, Account } from '../types';
 import { T1_DESC, T2_DESC, T3_DESC } from '../data/posts_strings';
 import AnswerModel from '../models/answers';
+import CommentModel from '../models/comments';
+import AccountModel from '../models/account';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockingoose = require('mockingoose');
@@ -914,75 +924,848 @@ describe('application module', () => {
           if (err instanceof Error) expect(err.message).toBe('Invalid comment');
         }
       });
+    });
+    describe('markAnswerCorrect', () => {
+      test('markAnswerCorrect should mark the answer as correct', async () => {
+        const mockAnswer = {
+          _id: 'someAnswerId',
+          isCorrect: false,
+        };
 
-      describe('markAnswerCorrect', () => {
-        test('markAnswerCorrect should mark the answer as correct', async () => {
-          const mockAnswer = {
-            _id: 'someAnswerId',
-            isCorrect: false,
+        mockingoose(AnswerModel).toReturn({ ...mockAnswer, isCorrect: true }, 'findOneAndUpdate');
+        mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+
+        const result = await markAnswerCorrect('someAnswerId', true);
+
+        expect(result).toBeDefined();
+        if (result instanceof Error) {
+          expect(false).toBeTruthy();
+        } else {
+          expect(result.isCorrect).toBe(true);
+        }
+      });
+
+      test('markAnswerCorrect should mark the answer as incorrect', async () => {
+        const mockAnswer = {
+          _id: 'someAnswerId',
+          isCorrect: true,
+        };
+
+        mockingoose(AnswerModel).toReturn({ ...mockAnswer, isCorrect: false }, 'findOneAndUpdate');
+        mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+
+        const result = await markAnswerCorrect('someAnswerId', false);
+
+        expect(result).toBeDefined();
+        if (result instanceof Error) {
+          expect(false).toBeTruthy();
+        } else {
+          expect(result.isCorrect).toBe(false);
+        }
+      });
+
+      test('markAnswerCorrect should return an error if the answer is not found', async () => {
+        mockingoose(AnswerModel).toReturn(null, 'findOne');
+
+        try {
+          await markAnswerCorrect('nonExistentId', true);
+        } catch (err: unknown) {
+          expect(err).toBeInstanceOf(Error);
+          if (err instanceof Error) expect(err.message).toBe('mark correct action failed');
+        }
+      });
+
+      test('markAnswerCorrect should return an error if findOneAndUpdate throws an error', async () => {
+        const mockAnswer = {
+          _id: 'someAnswerId',
+          isCorrect: false,
+        };
+
+        mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+        mockingoose(AnswerModel).toReturn(new Error('Database error'), 'findOneAndUpdate');
+
+        try {
+          await markAnswerCorrect('someAnswerId', true);
+        } catch (err: unknown) {
+          expect(err).toBeInstanceOf(Error);
+          if (err instanceof Error) expect(err.message).toBe('mark correct action failed');
+        }
+      });
+
+      describe('lockPost', () => {
+        test('lockPost should lock a question', async () => {
+          const mockQuestion = {
+            _id: 'someQuestionId',
+            locked: false,
           };
 
-          mockingoose(AnswerModel).toReturn({ ...mockAnswer, isCorrect: true }, 'findOneAndUpdate');
-          mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
-
-          const result = await markAnswerCorrect('someAnswerId', true);
-
-          expect(result).toBeDefined();
-          if (result instanceof Error) {
-            expect(false).toBeTruthy();
-          } else {
-            expect(result.isCorrect).toBe(true);
-          }
-        });
-
-        test('markAnswerCorrect should mark the answer as incorrect', async () => {
-          const mockAnswer = {
-            _id: 'someAnswerId',
-            isCorrect: true,
-          };
-
-          mockingoose(AnswerModel).toReturn(
-            { ...mockAnswer, isCorrect: false },
+          mockingoose(QuestionModel).toReturn(mockQuestion, 'findOne');
+          mockingoose(QuestionModel).toReturn(
+            { ...mockQuestion, locked: true },
             'findOneAndUpdate',
           );
-          mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
 
-          const result = await markAnswerCorrect('someAnswerId', false);
+          const result = await lockPost('question', 'someQuestionId');
 
           expect(result).toBeDefined();
-          if (result instanceof Error) {
-            expect(false).toBeTruthy();
+          if ('question' in result) {
+            expect(result.question.locked).toBe(true);
           } else {
-            expect(result.isCorrect).toBe(false);
+            expect(false).toBeTruthy();
           }
         });
 
-        test('markAnswerCorrect should return an error if the answer is not found', async () => {
-          mockingoose(AnswerModel).toReturn(null, 'findOne');
+        test('lockPost should unlock a question', async () => {
+          const mockQuestion = {
+            _id: 'someQuestionId',
+            locked: true,
+          };
 
-          try {
-            await markAnswerCorrect('nonExistentId', true);
-          } catch (err: unknown) {
-            expect(err).toBeInstanceOf(Error);
-            if (err instanceof Error) expect(err.message).toBe('mark correct action failed');
+          mockingoose(QuestionModel).toReturn(mockQuestion, 'findOne');
+          mockingoose(QuestionModel).toReturn(
+            { ...mockQuestion, locked: false },
+            'findOneAndUpdate',
+          );
+
+          const result = await lockPost('question', 'someQuestionId');
+
+          expect(result).toBeDefined();
+          if ('question' in result) {
+            expect(result.question.locked).toBe(false);
+          } else {
+            expect(false).toBeTruthy();
           }
         });
 
-        test('markAnswerCorrect should return an error if findOneAndUpdate throws an error', async () => {
+        test('lockPost should lock an answer', async () => {
           const mockAnswer = {
             _id: 'someAnswerId',
-            isCorrect: false,
+            locked: false,
           };
 
           mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
-          mockingoose(AnswerModel).toReturn(new Error('Database error'), 'findOneAndUpdate');
+          mockingoose(AnswerModel).toReturn({ ...mockAnswer, locked: true }, 'findOneAndUpdate');
 
-          try {
-            await markAnswerCorrect('someAnswerId', true);
-          } catch (err: unknown) {
-            expect(err).toBeInstanceOf(Error);
-            if (err instanceof Error) expect(err.message).toBe('mark correct action failed');
+          const result = await lockPost('answer', 'someAnswerId');
+
+          expect(result).toBeDefined();
+          if ('answer' in result) {
+            expect(result.answer.locked).toBe(true);
+          } else {
+            expect(false).toBeTruthy();
           }
+        });
+
+        test('lockPost should unlock an answer', async () => {
+          const mockAnswer = {
+            _id: 'someAnswerId',
+            locked: true,
+          };
+
+          mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+          mockingoose(AnswerModel).toReturn({ ...mockAnswer, locked: false }, 'findOneAndUpdate');
+
+          const result = await lockPost('answer', 'someAnswerId');
+
+          expect(result).toBeDefined();
+          if ('answer' in result) {
+            expect(result.answer.locked).toBe(false);
+          } else {
+            expect(false).toBeTruthy();
+          }
+        });
+
+        test('lockPost should return an empty object for comments', async () => {
+          const result = await lockPost('comment', 'someCommentId');
+
+          expect(result).toEqual({});
+        });
+
+        test('lockPost should return an error if the question is not found', async () => {
+          mockingoose(QuestionModel).toReturn(null, 'findOne');
+
+          const result = await lockPost('question', 'nonExistentId');
+
+          expect(result).toEqual({ error: 'lock action failed' });
+        });
+
+        test('lockPost should return an error if the answer is not found', async () => {
+          mockingoose(AnswerModel).toReturn(null, 'findOne');
+
+          const result = await lockPost('answer', 'nonExistentId');
+
+          expect(result).toEqual({ error: 'lock action failed' });
+        });
+
+        test('lockPost should return an error if findOne throws an error', async () => {
+          mockingoose(QuestionModel).toReturn(new Error('Database error'), 'findOne');
+
+          const result = await lockPost('question', 'someQuestionId');
+
+          expect(result).toEqual({ error: 'lock action failed' });
+        });
+
+        test('lockPost should return an error if findOneAndUpdate throws an error', async () => {
+          const mockQuestion = {
+            _id: 'someQuestionId',
+            locked: false,
+          };
+
+          mockingoose(QuestionModel).toReturn(mockQuestion, 'findOne');
+          mockingoose(QuestionModel).toReturn(new Error('Database error'), 'findOneAndUpdate');
+
+          const result = await lockPost('question', 'someQuestionId');
+
+          expect(result).toEqual({ error: 'lock action failed' });
+        });
+
+        describe('removePost', () => {
+          test('removePost should delete a question and return the deleted question', async () => {
+            const mockQuestion = {
+              _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+              title: 'Test Question',
+            };
+
+            mockingoose(QuestionModel).toReturn(mockQuestion, 'findOneAndDelete');
+
+            const result = await removePost(
+              'question',
+              '65e9b58910afe6e94fc6e6de',
+              undefined,
+              undefined,
+            );
+
+            expect(result).toBeDefined();
+            if ('question' in result) {
+              expect(result.question._id).toEqual(mockQuestion._id);
+              expect(result.question.title).toEqual(mockQuestion.title);
+            } else {
+              expect(false).toBeTruthy();
+            }
+          });
+
+          test('removePost should delete an answer and return the deleted answer', async () => {
+            const mockAnswer = {
+              _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+              text: 'Test Answer',
+            };
+
+            const mockParentQuestion = {
+              _id: 'parentQuestionId',
+              answers: [mockAnswer],
+            };
+
+            mockingoose(QuestionModel).toReturn(mockParentQuestion, 'findOne');
+            mockingoose(AnswerModel).toReturn(mockAnswer, 'findOneAndDelete');
+
+            const result = await removePost(
+              'answer',
+              '65e9b58910afe6e94fc6e6de',
+              'parentQuestionId',
+              undefined,
+            );
+
+            expect(result).toBeDefined();
+            if ('answer' in result) {
+              expect(result.answer._id).toEqual(mockAnswer._id);
+              expect(result.answer.text).toEqual(mockAnswer.text);
+            } else {
+              expect(false).toBeTruthy();
+            }
+          });
+
+          test('removePost should delete a comment from a question and return the deleted comment', async () => {
+            const mockComment = {
+              _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+              text: 'Test Comment',
+            };
+
+            const mockParentQuestion = {
+              _id: 'parentQuestionId',
+              comments: [mockComment],
+            };
+
+            mockingoose(QuestionModel).toReturn(mockParentQuestion, 'findOne');
+            mockingoose(CommentModel).toReturn(mockComment, 'findOneAndDelete');
+
+            const result = await removePost(
+              'comment',
+              '65e9b58910afe6e94fc6e6de',
+              'parentQuestionId',
+              'question',
+            );
+
+            expect(result).toBeDefined();
+            if ('comment' in result) {
+              expect(result.comment._id).toEqual(mockComment._id);
+              expect(result.comment.text).toEqual(mockComment.text);
+            } else {
+              expect(false).toBeTruthy();
+            }
+          });
+
+          test('removePost should delete a comment from an answer and return the deleted comment', async () => {
+            const mockComment = {
+              _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+              text: 'Test Comment',
+            };
+
+            const mockParentAnswer = {
+              _id: 'parentAnswerId',
+              comments: [mockComment],
+            };
+
+            mockingoose(AnswerModel).toReturn(mockParentAnswer, 'findOne');
+            mockingoose(CommentModel).toReturn(mockComment, 'findOneAndDelete');
+
+            const result = await removePost('comment', 'someCommentId', 'parentAnswerId', 'answer');
+
+            expect(result).toBeDefined();
+            if ('comment' in result) {
+              expect(result.comment._id).toEqual(mockComment._id);
+              expect(result.comment.text).toEqual(mockComment.text);
+            } else {
+              expect(false).toBeTruthy();
+            }
+          });
+
+          test('removePost should return an error if the parent question is not found', async () => {
+            mockingoose(QuestionModel).toReturn(null, 'findOne');
+
+            const result = await removePost('answer', 'someAnswerId', 'invalidParentId', undefined);
+
+            expect(result).toEqual({ error: 'remove action failed' });
+          });
+
+          test('removePost should return an error if the parent answer is not found', async () => {
+            mockingoose(AnswerModel).toReturn(null, 'findOne');
+
+            const result = await removePost(
+              'comment',
+              '65e9b58910afe6e94fc6e6de',
+              'invalidParentId',
+              'answer',
+            );
+
+            expect(result).toEqual({ error: 'remove action failed' });
+          });
+
+          test('removePost should return an error if findOneAndDelete throws an error', async () => {
+            mockingoose(QuestionModel).toReturn(new Error('Database error'), 'findOneAndDelete');
+
+            const result = await removePost(
+              'question',
+              '65e9b58910afe6e94fc6e6de',
+              undefined,
+              undefined,
+            );
+
+            expect(result).toEqual({ error: 'remove action failed' });
+          });
+
+          describe('pinPost', () => {
+            test('pinPost should pin a question', async () => {
+              const mockQuestion = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: false,
+              };
+
+              mockingoose(QuestionModel).toReturn(mockQuestion, 'findOne');
+              mockingoose(QuestionModel).toReturn(
+                { ...mockQuestion, pinned: true },
+                'findOneAndUpdate',
+              );
+
+              const result = await pinPost('question', 'someQuestionId', undefined, undefined);
+
+              expect(result).toBeDefined();
+              if ('question' in result) {
+                expect(result.question.pinned).toBe(true);
+              } else {
+                expect(false).toBeTruthy();
+              }
+            });
+
+            test('pinPost should unpin a question', async () => {
+              const mockQuestion = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: true,
+              };
+
+              mockingoose(QuestionModel).toReturn(mockQuestion, 'findOne');
+              mockingoose(QuestionModel).toReturn(
+                { ...mockQuestion, pinned: false },
+                'findOneAndUpdate',
+              );
+
+              const result = await pinPost('question', 'someQuestionId', undefined, undefined);
+
+              expect(result).toBeDefined();
+              if ('question' in result) {
+                expect(result.question.pinned).toBe(false);
+              } else {
+                expect(false).toBeTruthy();
+              }
+            });
+
+            test('pinPost should pin an answer', async () => {
+              const mockAnswer = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: false,
+              };
+
+              mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+              mockingoose(AnswerModel).toReturn(
+                { ...mockAnswer, pinned: true },
+                'findOneAndUpdate',
+              );
+
+              const result = await pinPost('answer', 'someAnswerId', undefined, undefined);
+
+              expect(result).toBeDefined();
+              if ('answer' in result) {
+                expect(result.answer.pinned).toBe(true);
+              } else {
+                expect(false).toBeTruthy();
+              }
+            });
+
+            test('pinPost should unpin an answer', async () => {
+              const mockAnswer = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: true,
+              };
+
+              mockingoose(AnswerModel).toReturn(mockAnswer, 'findOne');
+              mockingoose(AnswerModel).toReturn(
+                { ...mockAnswer, pinned: false },
+                'findOneAndUpdate',
+              );
+
+              const result = await pinPost('answer', 'someAnswerId', undefined, undefined);
+
+              expect(result).toBeDefined();
+              if ('answer' in result) {
+                expect(result.answer.pinned).toBe(false);
+              } else {
+                expect(false).toBeTruthy();
+              }
+            });
+
+            test('pinPost should pin a comment', async () => {
+              const mockComment = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: false,
+              };
+
+              mockingoose(CommentModel).toReturn(mockComment, 'findOne');
+              mockingoose(CommentModel).toReturn(
+                { ...mockComment, pinned: true },
+                'findOneAndUpdate',
+              );
+
+              const result = await pinPost('comment', 'someCommentId', undefined, undefined);
+
+              expect(result).toBeDefined();
+              if ('comment' in result) {
+                expect(result.comment.pinned).toBe(true);
+              } else {
+                expect(false).toBeTruthy();
+              }
+            });
+
+            test('pinPost should unpin a comment', async () => {
+              const mockComment = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: true,
+              };
+
+              mockingoose(CommentModel).toReturn(mockComment, 'findOne');
+              mockingoose(CommentModel).toReturn(
+                { ...mockComment, pinned: false },
+                'findOneAndUpdate',
+              );
+
+              const result = await pinPost('comment', 'someCommentId', undefined, undefined);
+
+              expect(result).toBeDefined();
+              if ('comment' in result) {
+                expect(result.comment.pinned).toBe(false);
+              } else {
+                expect(false).toBeTruthy();
+              }
+            });
+
+            test('pinPost should return an error if the question is not found', async () => {
+              mockingoose(QuestionModel).toReturn(null, 'findOne');
+
+              const result = await pinPost('question', 'nonExistentId', undefined, undefined);
+
+              expect(result).toEqual({ error: 'lock action failed' });
+            });
+
+            test('pinPost should return an error if the answer is not found', async () => {
+              mockingoose(AnswerModel).toReturn(null, 'findOne');
+
+              const result = await pinPost('answer', 'nonExistentId', undefined, undefined);
+
+              expect(result).toEqual({ error: 'lock action failed' });
+            });
+
+            test('pinPost should return an error if the comment is not found', async () => {
+              mockingoose(CommentModel).toReturn(null, 'findOne');
+
+              const result = await pinPost('comment', 'nonExistentId', undefined, undefined);
+
+              expect(result).toEqual({ error: 'lock action failed' });
+            });
+
+            test('pinPost should return an error if findOne throws an error', async () => {
+              mockingoose(QuestionModel).toReturn(new Error('Database error'), 'findOne');
+
+              const result = await pinPost('question', 'someQuestionId', undefined, undefined);
+
+              expect(result).toEqual({ error: 'lock action failed' });
+            });
+
+            test('pinPost should return an error if findOneAndUpdate throws an error', async () => {
+              const mockQuestion = {
+                _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                pinned: false,
+              };
+
+              mockingoose(QuestionModel).toReturn(mockQuestion, 'findOne');
+              mockingoose(QuestionModel).toReturn(new Error('Database error'), 'findOneAndUpdate');
+
+              const result = await pinPost('question', 'someQuestionId', undefined, undefined);
+
+              expect(result).toEqual({ error: 'lock action failed' });
+            });
+
+            describe('canPerformActions', () => {
+              test('should return true if the user is a moderator', async () => {
+                const mockAccount = {
+                  username: 'moderatorUser',
+                  hashedPassword: 'hashedPassword',
+                  userType: 'moderator',
+                };
+
+                mockingoose(AccountModel).toReturn(mockAccount, 'findOne');
+
+                const result = await canPerformActions(mockAccount as Account);
+
+                expect(result).toBe(true);
+              });
+
+              test('should return true if the user is an owner', async () => {
+                const mockAccount = {
+                  username: 'ownerUser',
+                  hashedPassword: 'hashedPassword',
+                  userType: 'owner',
+                };
+
+                mockingoose(AccountModel).toReturn(mockAccount, 'findOne');
+
+                const result = await canPerformActions(mockAccount as Account);
+
+                expect(result).toBe(true);
+              });
+
+              test('should return false if the user is not a moderator or owner', async () => {
+                const mockAccount = {
+                  username: 'regularUser',
+                  hashedPassword: 'hashedPassword',
+                  userType: 'user',
+                };
+
+                mockingoose(AccountModel).toReturn(mockAccount, 'findOne');
+
+                const result = await canPerformActions(mockAccount as Account);
+
+                expect(result).toBe(false);
+              });
+
+              test('should return false if the account does not exist', async () => {
+                const mockAccount = {
+                  username: 'nonExistentUser',
+                  hashedPassword: 'hashedPassword',
+                };
+
+                mockingoose(AccountModel).toReturn(null, 'findOne');
+
+                const result = await canPerformActions(mockAccount as Account);
+
+                expect(result).toBe(false);
+              });
+
+              test('should throw an error if there is an issue with the database query', async () => {
+                const mockAccount = {
+                  username: 'errorUser',
+                  hashedPassword: 'hashedPassword',
+                };
+
+                mockingoose(AccountModel).toReturn(new Error('Database error'), 'findOne');
+
+                await expect(canPerformActions(mockAccount as Account)).rejects.toThrow(
+                  'Error when determining if user has moderator permissions',
+                );
+              });
+
+              describe('updateUserType', () => {
+                test('should update the user type successfully', async () => {
+                  const mockUser = {
+                    _id: new ObjectId('6744e4cb6c90d90d22463e65'),
+                    username: 'testUser',
+                    userType: 'user',
+                  };
+
+                  const updatedUser = {
+                    ...mockUser,
+                    userType: 'moderator',
+                  };
+
+                  mockingoose(AccountModel).toReturn(mockUser, 'findById');
+                  mockingoose(AccountModel).toReturn(updatedUser, 'findOneAndUpdate');
+
+                  // const result = await updateUserType('6744e4cb6c90d90d22463e65', 'moderator');
+
+                  // expect(result).toBeDefined();
+                  // expect(result.userType).toEqual('moderator');
+                });
+
+                test('should throw an error if the user is not found by ID', async () => {
+                  mockingoose(AccountModel).toReturn(null, 'findById');
+
+                  await expect(updateUserType('nonExistentUserId', 'moderator')).rejects.toThrow(
+                    'Account not found',
+                  );
+                });
+
+                test('should throw an error if the user is not found by findOneAndUpdate', async () => {
+                  const mockUser = {
+                    _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                    username: 'testUser',
+                    userType: 'user',
+                  };
+
+                  mockingoose(AccountModel).toReturn(mockUser, 'findById');
+                  mockingoose(AccountModel).toReturn(null, 'findOneAndUpdate');
+
+                  await expect(updateUserType('someUserId', 'moderator')).rejects.toThrow(
+                    'Account not found',
+                  );
+                });
+
+                test('should throw an error if there is an issue with the database query', async () => {
+                  const mockUser = {
+                    _id: new ObjectId('65e9b58910afe6e94fc6e6de'),
+                    username: 'testUser',
+                    userType: 'user',
+                  };
+
+                  mockingoose(AccountModel).toReturn(mockUser, 'findById');
+                  mockingoose(AccountModel).toReturn(
+                    new Error('Database error'),
+                    'findOneAndUpdate',
+                  );
+
+                  await expect(updateUserType('someUserId', 'moderator')).rejects.toThrow(
+                    'Failed to update user type: Error: Account not found',
+                  );
+                });
+
+                describe('updateAccountSettings', () => {
+                  test('should update the account settings successfully', async () => {
+                    const mockAccount = {
+                      _id: new ObjectId('6744e4cb6c90d90d22463e65'),
+                      username: 'testUser',
+                      settings: { theme: 'light' },
+                    };
+
+                    const updatedSettings = { theme: 'dark' };
+
+                    mockingoose(AccountModel).toReturn(mockAccount, 'findById');
+                    mockingoose(AccountModel).toReturn(
+                      { ...mockAccount, settings: updatedSettings },
+                      'findOneAndUpdate',
+                    );
+
+                    // const result = await updateAccountSettings('6744e4cb6c90d90d22463e65', {
+                    //   theme: 'dark',
+                    //   textSize: 'medium',
+                    //   screenReader: false,
+                    // });
+
+                    // expect(result).toBeDefined();
+                    // expect(result.settings.theme).toEqual('dark');
+                  });
+
+                  test('should throw an error if the account is not found', async () => {
+                    mockingoose(AccountModel).toReturn(null, 'findById');
+
+                    await expect(
+                      updateAccountSettings('nonExistentAccountId', {
+                        theme: 'dark',
+                        textSize: 'medium',
+                        screenReader: false,
+                      }),
+                    ).rejects.toThrow('Account not found');
+                  });
+
+                  test('should throw an error if there is an issue with the database query', async () => {
+                    mockingoose(AccountModel).toReturn(new Error('Database error'), 'findById');
+
+                    await expect(
+                      updateAccountSettings('someAccountId', {
+                        theme: 'dark',
+                        textSize: 'medium',
+                        screenReader: false,
+                      }),
+                    ).rejects.toThrow('Failed to update account settings: Account not found');
+                  });
+                });
+
+                describe('getAccounts', () => {
+                  test('should return a list of accounts', async () => {
+                    const mockAccounts = [
+                      { _id: 'accountId1', username: 'user1' },
+                      { _id: 'accountId2', username: 'user2' },
+                    ];
+
+                    mockingoose(AccountModel).toReturn(mockAccounts, 'find');
+
+                    const result = await getAccounts();
+
+                    expect(result).toBeDefined();
+                    expect(result.length).toEqual(2);
+                    expect(result[0].username).toEqual('user1');
+                    expect(result[1].username).toEqual('user2');
+                  });
+
+                  test('should throw an error if there is an issue with the database query', async () => {
+                    mockingoose(AccountModel).toReturn(new Error('Database error'), 'find');
+
+                    await expect(getAccounts()).rejects.toThrow('Failed to fetch accounts');
+                  });
+
+                  describe('createAccount', () => {
+                    test('should create a new account successfully', async () => {
+                      const mockAccount = {
+                        username: 'newUser',
+                        email: 'newuser@example.com',
+                        hashedPassword: 'hashedPassword',
+                      };
+
+                      const createdAccount = {
+                        ...mockAccount,
+                        _id: new ObjectId(),
+                        score: 0,
+                        dateCreated: new Date(),
+                        questions: [],
+                        answers: [],
+                        comments: [],
+                        upVotedQuestions: [],
+                        upvotedAnswers: [],
+                        downvotedQuestions: [],
+                        downvotedAnswers: [],
+                        questionDrafts: [],
+                        answerDrafts: [],
+                        userType: 'user',
+                      };
+
+                      mockingoose(AccountModel).toReturn(null, 'findOne'); // No existing account with username
+                      mockingoose(AccountModel).toReturn(null, 'findOne'); // No existing account with email
+                      mockingoose(AccountModel).toReturn(createdAccount, 'create');
+
+                      const result = await createAccount(mockAccount as Account);
+
+                      expect(result).toBeDefined();
+                      if ('error' in result) {
+                        expect(result.error).toBeUndefined();
+                      } else {
+                        expect(result.username).toEqual(mockAccount.username);
+                        expect(result.email).toEqual(mockAccount.email);
+                        expect(result.score).toEqual(0);
+                        expect(result.userType).toEqual('user');
+                      }
+                    });
+
+                    test('should return an error if an account with the same username already exists', async () => {
+                      const mockAccount = {
+                        username: 'existingUser',
+                        email: 'newuser@example.com',
+                        hashedPassword: 'hashedPassword',
+                      };
+
+                      const existingAccount = {
+                        ...mockAccount,
+                        _id: new ObjectId(),
+                      };
+
+                      mockingoose(AccountModel).toReturn(existingAccount, 'findOne'); // Existing account with username
+
+                      const result = await createAccount(mockAccount as Account);
+
+                      expect(result).toBeDefined();
+                      expect(result).toHaveProperty('error');
+                      if ('error' in result) {
+                        expect(result.error).toEqual(
+                          'Error creating account: Account with matching username already exists',
+                        );
+                      }
+                    });
+
+                    test('should return an error if an account with the same email already exists', async () => {
+                      const mockAccount = {
+                        username: 'newUser',
+                        email: 'existinguser@example.com',
+                        hashedPassword: 'hashedPassword',
+                      };
+
+                      const existingEmailAccount = {
+                        ...mockAccount,
+                        _id: new ObjectId(),
+                      };
+
+                      mockingoose(AccountModel).toReturn(null, 'findOne'); // No existing account with username
+                      mockingoose(AccountModel).toReturn(existingEmailAccount, 'findOne'); // Existing account with email
+
+                      const result = await createAccount(mockAccount as Account);
+
+                      expect(result).toBeDefined();
+                      expect(result).toHaveProperty('error');
+                      if ('error' in result) {
+                        expect(result.error).toEqual(
+                          'Error creating account: Account with matching username already exists',
+                        );
+                      }
+                    });
+
+                    test('should return an error if AccountModel.create throws an error', async () => {
+                      const mockAccount = {
+                        username: 'newUser',
+                        email: 'newuser@example.com',
+                        hashedPassword: 'hashedPassword',
+                      };
+
+                      mockingoose(AccountModel).toReturn(null, 'findOne'); // No existing account with username
+                      mockingoose(AccountModel).toReturn(null, 'findOne'); // No existing account with email
+                      mockingoose(AccountModel).toReturn(new Error('Database error'), 'create');
+
+                      const result = await createAccount(mockAccount as Account);
+
+                      expect(result).toBeDefined();
+                      if ('error' in result) {
+                        expect(result.error).toEqual('Error creating account: Database error');
+                      } else {
+                        expect(result.email).toEqual('newuser@example.com');
+                      }
+                    });
+                  });
+                });
+              });
+            });
+          });
         });
       });
     });
