@@ -203,7 +203,7 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     questionDrafts: [],
     answerDrafts: [],
     settings: {
-      darkMode: false,
+      theme: 'light',
       textSize: 'medium',
       screenReader: false
     }
@@ -244,6 +244,7 @@ const populate = async () => {
     const a6 = await answerCreate(A6_TXT, 'abhi3241', new Date('2023-02-19T18:20:59'), [c6]);
     const a7 = await answerCreate(A7_TXT, 'mackson3332', new Date('2023-02-22T17:19:00'), [c7]);
     const a8 = await answerCreate(A8_TXT, 'ihba001', new Date('2023-03-22T21:17:53'), [c8]);
+    
 
     await questionCreate(
       Q1_DESC,
@@ -291,6 +292,18 @@ const populate = async () => {
     );
 
     await accountCreate('sana', 'test123@gmail.com', 'test');
+    await accountCreate('elephantCDE', 'elephantCDE@gmail.com', 'test');
+    await accountCreate('monkeyABC', 'monkeyABC@gmail.com', 'test');
+    await accountCreate('mackson3332', 'mackson3332@gmail.com', 'test');
+    await accountCreate('saltyPeter', 'saltyPeter@gmail.com', 'test');
+    await accountCreate('abaya', 'abaya@gmail.com', 'test');
+    await accountCreate('alia', 'alia@gmail.com', 'test');
+    await accountCreate('Joji John', 'JojiJohn@gmail.com', 'test');
+    await accountCreate('ihba001', 'ihba001@gmail.com', 'test');
+    await accountCreate('mackson3332', 'mackson3332@gmail.com', 'test');
+    await accountCreate('abhi3241', 'abhi3241@gmail.com', 'test');
+    await accountCreate('azad', 'azad@gmail.com', 'test');
+    await accountCreate('hamkalo', 'hamkalo@gmail.com', 'test');
 
     console.log('Database populated');
   } catch (err) {

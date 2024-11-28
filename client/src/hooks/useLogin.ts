@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
 import useLoginContext from './useLoginContext';
-import { useDarkMode } from '../contexts/DarkModeContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 import { useTextSize } from '../contexts/TextSizeContext';
 
 /**
@@ -36,7 +36,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
   const [error, setError] = useState<string | null>(null);
   const { setUser, setAccount } = useLoginContext();
   const navigate = useNavigate();
-  const { setDarkMode } = useDarkMode();
+  const { switchTheme } = useThemeContext();
   const { setTextSize } = useTextSize();
 
   /**
@@ -74,7 +74,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
             hashedPassword: password,
             email,
             userType: 'user',
-            settings: { darkMode: false, textSize: 'medium', screenReader: false },
+            settings: { theme: 'light', textSize: 'medium', screenReader: false },
           });
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -97,7 +97,7 @@ const useLogin = (isLogin: boolean): UseLogin => {
       setAccount(data);
 
       // Set dark mode and text size according to user's settings on login
-      setDarkMode(data.settings.darkMode);
+      switchTheme(data.settings.theme);
       setTextSize(data.settings.textSize);
 
       console.log('Account:', data);

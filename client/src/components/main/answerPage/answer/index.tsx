@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommentSection from '../../commentSection';
 import './index.css';
-import { Comment } from '../../../../types';
+import { Account, Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
 import MarkdownPreview from '../../markdownPreview';
 import useUserContext from '../../../../hooks/useUserContext';
+import { getAccountByName } from '../../../../services/accountService';
 
 /**
  * Interface representing the props for the AnswerView component.
@@ -69,6 +70,16 @@ const AnswerView = ({
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
   const { user, account } = useUserContext();
+  const [ansByAccount, setAnsByAccount] = useState<Account | null>(null);
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      const a = await getAccountByName(ansBy);
+      setAnsByAccount(a);
+    };
+
+    fetchAccount();
+  }, [ansBy]);
 
   return (
     <Box sx={dynamicStyles}>
@@ -124,6 +135,14 @@ const AnswerView = ({
         <Typography variant='subtitle2' component='div' sx={{ color: 'green', fontWeight: 'bold' }}>
           {ansBy}
         </Typography>
+        {ansByAccount && ansByAccount.userType !== 'user' && (
+          <Typography
+            variant='subtitle2'
+            component='div'
+            sx={{ color: 'grey', fontWeight: 'bold' }}>
+            Moderator
+          </Typography>
+        )}
         <Typography variant='caption' component='div'>
           {meta}
         </Typography>

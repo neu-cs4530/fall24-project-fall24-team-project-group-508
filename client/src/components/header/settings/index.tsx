@@ -8,14 +8,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Button,
   SelectChangeEvent,
 } from '@mui/material';
 import './index.css';
-import { useDarkMode } from '../../../contexts/DarkModeContext';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 import { Account } from '../../../types';
 import { updateAccountSettings } from '../../../services/accountService';
 import { useTextSize } from '../../../contexts/TextSizeContext';
@@ -33,15 +30,23 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
 }) => {
   const { textSize, setTextSize } = useTextSize();
 
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { currentTheme, switchTheme } = useThemeContext();
 
-  const handleDarkModeChange = async () => {
-    toggleDarkMode();
+  const handleThemeChange = async (e: SelectChangeEvent<string>) => {
+    const newTheme = e.target.value as
+      | 'light'
+      | 'dark'
+      | 'northeastern'
+      | 'oceanic'
+      | 'highContrast'
+      | 'colorblindFriendly'
+      | 'greyscale';
+    switchTheme(newTheme);
 
     if (account && account._id && setAccount) {
       const updatedAccount = await updateAccountSettings(account._id, {
         ...account.settings,
-        darkMode: !darkMode,
+        theme: newTheme,
       });
       setAccount(updatedAccount);
     } else {
@@ -85,19 +90,24 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
           </Select>
         </FormControl>
 
-        <FormGroup sx={{ marginTop: '10px' }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={darkMode}
-                onChange={handleDarkModeChange}
-                name='darkMode'
-                sx={{ transform: 'scale(1.2)' }}
-              />
-            }
-            label={<span style={{ fontSize: '1rem' }}>Dark Mode</span>}
-          />
-        </FormGroup>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id='text-size-label' sx={{ fontSize: '1.5rem', color: 'inherit' }}>
+            Theme
+          </InputLabel>
+          <Select
+            labelId='text-size-label'
+            value={currentTheme}
+            onChange={handleThemeChange}
+            sx={{ marginTop: '25px', fontSize: '1rem' }}>
+            <MenuItem value='light'>Light</MenuItem>
+            <MenuItem value='dark'>Dark</MenuItem>
+            <MenuItem value='northeastern'>Northeastern</MenuItem>
+            <MenuItem value='oceanic'>Oceanic</MenuItem>
+            <MenuItem value='highContrast'>High Contrast</MenuItem>
+            <MenuItem value='colorblindFriendly'>Colorblind Friendly</MenuItem>
+            <MenuItem value='greyscale'>Greyscale</MenuItem>
+          </Select>
+        </FormControl>
 
         <Button
           onClick={onClose}
