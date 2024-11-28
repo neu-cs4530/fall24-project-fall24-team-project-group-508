@@ -9,10 +9,8 @@ import useProfilePage from '../../../hooks/useProfilePage';
  * ProfilePage component that displays the full content of a profile, with that user's q/a/c's
  */
 const ProfilePage = () => {
-    const { score, user } = useProfilePage();
+  const { score, user } = useProfilePage();
   const theme = useTheme();
-
-
 
   return (
     <div

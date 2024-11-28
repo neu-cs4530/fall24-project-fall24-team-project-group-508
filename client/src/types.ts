@@ -96,7 +96,6 @@ export interface Answer {
   locked: boolean;
 }
 
-
 /**
  * Interface representing a PresetTag, which contains:
  * - name - The name of the tag.
@@ -178,7 +177,6 @@ export interface Question {
   locked: boolean;
   presetTags: PresetTagName[];
 }
-
 
 /**
  * interface representing the accessibility settings of a user, which contains:

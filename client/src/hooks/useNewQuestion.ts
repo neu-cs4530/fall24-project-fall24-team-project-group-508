@@ -116,8 +116,7 @@ const useNewQuestion = () => {
   };
 
   const postDraft = async (question: Question) => {
-    if(!question)
-      return
+    if (!question) return;
 
     const tagnames = tagNames.split(' ').filter(tagName => tagName.trim() !== '');
     const tags = tagnames.map(tagName => ({
@@ -125,30 +124,19 @@ const useNewQuestion = () => {
       description: 'user added tag',
     }));
 
-    // const newQuestion: Question = {
-    //   title,
-    //   text,
-    //   tags,
-    //   askedBy: question.askedBy,
-    //   askDateTime: question.askDateTime,
-    //   answers: question.answers,
-    //   upVotes: question.upVotes,
-    //   downVotes: question.downVotes,
-    //   views: question.views,
-    //   comments: question.comments,
-    //   presetTags,
-    //   pinned: question.pinned,
-    //   locked: question.locked,
-    // };
-
-    const newQuestion = {...question, title: title, text: text, tags: tags, presetTags: presetTags}
+    const newQuestion = {
+      ...question,
+      title,
+      text,
+      tags,
+      presetTags,
+    };
 
     const res = await updateQuestion(newQuestion);
     if (res) {
       navigate('/home');
     }
-  }
-
+  };
 
   return {
     title,

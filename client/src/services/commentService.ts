@@ -48,4 +48,23 @@ const getCommentById = async (id: string, username: string): Promise<Comment> =>
   return res.data;
 };
 
-export { addComment, getCommentById };
+const updateComment = async (
+  id: string,
+  type: 'question' | 'answer',
+  comment: Comment,): 
+  Promise<Comment> => {
+    const reqBody: AddCommentRequestBody = {
+      id,
+      type,
+      comment,
+    };
+  const res = await api.post(`${COMMENT_API_URL}/updateComment`, reqBody);
+
+  if (res.status !== 200) {
+    throw new Error('Error while creating a new question');
+  }
+
+  return res.data;
+};
+
+export { addComment, getCommentById, updateComment };

@@ -1,9 +1,9 @@
 import './index.css';
 import { Box, Button, Chip, Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router';
 import { PresetTagName, Tag } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
 import useUserContext from '../../../../hooks/useUserContext';
-import { useNavigate } from 'react-router';
 
 /**
  * Interface representing the props for the QuestionBody component.
@@ -153,15 +153,19 @@ const QuestionBody = ({
             aria-label={`Asked ${meta}`}>
             asked {meta}
           </Typography>
-          {(askby === user.user.username)?<Button
-          sx={{ m: 1 }}
-          variant='contained'
-          color='primary'
-          onClick={() => {
-            navigate(`/draft/question/${_id}`);
-          }}>
-          edit
-        </Button>:<Box></Box>}
+          {askby === user.user.username ? (
+            <Button
+              sx={{ m: 1 }}
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                navigate(`/draft/${_id}/question/question/${_id}`);
+              }}>
+              edit
+            </Button>
+          ) : (
+            <Box></Box>
+          )}
         </Box>
       </Box>
     </div>

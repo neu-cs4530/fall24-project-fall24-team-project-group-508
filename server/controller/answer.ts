@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
-import { Answer, AnswerRequest, AnswerResponse, FakeSOSocket } from '../types';
-import { addAnswerToQuestion, populateDocument, saveAnswer } from '../models/application';
+import { Answer, AnswerRequest, AnswerResponse, FakeSOSocket, FindAnswerByIdRequest } from '../types';
+import { addAnswerToQuestion, checkIfExists, fetchAnswerById, populateDocument, saveAnswer, updateAnswer } from '../models/application';
+import { ObjectId } from 'mongodb';
 
 const answerController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -83,8 +84,70 @@ const answerController = (socket: FakeSOSocket) => {
     }
   };
 
+    /**
+   * Retrieves a question by its unique ID, and increments the view count for that answer.
+   * If there is an error, the HTTP response's status is updated.
+   *
+   * @param req The FindAnswerByIdRequest object containing the answer ID as a parameter.
+   * @param res The HTTP response object used to send back the answer details.
+   *
+   * @returns A Promise that resolves to void.
+   */
+    const getAnswerById = async (req: FindAnswerByIdRequest, res: Response): Promise<void> => {
+      const { id } = req.params;
+      const { username } = req.query;
+  
+      if (!ObjectId.isValid(id)) {
+        res.status(400).send('Invalid ID format');
+        return;
+      }
+  
+      if (username === undefined) {
+        res.status(400).send('Invalid username requesting answer.');
+        return;
+      }
+  
+      try {
+        const a = await fetchAnswerById(id, username);
+  
+        if (a && !('error' in a)) {
+          res.json(a);
+          return;
+        }
+  
+        throw new Error('Error while fetching answer by id');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          res.status(500).send(`Error when fetching answer by id: ${err.message}`);
+        } else {
+          res.status(500).send(`Error when fetching answer by id`);
+        }
+      }
+    };
+
+    const updateAnswerRoute = async (req: AnswerRequest, res: Response): Promise<void> => {
+      const { ans } = req.body;
+      console.log(req.body)
+      if (!isAnswerValid(ans)) {
+        res.status(400).send('Invalid question body');
+        return;
+      }
+      try {
+        if(!ans._id || await !checkIfExists(ans._id.toString(), "answer")) {
+          await addAnswer(req, res)
+        } else {
+          await updateAnswer(ans);
+          res.status(200).send('updated!');
+        }
+      } catch(err) {
+        res.status(500).send(`Error when updating question: ${(err as Error).message}`);
+      }
+    }
+
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/addAnswer', addAnswer);
+  router.get('/getAnswerById/:id', getAnswerById);
+  router.post('/updateAnswer', updateAnswerRoute)
 
   return router;
 };

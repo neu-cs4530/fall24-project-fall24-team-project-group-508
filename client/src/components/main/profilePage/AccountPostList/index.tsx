@@ -8,16 +8,15 @@ import { Account, Answer, Question, Comment } from '../../../../types';
 import AnswerView from '../../answerPage/answer';
 import useProfilePage from '../../../../hooks/useProfilePage';
 import { getMetaData } from '../../../../tool';
-import CommentSection from '../../commentSection';
 
 /**
  * ProfilePage component that displays the full content of a profile, with that user's q/a/c's
  */
 const ProfilePage = () => {
-    //{theme, userState, setUserState, userQuestions, userAnswers, userComments};
-  const { theme, navigate, userState, setUserState, userQuestions, userAnswers, userComments} = useProfilePage();
+  // {theme, userState, setUserState, userQuestions, userAnswers, userComments};
+  const { theme, navigate, userState, setUserState, userQuestions, userAnswers, userComments } =
+    useProfilePage();
 
-  
   const listToShow = () => {
     if (userState === 'questions') {
       return userQuestions;
@@ -46,20 +45,20 @@ const ProfilePage = () => {
       const ans = item as Answer;
       return (
         <Box>
-        <AnswerView 
-          
-          text={ans.text}
-          _id={ans._id}
-          ansBy={ans.ansBy}
-          meta={getMetaData(new Date(ans.ansDateTime))}
-          comments={[]}
-          locked={ans.locked}
-          pinned={ans.pinned}
-          cosmetic={true}
-          handleAddComment={() => {}}
-          moderatorInfo={{
-            type: 'answer',
-          }}></AnswerView></Box>
+          <AnswerView
+            text={ans.text}
+            _id={ans._id}
+            ansBy={ans.ansBy}
+            meta={getMetaData(new Date(ans.ansDateTime))}
+            comments={[]}
+            locked={ans.locked}
+            pinned={ans.pinned}
+            cosmetic={true}
+            handleAddComment={() => {}}
+            moderatorInfo={{
+              type: 'answer',
+            }}></AnswerView>
+        </Box>
       );
     }
     if (userState === 'comments') {
@@ -136,15 +135,15 @@ const displayComment = (comment: Comment) => {
 
   return (
     <Box sx={{ flex: 1 }}>
-        {/* Comment Text */}
-        <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+      {/* Comment Text */}
+      <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
         {comment.text}
-        </Typography>
-        {/* Comment Meta Data */}
-        <Typography variant='caption' color='textSecondary'>
+      </Typography>
+      {/* Comment Meta Data */}
+      <Typography variant='caption' color='textSecondary'>
         {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
-        </Typography>
-    </Box>     
+      </Typography>
+    </Box>
   );
 };
 

@@ -15,6 +15,8 @@ import { useNavigate } from 'react-router-dom';
  * - handleAddComment - a function that handles adding a new comment, taking a Comment object as an argument
  */
 interface CommentSectionProps {
+  qid?: string;
+  parentType: string;
   comments: Comment[];
   handleAddComment: (comment: Comment) => void;
   moderatorInfo: ModeratorActionProps;
@@ -26,7 +28,7 @@ interface CommentSectionProps {
  * @param comments: an array of Comment objects
  * @param handleAddComment: function to handle the addition of a new comment
  */
-const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSectionProps) => {
+const CommentSection = ({ qid,comments, parentType, handleAddComment, moderatorInfo }: CommentSectionProps) => {
   const { user } = useUserContext();
   const [text, setText] = useState<string>('');
   const [textErr, setTextErr] = useState<string>('');
@@ -108,7 +110,7 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
                       variant='contained'
                       color='primary'
                       onClick={() => {
-                        navigate(`/draft/comment/${comment._id}`);
+                        navigate(`/draft/${qid}/${parentType}/comment/${comment._id}`);
                       }}>
                       edit
                     </Button>:<Box></Box>}

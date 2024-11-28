@@ -28,4 +28,16 @@ const getAnswerById = async (id: string, username: string): Promise<Answer> => {
   return res.data;
 };
 
-export { addAnswer, getAnswerById };
+const updateAnswer = async (qid: string, ans: Answer): Promise<Answer> => {
+  const data = { qid, ans };
+  const res = await api.post(`${ANSWER_API_URL}/updateAnswer`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while creating a new question');
+  }
+
+  return res.data;
+};
+
+
+export { addAnswer, getAnswerById, updateAnswer };

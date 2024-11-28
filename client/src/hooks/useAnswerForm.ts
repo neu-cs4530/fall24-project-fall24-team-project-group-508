@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { validateHyperlink } from '../tool';
-import { addAnswer } from '../services/answerService';
+import { addAnswer, updateAnswer } from '../services/answerService';
 import useUserContext from './useUserContext';
 import { Answer } from '../types';
 
@@ -71,11 +71,26 @@ const useAnswerForm = () => {
     }
   };
 
+  const postDraft = async (answer: Answer, qid: string) => {
+    if (!answer) return;
+
+    const newAnswer = {
+      ...answer,
+      text,
+    };
+
+    const res = await updateAnswer(qid, newAnswer);
+    if (res) {
+      navigate(`/question/${qid}`);
+    }
+  };
+
   return {
     text,
     textErr,
     setText,
     postAnswer,
+    postDraft,
   };
 };
 

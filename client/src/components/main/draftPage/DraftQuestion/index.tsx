@@ -19,13 +19,10 @@ import MarkdownPreview from '../../markdownPreview';
 import useNewQuestion from '../../../../hooks/useNewQuestion';
 import useDraftPage from '../../../../hooks/useDraftPage';
 
-
-
 export interface DraftQuestionProps {
-  id: string,
-  type: string,
+  id: string;
+  type: string;
 }
-
 
 const DraftQuestionPage = (draftData: DraftQuestionProps) => {
   const {
@@ -42,7 +39,7 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
     postDraft,
   } = useNewQuestion();
 
-  const {id, type} = draftData;
+  const { id, type } = draftData;
 
   const presetTagOptions = [
     'C',
@@ -184,8 +181,7 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
           color='primary'
           onClick={e => {
             e.preventDefault();
-            if(question.question)
-              postDraft(question.question);
+            if (question.question) postDraft(question.question);
           }}>
           Post Draft/Edit
         </Button>

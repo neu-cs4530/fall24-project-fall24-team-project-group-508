@@ -8,7 +8,7 @@ const getProfileData = async (account: User): Promise<Account> => {
   if (res.status !== 200) {
     throw new Error('Error while creating a new comment for the question');
   }
-  
+
   return res.data;
 };
 

@@ -355,6 +355,54 @@ export const fetchAndIncrementQuestionViewsById = async (
 };
 
 /**
+ * Fetches answer by its ID 
+ *
+ * @param {string} qid - The ID of the answer to fetch.
+ * @param {string} username - The username of the user requesting the answer.
+ *
+ * @returns {Promise<AnswerResponse | null>} - Promise that resolves to the fetched answer
+ *          ,null if the answer is not found, or an error message.
+ */
+export const fetchAnswerById = async (
+  id: string,
+  username: string,
+): Promise<AnswerResponse| null> => {
+  try {
+    const a = await AnswerModel.findOne(
+      { _id: new ObjectId(id) },
+    ).populate([
+      { path: 'comments', model: CommentModel },
+    ]);
+    return a;
+  } catch (error) {
+    return { error: 'Error when fetching and updating a question' };
+  }
+};
+
+/**
+ * Fetches comments by its ID 
+ *
+ * @param {string} qid - The ID of the comment to fetch.
+ * @param {string} username - The username of the user requesting the comment.
+ *
+ * @returns {Promise<CommentResponse | null>} - Promise that resolves to the fetched comment
+ *          ,null if the comment is not found, or an error message.
+ */
+export const fetchCommentById = async (
+  id: string,
+  username: string,
+): Promise<CommentResponse| null> => {
+  try {
+    const c = await CommentModel.findOne(
+      { _id: new ObjectId(id) },
+    )
+    return c;
+  } catch (error) {
+    return { error: 'Error when fetching and updating a question' };
+  }
+};
+
+/**
  * Saves a new question to the database.
  *
  * @param {Question} question - The question to save
@@ -1023,4 +1071,12 @@ export const updateQuestion = async(question: Question): Promise<void> => {
   }
 
   await QuestionModel.findOneAndUpdate({ _id: question._id }, { $set: { title: question.title, text: question.text, tags: tags, presetTags: question.presetTags} })  
+}
+
+export const updateAnswer = async(answer: Answer): Promise<void> => {
+  await AnswerModel.findOneAndUpdate({ _id: answer._id }, { $set: { text: answer.text} });  
+}
+
+export const updateComment = async(comment: Comment): Promise<void> => {
+  await CommentModel.findOneAndUpdate({ _id: comment._id }, { $set: { text: comment.text} });  
 }

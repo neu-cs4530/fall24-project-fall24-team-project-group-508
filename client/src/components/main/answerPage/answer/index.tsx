@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
  * - handleAddComment Callback function to handle adding a new comment.
  */
 interface AnswerProps {
+  qid?: string;
   _id?: string;
   text: string;
   ansBy: string;
@@ -41,6 +42,7 @@ interface AnswerProps {
  * @param handleAddComment Function to handle adding a new comment.
  */
 const AnswerView = ({
+  qid,
   text,
   _id,
   ansBy,
@@ -98,22 +100,28 @@ const AnswerView = ({
         <Typography variant='caption' component='div'>
           {meta}
         </Typography>
-        {(!cosmetic && ansBy === user.user.username)?<Button
-          sx={{ m: 1 }}
-          variant='contained'
-          color='primary'
-          onClick={() => {
-            navigate(`/draft/answer/${_id}`);
-          }}>
-          edit
-        </Button>:<Box></Box>}
+        {!cosmetic && ansBy === user.user.username ? (
+          <Button
+            sx={{ m: 1 }}
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              navigate(`/draft/${qid}/question/answer/${_id}`);
+            }}>
+            edit
+          </Button>
+        ) : (
+          <Box></Box>
+        )}
       </Box>
 
       {/* Comment Section */}
       {!cosmetic ? (
         <Box sx={{ width: 350 }}>
           <CommentSection
+            qid={qid}
             comments={pinSortedComments}
+            parentType='answer'
             handleAddComment={handleAddComment}
             moderatorInfo={{
               parentType: 'answer',

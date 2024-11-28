@@ -169,6 +169,32 @@ export interface FindQuestionByIdRequest extends Request {
 }
 
 /**
+ * Interface for the request parameters when finding a answer by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindAnswerByIdRequest extends Request {
+  params: {
+    id: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
+ * Interface for the request parameters when finding a comment by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindCommentByIdRequest extends Request {
+  params: {
+    id: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
  * Interface for the request body when adding a new question.
  * - body - The question being added.
  */

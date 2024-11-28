@@ -6,12 +6,14 @@ import useProfilePage from '../../../hooks/useProfilePage';
 import { Answer, Comment, Question } from '../../../types';
 import { useParams } from 'react-router-dom';
 import DraftQuestionPage from './DraftQuestion';
+import DraftAnswerPage from './DraftAnswer';
+import DraftCommentPage from './DraftComment';
 
 
 
 
 const DraftPage = () => {
-  const { type, id } = useParams();
+  const { qid, type, id, parentType } = useParams();
   const { score, user } = useProfilePage();
   const theme = useTheme();
 
@@ -21,9 +23,17 @@ const DraftPage = () => {
         </DraftQuestionPage>
     )
   } else if(type === 'answer') {
+   return (
+        <DraftAnswerPage qid={qid?qid:'undefined'} type={'answer'} id={id?id:'undefined'}>
 
+        </DraftAnswerPage>
+   )
   } else if(type === 'comment') {
+    return (
+      <DraftCommentPage qid={qid?qid:'undefined'} type={'comment'} id={id?id:'undefined'} parentType={parentType?parentType:'undefined'}>
 
+      </DraftCommentPage>
+ )
   }
 
 };

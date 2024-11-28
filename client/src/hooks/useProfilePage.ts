@@ -11,15 +11,15 @@ import useUserContext from './useUserContext';
 const useProfilePage = () => {
   const { user, socket } = useUserContext();
   const [userState, setUserState] = useState('');
-  const [userQuestions, setUserQuestions] = useState<Question[]>([])
-  const [userAnswers, setUserAnswers] = useState<Answer[]>([])
-  const [userComments, setUserComments] = useState<Comment[]>([])
+  const [userQuestions, setUserQuestions] = useState<Question[]>([]);
+  const [userAnswers, setUserAnswers] = useState<Answer[]>([]);
+  const [userComments, setUserComments] = useState<Comment[]>([]);
   const [score, setScore] = useState(0);
   const navigate = useNavigate();
   const theme = useTheme();
-  
-  const updateUser = async (profile : ProfilePagePayload) => {
-    if(profile.username === user.username) {
+
+  const updateUser = async (profile: ProfilePagePayload) => {
+    if (profile.username === user.username) {
       setUserQuestions(profile.questions);
       setScore(profile.score);
       setUserAnswers(profile.answers);
@@ -28,12 +28,22 @@ const useProfilePage = () => {
   };
 
   useEffect(() => {
-    getProfileData(user)
+    getProfileData(user);
   }, []);
-  
-  socket.on('userUpdate',updateUser)
 
-  return {theme, navigate, userState, setUserState, user, score, userQuestions, userAnswers, userComments};
+  socket.on('userUpdate', updateUser);
+
+  return {
+    theme,
+    navigate,
+    userState,
+    setUserState,
+    user,
+    score,
+    userQuestions,
+    userAnswers,
+    userComments,
+  };
 };
 
 export default useProfilePage;

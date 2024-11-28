@@ -72,7 +72,9 @@ const AnswerPage = () => {
 
         {/* Comments Section */}
         <CommentSection
+          qid={questionID}
           comments={pinSortedComments}
+          parentType='question'
           handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
           moderatorInfo={{
             parentType: 'question',
@@ -88,6 +90,7 @@ const AnswerPage = () => {
         {pinSortedAnswers.map((a, idx) => (
           <Paper key={idx} elevation={3} sx={{ mb: 2, p: 2 }}>
             <AnswerView
+              qid={questionID}
               _id={a._id}
               text={a.text}
               ansBy={a.ansBy}
