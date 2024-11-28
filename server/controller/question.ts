@@ -17,6 +17,8 @@ import {
   processTags,
   populateDocument,
   saveQuestion,
+  checkIfExists,
+  updateQuestion,
 } from '../models/application';
 
 const questionController = (socket: FakeSOSocket) => {
@@ -128,6 +130,7 @@ const questionController = (socket: FakeSOSocket) => {
       res.status(400).send('Invalid question body');
       return;
     }
+
     const question: Question = req.body;
     question.locked = false;
     question.pinned = false;
@@ -230,12 +233,32 @@ const questionController = (socket: FakeSOSocket) => {
     voteQuestion(req, res, 'downvote');
   };
 
+  const updateQuestionRoute = async (req: AddQuestionRequest, res: Response): Promise<void> => {
+    if (!isQuestionBodyValid(req.body)) {
+      res.status(400).send('Invalid question body');
+      return;
+    }
+
+    const question: Question = req.body;
+    try {
+      if(!question._id || await !checkIfExists(question._id.toString(), "question")) {
+        await addQuestion(req, res)
+      } else {
+        await updateQuestion(question);
+        res.status(200).send('updated!');
+      }
+    } catch(err) {
+      res.status(500).send(`Error when updating question: ${(err as Error).message}`);
+    }
+  }
+
   // add appropriate HTTP verbs and their endpoints to the router
   router.get('/getQuestion', getQuestionsByFilter);
   router.get('/getQuestionById/:qid', getQuestionById);
   router.post('/addQuestion', addQuestion);
   router.post('/upvoteQuestion', upvoteQuestion);
   router.post('/downvoteQuestion', downvoteQuestion);
+  router.post('/updateQuestion', updateQuestionRoute)
 
   return router;
 };

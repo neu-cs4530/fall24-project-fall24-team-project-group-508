@@ -6,6 +6,7 @@ import { Comment } from '../../../types';
 import './index.css';
 import useUserContext from '../../../hooks/useUserContext';
 import ModeratorActionButtons, { ModeratorActionProps } from '../moderatorActions';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Interface representing the props for the Comment Section component.
@@ -62,6 +63,7 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
     marginBottom: 1,
     borderRadius: '4px',
   });
+  const navigate = useNavigate();
 
   return (
     <Box className='comment-section'>
@@ -101,6 +103,15 @@ const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSe
                     <Typography variant='caption' color='textSecondary'>
                       {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
                     </Typography>
+                    {(comment.commentBy === user.username)?<Button
+                      sx={{ m: 1 }}
+                      variant='contained'
+                      color='primary'
+                      onClick={() => {
+                        navigate(`/draft/comment/${comment._id}`);
+                      }}>
+                      edit
+                    </Button>:<Box></Box>}
                   </Box>
                 </ListItem>
               ))

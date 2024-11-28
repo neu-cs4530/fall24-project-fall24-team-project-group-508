@@ -40,4 +40,12 @@ const addComment = async (
   return res.data;
 };
 
-export default addComment;
+const getCommentById = async (id: string, username: string): Promise<Comment> => {
+  const res = await api.get(`${COMMENT_API_URL}/getCommentById/${id}?username=${username}`);
+  if (res.status !== 200) {
+    throw new Error('Error when fetching comment by id');
+  }
+  return res.data;
+};
+
+export { addComment, getCommentById };

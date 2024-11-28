@@ -12,6 +12,8 @@ import NewAnswerPage from './main/newAnswer';
 import AnswerPage from './main/answerPage';
 import { DarkModeProvider } from '../contexts/DarkModeContext';
 import { TextSizeProvider } from '../contexts/TextSizeContext';
+import ProfilePage from './main/profilePage';
+import DraftPage from './main/draftPage';
 
 const ProtectedRoute = ({
   user,
@@ -64,6 +66,8 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                   <Layout />
                 </ProtectedRoute>
               }>
+              <Route path='/profile' element={<ProfilePage />} />
+              <Route path='/draft/:type/:id' element={<DraftPage />} />
               <Route path='/home' element={<QuestionPage />} />
               <Route path='tags' element={<TagPage />} />
               <Route path='/question/:qid' element={<AnswerPage />} />

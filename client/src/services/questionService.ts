@@ -52,6 +52,16 @@ const addQuestion = async (q: Question): Promise<Question> => {
   return res.data;
 };
 
+const updateQuestion = async(q: Question): Promise<Question> => {
+  const res = await api.post(`${QUESTION_API_URL}/updateQuestion`, q);
+
+  if (res.status !== 200) {
+    throw new Error('Error while creating a new question');
+  }
+
+  return res.data;
+}
+
 /**
  * Function to upvote a question.
  *
@@ -84,4 +94,4 @@ const downvoteQuestion = async (qid: string, username: string) => {
   return res.data;
 };
 
-export { getQuestionsByFilter, getQuestionById, addQuestion, upvoteQuestion, downvoteQuestion };
+export { getQuestionsByFilter, getQuestionById, addQuestion, upvoteQuestion, downvoteQuestion, updateQuestion };

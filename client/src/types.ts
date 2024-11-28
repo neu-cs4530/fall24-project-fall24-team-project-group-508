@@ -96,6 +96,7 @@ export interface Answer {
   locked: boolean;
 }
 
+
 /**
  * Interface representing a PresetTag, which contains:
  * - name - The name of the tag.
@@ -178,6 +179,7 @@ export interface Question {
   presetTags: PresetTagName[];
 }
 
+
 /**
  * interface representing the accessibility settings of a user, which contains:
  * - darkMode - A boolean indicating whether the user prefers dark mode
@@ -253,6 +255,14 @@ export interface QuestionUpdatePayload {
   removed: boolean;
 }
 
+export interface ProfilePagePayload {
+  username: string;
+  score: number;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+}
+
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
@@ -263,4 +273,5 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  userUpdate: (profile: ProfilePagePayload) => void;
 }

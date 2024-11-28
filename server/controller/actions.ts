@@ -122,6 +122,7 @@ const actionsController = (socket: FakeSOSocket) => {
     }
   };
 
+
   router.post('/takeAction', takeActionRoute);
 
   return router;

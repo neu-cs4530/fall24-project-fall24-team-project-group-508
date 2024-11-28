@@ -20,4 +20,12 @@ const addAnswer = async (qid: string, ans: Answer): Promise<Answer> => {
   return res.data;
 };
 
-export default addAnswer;
+const getAnswerById = async (id: string, username: string): Promise<Answer> => {
+  const res = await api.get(`${ANSWER_API_URL}/getAnswerById/${id}?username=${username}`);
+  if (res.status !== 200) {
+    throw new Error('Error when fetching answer by id');
+  }
+  return res.data;
+};
+
+export { addAnswer, getAnswerById };

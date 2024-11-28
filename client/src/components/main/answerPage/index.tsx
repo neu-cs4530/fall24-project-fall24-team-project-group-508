@@ -59,6 +59,7 @@ const AnswerPage = () => {
 
         {/* Question Body */}
         <QuestionBody
+          _id={questionID}
           views={question.views.length}
           text={question.text}
           askby={question.askedBy}
@@ -87,12 +88,14 @@ const AnswerPage = () => {
         {pinSortedAnswers.map((a, idx) => (
           <Paper key={idx} elevation={3} sx={{ mb: 2, p: 2 }}>
             <AnswerView
+              _id={a._id}
               text={a.text}
               ansBy={a.ansBy}
               meta={getMetaData(new Date(a.ansDateTime))}
               comments={a.comments}
               locked={a.locked}
               pinned={a.pinned}
+              cosmetic={false}
               handleAddComment={(comment: Comment) => handleNewComment(comment, 'answer', a._id)}
               moderatorInfo={{
                 parentType: 'question',

@@ -367,6 +367,12 @@ export interface CreateAccountRequest extends Request {
   body: Account;
 }
 
+export interface GetUserDataRequest extends Request {
+  body: {
+    profile: Account;
+  };
+}
+
 export type ActionTypes = 'pin' | 'remove' | 'lock' | 'promote';
 
 /**
@@ -397,6 +403,14 @@ export interface ActionRequest extends Request {
  */
 export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { question: Question } | { error: string }
 
+export interface ProfilePagePayload {
+  username: string;
+  score: number;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+}
+
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
@@ -407,4 +421,5 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  userUpdate: (profile: ProfilePagePayload) => void;
 }

@@ -943,3 +943,84 @@ export const lockPost = async (postType: string, postID: string): Promise<Action
     return { error: 'lock action failed' };
   }
 };
+
+export const findUsersQuestions = async (username: string): Promise<Question[]> => {
+  const data = await QuestionModel.find({ askedBy: username });
+  const questions: Question[] = [];
+  for( const item of data) {
+    const q = await QuestionModel.findOne({ _id: item._id });
+    if(!q)
+      continue
+   
+    q.tags = await findUserTags(q.tags);
+    questions.push(q);
+  }
+  return questions;
+}
+
+export const findUserTags = async (tags: Tag[] | ObjectId[]): Promise<Tag[]> => {
+  const tag_objs: Tag[] = []
+  for ( const tag of tags ) {
+    const t = await TagModel.findOne({_id: tag._id})
+    if(t)
+      tag_objs.push(t);
+  }
+  return tag_objs
+}
+
+export const findUsersAnswers = async (username: string): Promise<Answer[]> => {
+  const data = await AnswerModel.find({ ansBy: username });
+  const answers: Answer[] = [];
+  for( const item of data) {
+    const a = await AnswerModel.findOne({ _id: item._id });
+    if(a)
+      answers.push(a)
+  }
+  return answers;
+}
+
+export const findUsersComments = async (username: string): Promise<Comment[]> => {
+  const data = await CommentModel.find({ commentBy: username });
+  const comments: Comment[] = []
+  for( const item of data) {
+    const c = await CommentModel.findOne({ _id: item._id })
+    if(c)
+      comments.push(c)
+  }
+  return comments;
+}
+
+export const getUserScore = async(username: string): Promise<number> => {
+  const profile = await AccountModel.findOne({username})
+  if(!profile)
+    return 0;
+  return profile.score
+}
+
+export const checkIfExists = async(id: string, type: string): Promise<boolean> => {
+  if(type === 'question') {
+    const q = await QuestionModel.findOne({_id: id});
+    return !!q
+  } else if(type === 'answer') {
+    const a = await AnswerModel.findOne({_id: id});
+    return !!a
+  } else if(type === 'comment') {
+    const c = await CommentModel.findOne({_id: id});
+    return !!c
+  }
+  return false;
+}
+
+export const updateQuestion = async(question: Question): Promise<void> => {
+  const tags = []
+  for(const tag of question.tags) {
+    const t = await addTag(tag);
+    if(!t) 
+      continue
+    const modelTag = await TagModel.findOne({ name: t.name });
+    if(modelTag)
+      tags.push(modelTag);
+  }
+
+  await QuestionModel.findOneAndUpdate({ _id: question._id }, { $set: { title: question.title, text: question.text, tags: tags, presetTags: question.presetTags} })  
+}

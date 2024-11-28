@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateHyperlink } from '../tool';
-import { addQuestion } from '../services/questionService';
+import { addQuestion, updateQuestion } from '../services/questionService';
 import useUserContext from './useUserContext';
 import { PresetTagName, Question } from '../types';
 
@@ -115,6 +115,41 @@ const useNewQuestion = () => {
     }
   };
 
+  const postDraft = async (question: Question) => {
+    if(!question)
+      return
+
+    const tagnames = tagNames.split(' ').filter(tagName => tagName.trim() !== '');
+    const tags = tagnames.map(tagName => ({
+      name: tagName,
+      description: 'user added tag',
+    }));
+
+    // const newQuestion: Question = {
+    //   title,
+    //   text,
+    //   tags,
+    //   askedBy: question.askedBy,
+    //   askDateTime: question.askDateTime,
+    //   answers: question.answers,
+    //   upVotes: question.upVotes,
+    //   downVotes: question.downVotes,
+    //   views: question.views,
+    //   comments: question.comments,
+    //   presetTags,
+    //   pinned: question.pinned,
+    //   locked: question.locked,
+    // };
+
+    const newQuestion = {...question, title: title, text: text, tags: tags, presetTags: presetTags}
+
+    const res = await updateQuestion(newQuestion);
+    if (res) {
+      navigate('/home');
+    }
+  }
+
+
   return {
     title,
     setTitle,
@@ -128,6 +163,7 @@ const useNewQuestion = () => {
     textErr,
     tagErr,
     postQuestion,
+    postDraft,
   };
 };
 

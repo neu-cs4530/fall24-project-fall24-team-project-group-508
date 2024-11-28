@@ -1,10 +1,12 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
 import MarkdownPreview from '../../markdownPreview';
+import useUserContext from '../../../../hooks/useUserContext';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Interface representing the props for the AnswerView component.
@@ -16,12 +18,14 @@ import MarkdownPreview from '../../markdownPreview';
  * - handleAddComment Callback function to handle adding a new comment.
  */
 interface AnswerProps {
+  _id?: string;
   text: string;
   ansBy: string;
   meta: string;
   comments: Comment[];
   locked: boolean;
   pinned: boolean;
+  cosmetic: boolean;
   handleAddComment: (comment: Comment) => void;
   moderatorInfo: ModeratorActionProps;
 }
@@ -38,11 +42,13 @@ interface AnswerProps {
  */
 const AnswerView = ({
   text,
+  _id,
   ansBy,
   meta,
   comments,
   locked,
   pinned,
+  cosmetic,
   handleAddComment,
   moderatorInfo,
 }: AnswerProps) => {
@@ -59,15 +65,22 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
+  const user = useUserContext();
+  const navigate = useNavigate();
+
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
-      <Box
-        role='region'
-        aria-label='Moderator actions'
-        sx={{ marginBottom: 1, flexDirection: 'column' }}>
-        {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
-      </Box>
+      {!cosmetic ? (
+        <Box
+          role='region'
+          aria-label='Moderator actions'
+          sx={{ marginBottom: 1, flexDirection: 'column' }}>
+          {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
+        </Box>
+      ) : (
+        <div></div>
+      )}
 
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
@@ -85,21 +98,34 @@ const AnswerView = ({
         <Typography variant='caption' component='div'>
           {meta}
         </Typography>
+        {(!cosmetic && ansBy === user.user.username)?<Button
+          sx={{ m: 1 }}
+          variant='contained'
+          color='primary'
+          onClick={() => {
+            navigate(`/draft/answer/${_id}`);
+          }}>
+          edit
+        </Button>:<Box></Box>}
       </Box>
 
       {/* Comment Section */}
-      <Box sx={{ width: 350 }}>
-        <CommentSection
-          comments={pinSortedComments}
-          handleAddComment={handleAddComment}
-          moderatorInfo={{
-            parentType: 'answer',
-            parentID: moderatorInfo._id,
-            _id: undefined,
-            type: 'comment',
-          }}
-        />
-      </Box>
+      {!cosmetic ? (
+        <Box sx={{ width: 350 }}>
+          <CommentSection
+            comments={pinSortedComments}
+            handleAddComment={handleAddComment}
+            moderatorInfo={{
+              parentType: 'answer',
+              parentID: moderatorInfo._id,
+              _id: undefined,
+              type: 'comment',
+            }}
+          />
+        </Box>
+      ) : (
+        <div></div>
+      )}
     </Box>
   );
 };
