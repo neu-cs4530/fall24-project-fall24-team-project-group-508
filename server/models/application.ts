@@ -267,7 +267,14 @@ export const filterQuestionsBySearch = (qlist: Question[], search: string): Ques
     }
     return checkTagInQuestion(q, searchKeyword) || checkKeywordInQuestion(q, searchTags);
   });
-  const prioritizedQuestions = filteredQuestions.sort((a, b) => {
+  const sortedQuestions = filteredQuestions.sort((a, b) => {
+    const aRatio = a.upVotes.length / (a.downVotes.length || 1);
+    const bRatio = b.upVotes.length / (b.downVotes.length || 1);
+
+    if (aRatio > bRatio) {
+      return bRatio - aRatio;
+    }
+
     const aMarkdownQ = a.tags.some(tag => tag.name === 'Markdown');
     const bMarkdownQ = b.tags.some(tag => tag.name === 'Markdown');
     if (aMarkdownQ && !bMarkdownQ) {
@@ -278,7 +285,7 @@ export const filterQuestionsBySearch = (qlist: Question[], search: string): Ques
     }
     return 0;
   });
-  return prioritizedQuestions;
+  return sortedQuestions;
 };
 
 /**
