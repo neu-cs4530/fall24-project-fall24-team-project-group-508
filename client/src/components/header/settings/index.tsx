@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import {
   Dialog,
@@ -10,16 +9,17 @@ import {
   MenuItem,
   Button,
   SelectChangeEvent,
+  Box,
 } from '@mui/material';
-import './index.css';
-import { useThemeContext } from '../../../contexts/ThemeContext';
+import ReadPageButton from '../../main/ttsButton';
 import { Account } from '../../../types';
 import { updateAccountSettings } from '../../../services/accountService';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 import { useTextSize } from '../../../contexts/TextSizeContext';
 
 interface AccessibilityPopupProps {
-  account?: Account; // Account can be undefined
-  setAccount?: (updatedAccount: Account | null) => void; // Can be undefined
+  account?: Account;
+  setAccount?: (updatedAccount: Account | null) => void;
   onClose: () => void;
 }
 
@@ -29,7 +29,6 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   onClose,
 }) => {
   const { textSize, setTextSize } = useTextSize();
-
   const { currentTheme, switchTheme } = useThemeContext();
 
   const handleThemeChange = async (e: SelectChangeEvent<string>) => {
@@ -91,11 +90,11 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
         </FormControl>
 
         <FormControl fullWidth margin='normal'>
-          <InputLabel id='text-size-label' sx={{ fontSize: '1.5rem', color: 'inherit' }}>
+          <InputLabel id='theme-label' sx={{ fontSize: '1.5rem', color: 'inherit' }}>
             Theme
           </InputLabel>
           <Select
-            labelId='text-size-label'
+            labelId='theme-label'
             value={currentTheme}
             onChange={handleThemeChange}
             sx={{ marginTop: '25px', fontSize: '1rem' }}>
@@ -109,13 +108,19 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
           </Select>
         </FormControl>
 
-        <Button
-          onClick={onClose}
-          variant='contained'
-          color='primary'
-          sx={{ marginTop: '24px', fontSize: '1rem', padding: '8px 16px' }}>
-          Close
-        </Button>
+        <Box sx={{ display: 'block', marginTop: '24px' }}>
+          <ReadPageButton />
+        </Box>
+
+        <Box sx={{ display: 'block', marginTop: '16px' }}>
+          <Button
+            onClick={onClose}
+            variant='contained'
+            color='primary'
+            sx={{ fontSize: '1rem', padding: '8px 16px' }}>
+            Close
+          </Button>
+        </Box>
       </DialogContent>
     </Dialog>
   );
