@@ -9,6 +9,7 @@ export interface User {
   username: string;
   hashedPassword: string;
   email: string;
+  userType: 'user' | 'moderator' | 'owner';
 }
 
 /**
@@ -85,6 +86,9 @@ export interface VoteData {
  * - ansBy - The username of the user who wrote the answer
  * - ansDateTime - The date and time when the answer was created
  * - comments - Comments associated with the answer.
+ * - pinned - A boolean indicating whether the answer is pinned
+ * - locked - A boolean indicating whether the answer is locked
+ * - isCorrect - A boolean indicating whether the answer is correct
  */
 export interface Answer {
   _id?: string;
@@ -94,6 +98,7 @@ export interface Answer {
   comments: Comment[];
   pinned: boolean;
   locked: boolean;
+  isCorrect: boolean;
 }
 
 /**
@@ -159,6 +164,8 @@ export type PresetTagName =
  * - upVotes - An array of usernames who upvoted the question.
  * - downVotes - An array of usernames who downvoted the question.
  * - comments - Comments associated with the question.
+ * - pinned - A boolean indicating whether the question is pinned.
+ * - locked - A boolean indicating whether the question is locked.
  * - presetTags - An array of preset tag names associated with the question.
  */
 export interface Question {
@@ -213,6 +220,7 @@ export interface Account {
   _id?: string;
   username: string;
   email: string;
+  userType: 'user' | 'moderator' | 'owner';
   hashedPassword: string;
   score: number;
   dateCreated: Date;
@@ -225,7 +233,18 @@ export interface Account {
   downvotedAnswers: Answer[];
   questionDrafts: Question[];
   answerDrafts: Answer[];
-  settings: { darkMode: boolean; textSize: 'small' | 'medium' | 'large'; screenReader: boolean };
+  settings: {
+    theme:
+      | 'light'
+      | 'dark'
+      | 'northeastern'
+      | 'oceanic'
+      | 'highContrast'
+      | 'colorblindFriendly'
+      | 'greyscale';
+    textSize: 'small' | 'medium' | 'large';
+    screenReader: boolean;
+  };
 }
 
 /**
@@ -289,4 +308,5 @@ export interface ServerToClientEvents {
   commentUpdate: (update: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
   userUpdate: (profile: ProfilePagePayload) => void;
+  answerCorrectUpdate: (ans: Answer) => void;
 }

@@ -57,6 +57,13 @@ const QuestionBody = ({
   const user = useUserContext();
   const navigate = useNavigate();
 
+  let borderColor = 'transparent';
+  if (pinned) {
+    borderColor = 'blue';
+  } else if (locked) {
+    borderColor = 'purple';
+  }
+
   return (
     <div
       style={{
@@ -72,7 +79,7 @@ const QuestionBody = ({
           mb: 2,
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.text.primary,
-          borderColor: pinned ? 'blue' : 'transparent',
+          borderColor,
         }}
         className={questionClassName}
         role='region'

@@ -26,6 +26,7 @@ export interface Answer {
   locked: boolean;
   pinned: boolean;
   draft: boolean;
+  isCorrect: boolean;
 }
 
 /**
@@ -232,7 +233,7 @@ export interface VoteRequest extends Request {
 
 export interface UpdateSettingRequest {
   body: {
-    darkMode: boolean;        // Whether dark mode is enabled or not
+    theme: 'light' | 'dark' | 'northeastern' | 'oceanic' | 'highContrast' | 'colorblindFriendly' | 'greyscale';        // Whether dark mode is enabled or not
     textSize: 'small' | 'medium' | 'large';  // The preferred text size
     screenReader: boolean;    // Whether screen reader mode is enabled
   };
@@ -340,12 +341,6 @@ export interface AccessibilitySettings {
   screenReader: boolean;
 }
 
-
-export enum AccountType {
-  user,
-  moderator,
-  owner,
-} 
 /**
  * Interface representing a User's Account, which contains:
  * - _id - The unique identifier for the answer. Optional field
@@ -371,6 +366,7 @@ export interface Account {
   username: string;
   email: string;
   hashedPassword: string;
+  userType: 'user' | 'moderator' | 'owner';
   score: number;
   dateCreated: Date;
   questions: Question[] | ObjectId[];
@@ -381,11 +377,10 @@ export interface Account {
   downvotedQuestions: Question[] | ObjectId[];
   downvotedAnswers: Answer[] | ObjectId[];
   questionDrafts: Question[] | ObjectId[];
-  answerDrafts: Map<Answer | ObjectId, ObjectId>;
-  settings: {darkMode: boolean;
+  answerDrafts: Answer[] | ObjectId[];
+  settings: {theme: 'light' | 'dark' | 'northeastern' | 'oceanic' | 'highContrast' | 'colorblindFriendly' | 'greyscale';
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;};
-  userType: AccountType;
 }
 
 /**
@@ -527,4 +522,5 @@ export interface ServerToClientEvents {
   commentUpdate: (comment: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
   userUpdate: (profile: ProfilePagePayload) => void;
+  answerCorrectUpdate: (ans: Answer) => void;
 }

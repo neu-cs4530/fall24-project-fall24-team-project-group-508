@@ -9,20 +9,31 @@ import VoteComponent from '../voteComponent';
 import CommentSection from '../commentSection';
 import useAnswerPage from '../../../hooks/useAnswerPage';
 import ModeratorActionButtons from '../moderatorActions';
+import useUserContext from '../../../hooks/useUserContext';
 
 /**
  * AnswerPage component that displays the full content of a question along with its answers.
  * It also includes the functionality to vote, ask a new question, and post a new answer.
  */
 const AnswerPage = () => {
-  const { questionID, question, handleNewComment, handleNewAnswer } = useAnswerPage();
+  const { questionID, question, handleNewComment, handleNewAnswer, handleAnswerCorrect } =
+    useAnswerPage();
   const theme = useTheme();
+  const { user } = useUserContext();
 
   if (!question) {
     return null;
   }
 
-  const pinSortedAnswers = question.answers.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
+  // Sort answers by pinned status and correct status
+  const sortedAnswers = question.answers.sort((a1, a2) => {
+    // First sort by pinned status
+    const pinnedDiff = Number(a2.pinned) - Number(a1.pinned);
+    if (pinnedDiff !== 0) return pinnedDiff;
+    // Then sort by correct status
+    return Number(a2.isCorrect) - Number(a1.isCorrect);
+  });
+
   const pinSortedComments = question.comments.sort(
     (a1, a2) => Number(a2.pinned) - Number(a1.pinned),
   );
@@ -47,15 +58,17 @@ const AnswerPage = () => {
         </Box>
 
         {/* Moderator Actions */}
-        <Box sx={{ mb: 3 }}>
-          {ModeratorActionButtons(
-            {
-              _id: question._id,
-              type: 'question',
-            },
-            question._id,
-          )}
-        </Box>
+        {(user?.userType === 'moderator' || user?.userType === 'owner') && ( // Only show if userType is 'moderator'
+          <Box sx={{ mb: 3 }}>
+            {ModeratorActionButtons(
+              {
+                _id: question._id,
+                type: 'question',
+              },
+              question._id,
+            )}
+          </Box>
+        )}
 
         {/* Question Body */}
         <QuestionBody
@@ -87,7 +100,7 @@ const AnswerPage = () => {
         <Divider sx={{ my: 3 }} />
 
         {/* Answer List */}
-        {pinSortedAnswers.map((a, idx) => (
+        {sortedAnswers.map((a, idx) => (
           <Paper key={idx} elevation={3} sx={{ mb: 2, p: 2 }}>
             <AnswerView
               qid={questionID}
@@ -99,6 +112,8 @@ const AnswerPage = () => {
               locked={a.locked}
               pinned={a.pinned}
               cosmetic={false}
+              isCorrect={a.isCorrect}
+              qAskedBy={question.askedBy}
               handleAddComment={(comment: Comment) => handleNewComment(comment, 'answer', a._id)}
               moderatorInfo={{
                 parentType: 'question',
@@ -106,6 +121,11 @@ const AnswerPage = () => {
                 _id: a._id,
                 type: 'answer',
               }}
+              onMarkCorrect={
+                user?.username === question.askedBy
+                  ? () => handleAnswerCorrect({ ...a, isCorrect: a.isCorrect })
+                  : undefined
+              }
             />
           </Paper>
         ))}

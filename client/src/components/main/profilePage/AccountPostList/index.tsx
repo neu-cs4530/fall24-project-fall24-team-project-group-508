@@ -60,6 +60,8 @@ const ProfilePage = () => {
         <Box>
           <AnswerView
             text={ans.text}
+            qAskedBy={ans.ansBy}
+            isCorrect={ans.isCorrect}
             _id={ans._id}
             ansBy={ans.ansBy}
             meta={getMetaData(new Date(ans.ansDateTime))}
@@ -97,6 +99,8 @@ const ProfilePage = () => {
           {
             <AnswerView
               text={ans.text}
+              qAskedBy={ans.ansBy}
+              isCorrect={ans.isCorrect}
               _id={ans._id}
               ansBy={ans.ansBy}
               meta={getMetaData(new Date(ans.ansDateTime))}

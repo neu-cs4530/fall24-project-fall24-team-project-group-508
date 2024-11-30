@@ -29,7 +29,10 @@ const answerSchema: Schema = new Schema(
     },
     draft: {
       type: Boolean,
-    }
+    },
+    isCorrect: {
+      type: Boolean,
+    },
   },
   { collection: 'Answer' },
 );

@@ -1,6 +1,11 @@
 import express, { Request, Response } from 'express';
 import { FakeSOSocket, UpdateSettingRequest } from '../types'; // Import the correct request type
-import { updateAccountSettings } from '../models/application'; // Import the model function to update settings
+import {
+  getAccount,
+  getAccounts,
+  updateAccountSettings,
+  updateUserType,
+} from '../models/application'; // Import the model function to update settings
 
 const accountController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -14,7 +19,13 @@ const accountController = (socket: FakeSOSocket) => {
    */
   const isSettingRequestValid = (req: UpdateSettingRequest): boolean =>
     req.body &&
-    typeof req.body.darkMode === 'boolean' &&
+    (req.body.theme === 'light' ||
+      req.body.theme === 'dark' ||
+      req.body.theme === 'northeastern' ||
+      req.body.theme === 'oceanic' ||
+      req.body.theme === 'highContrast' ||
+      req.body.theme === 'colorblindFriendly' ||
+      req.body.theme === 'greyscale') &&
     (req.body.textSize === 'small' ||
       req.body.textSize === 'medium' ||
       req.body.textSize === 'large') &&
@@ -52,20 +63,68 @@ const accountController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getAccountsRoute = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const accounts = await getAccounts();
+      res.status(200).json(accounts);
+    } catch (err: unknown) {
+      res.status(500).send(`ERROR: Unable to get accounts: ${(err as Error).message}`);
+    }
+  };
+
+  // Helper function to validate user type
+  const isValidUserType = (type: string): boolean => ['owner', 'moderator', 'user'].includes(type);
+
+  /**
+   * Endpoint to update a user's type
+   * PUT /account/update-user-type/:username
+   */
+  const updateUserTypeRoute = async (req: Request, res: Response): Promise<void> => {
+    const { userID } = req.params;
+    const { userType } = req.body;
+
+    // Validate the user type
+    if (!userType || !isValidUserType(userType)) {
+      res.status(400).json({ message: 'Invalid user type' });
+      return;
+    }
+
+    try {
+      // Call the model function to update the user type
+      const updatedAccount = await updateUserType(userID, userType);
+
+      if (!updatedAccount) {
+        res.status(404).json({ message: 'Account not found' });
+        return;
+      }
+
+      // Return the updated account
+      res.status(200).json(updatedAccount);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: `ERROR: Unable to update user type: ${(err as Error).message}` });
+    }
+  };
+
+  const getAccountRoute = async (req: Request, res: Response): Promise<void> => {
+    const { userName } = req.params;
+    try {
+      const account = await getAccount(userName);
+      res.status(200).json(account);
+    } catch (err) {
+      res.status(500).json({ message: `ERROR: Unable to get account: ${(err as Error).message}` });
+    }
+  };
+
+  router.get('/:userName', getAccountRoute);
+
+  // Define the PUT route for updating user types
+  router.put('/userType/:userID', updateUserTypeRoute);
+
   // Define the route for updating settings
+  router.get('/', getAccountsRoute);
   router.put('/settings/:accountId', updateSettingsRoute);
-
-  // router.put('/settings/:accountId', async (req, res) => {
-  //   const { accountId } = req.params;
-  //   const settings = req.body;
-
-  //   try {
-  //     const updatedAccount = await updateAccountSettings(accountId, settings);
-  //     res.json(updatedAccount);
-  //   } catch (error) {
-  //     res.status(500).json({ message: error });
-  //   }
-  // });
 
   return router;
 };

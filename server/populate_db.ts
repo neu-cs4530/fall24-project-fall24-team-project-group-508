@@ -46,7 +46,7 @@ import {
   C12_TEXT,
 } from './data/posts_strings';
 import CommentModel from './models/comments';
-import AccountModel from './models/accounts';
+import AccountModel from './models/account';
 
 // Pass URL of your mongoDB instance as first argument(e.g., mongodb://127.0.0.1:27017/fake_so)
 const userArgs = process.argv.slice(2);
@@ -95,6 +95,7 @@ async function commentCreate(
     text: text,
     commentBy: commentBy,
     commentDateTime: commentDateTime,
+    pinned: false
   };
   return await CommentModel.create(commentDetail);
 }
@@ -122,6 +123,9 @@ async function answerCreate(
     ansBy: ansBy,
     ansDateTime: ansDateTime,
     comments: comments,
+    locked: false,
+    pinned: false,
+    isCorrect: false
   };
   return await AnswerModel.create(answerDetail);
 }
@@ -172,6 +176,8 @@ async function questionCreate(
     downVotes: [],
     comments: comments,
     presetTags: presetTags,
+    locked: false,
+    pinned: false
   };
   return await QuestionModel.create(questionDetail);
 }
@@ -184,6 +190,7 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     username: username,
     email: email,
     hashedPassword: hashedPassword,
+    userType: 'user',
     score: 0,
     dateCreated: new Date(),
     questions: [],
@@ -196,7 +203,7 @@ async function accountCreate(username: string, email: string, hashedPassword: st
     questionDrafts: [],
     answerDrafts: [],
     settings: {
-      darkMode: false,
+      theme: 'light',
       textSize: 'medium',
       screenReader: false
     }
@@ -237,6 +244,7 @@ const populate = async () => {
     const a6 = await answerCreate(A6_TXT, 'abhi3241', new Date('2023-02-19T18:20:59'), [c6]);
     const a7 = await answerCreate(A7_TXT, 'mackson3332', new Date('2023-02-22T17:19:00'), [c7]);
     const a8 = await answerCreate(A8_TXT, 'ihba001', new Date('2023-03-22T21:17:53'), [c8]);
+    
 
     await questionCreate(
       Q1_DESC,
@@ -284,6 +292,18 @@ const populate = async () => {
     );
 
     await accountCreate('sana', 'test123@gmail.com', 'test');
+    await accountCreate('elephantCDE', 'elephantCDE@gmail.com', 'test');
+    await accountCreate('monkeyABC', 'monkeyABC@gmail.com', 'test');
+    await accountCreate('mackson3332', 'mackson3332@gmail.com', 'test');
+    await accountCreate('saltyPeter', 'saltyPeter@gmail.com', 'test');
+    await accountCreate('abaya', 'abaya@gmail.com', 'test');
+    await accountCreate('alia', 'alia@gmail.com', 'test');
+    await accountCreate('Joji John', 'JojiJohn@gmail.com', 'test');
+    await accountCreate('ihba001', 'ihba001@gmail.com', 'test');
+    await accountCreate('mackson3332', 'mackson3332@gmail.com', 'test');
+    await accountCreate('abhi3241', 'abhi3241@gmail.com', 'test');
+    await accountCreate('azad', 'azad@gmail.com', 'test');
+    await accountCreate('hamkalo', 'hamkalo@gmail.com', 'test');
 
     console.log('Database populated');
   } catch (err) {

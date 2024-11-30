@@ -2,7 +2,6 @@
   margin: 0.5em;
   padding: 0.5em;
   border-radius: 6px;
-  background-color: #f9f9f9;
   font-size: 0.9rem;
 }
 
@@ -40,7 +39,6 @@
 }
 
 .comment-item {
-  background-color: #fff;
   padding: 0.5em;
   margin-bottom: 0.25em;
   border-radius: 4px;
@@ -91,7 +89,6 @@
 .comment-textarea {
   flex: 5;
   padding: 0.25em;
-  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.85rem;
   resize: none;
@@ -105,7 +102,6 @@
 .add-comment-button {
   flex: 1;
   background-color: #28a745;
-  color: white;
   padding: 0.25em 0.5em;
   border: none;
   border-radius: 4px;

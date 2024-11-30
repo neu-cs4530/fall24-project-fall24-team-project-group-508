@@ -45,12 +45,21 @@ const loginController = (socket: FakeSOSocket) => {
       const account = await loginToAccount(username, hashedPassword);
 
       if ('error' in account) {
+        if (account.error.includes('does not exist')) {
+          res.status(404).send('Account does not exist.');
+          return;
+        }
+        if (account.error.includes('Incorrect password')) {
+          res.status(401).send('Incorrect password.');
+          return;
+        }
+
         throw new Error(account.error);
       }
 
       res.json(account);
     } catch (err: unknown) {
-      res.status(401).send(`ERROR: Unable to login to account: ${(err as Error).message}`);
+      res.status(500).send(`ERROR: Unable to login: ${(err as Error).message}`);
     }
   };
 
@@ -74,12 +83,21 @@ const loginController = (socket: FakeSOSocket) => {
       const newAccount = await createAccount(account);
 
       if ('error' in newAccount) {
+        if (newAccount.error.includes('username')) {
+          res.status(409).send('An account with this username already exists.');
+          return;
+        }
+        if (newAccount.error.includes('email')) {
+          res.status(409).send('An account with this email already exists.');
+          return;
+        }
+
         throw new Error(newAccount.error);
       }
 
       res.json(newAccount);
     } catch (err: unknown) {
-      res.status(401).send(`ERROR: Unable to create account: ${(err as Error).message}`);
+      res.status(500).send(`ERROR: Unable to create account: ${(err as Error).message}`);
     }
   };
 

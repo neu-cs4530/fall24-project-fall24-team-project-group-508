@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommentSection from '../../commentSection';
 import './index.css';
-import { Comment } from '../../../../types';
+import { Account, Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
 import MarkdownPreview from '../../markdownPreview';
 import useUserContext from '../../../../hooks/useUserContext';
 import { useNavigate } from 'react-router-dom';
+import { getAccountByName } from '../../../../services/accountService';
 
 /**
  * Interface representing the props for the AnswerView component.
@@ -27,8 +30,11 @@ interface AnswerProps {
   locked: boolean;
   pinned: boolean;
   cosmetic: boolean;
+  isCorrect: boolean;
+  qAskedBy: string;
   handleAddComment: (comment: Comment) => void;
   moderatorInfo: ModeratorActionProps;
+  onMarkCorrect?: () => void;
 }
 
 /**
@@ -51,8 +57,11 @@ const AnswerView = ({
   locked,
   pinned,
   cosmetic,
+  isCorrect,
+  qAskedBy,
   handleAddComment,
   moderatorInfo,
+  onMarkCorrect,
 }: AnswerProps) => {
   const dynamicStyles = {
     display: 'flex',
@@ -67,22 +76,28 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
-  const user = useUserContext();
+  const { user, account } = useUserContext();
+  const [ansByAccount, setAnsByAccount] = useState<Account | null>(null);
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      const a = await getAccountByName(ansBy);
+      setAnsByAccount(a);
+    };
+
+    fetchAccount();
+  }, [ansBy]);
   const navigate = useNavigate();
 
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
-      {!cosmetic ? (
-        <Box
-          role='region'
-          aria-label='Moderator actions'
-          sx={{ marginBottom: 1, flexDirection: 'column' }}>
-          {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
-        </Box>
-      ) : (
-        <div></div>
-      )}
+      <Box
+        role='region'
+        aria-label='Moderator actions'
+        sx={{ marginBottom: 1, flexDirection: 'column' }}>
+        {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
+      </Box>
 
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
@@ -97,10 +112,18 @@ const AnswerView = ({
         <Typography variant='subtitle2' component='div' sx={{ color: 'green', fontWeight: 'bold' }}>
           {ansBy}
         </Typography>
+        {ansByAccount && ansByAccount.userType !== 'user' && (
+          <Typography
+            variant='subtitle2'
+            component='div'
+            sx={{ color: 'grey', fontWeight: 'bold' }}>
+            Moderator
+          </Typography>
+        )}
         <Typography variant='caption' component='div'>
           {meta}
         </Typography>
-        {!cosmetic && ansBy === user.user.username ? (
+        {!cosmetic && ansBy === user.username ? (
           <Button
             sx={{ m: 1 }}
             variant='contained'

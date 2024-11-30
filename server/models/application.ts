@@ -11,7 +11,6 @@ import {
   Question,
   QuestionResponse,
   Tag,
-  AccountType,
   AccountResponse,
   Account,
   DraftQuestion,
@@ -247,6 +246,8 @@ export const filterQuestionsByAskedBy = (qlist: Question[], askedBy: string): Qu
 
 /**
  * Filters questions based on a search string containing tags and/or keywords.
+ * Prioritizes questions with a high upvote/downvote ratio, then prioritzes questions
+ * with the 'Markdown' tag.
  *
  * @param {Question[]} qlist - The list of questions to filter
  * @param {string} search - The search string containing tags and/or keywords
@@ -260,21 +261,37 @@ export const filterQuestionsBySearch = (qlist: Question[], search: string): Ques
   if (!qlist || qlist.length === 0) {
     return [];
   }
-  return qlist.filter((q: Question) => {
+  const filteredQuestions = qlist.filter((q: Question) => {
     if (searchKeyword.length === 0 && searchTags.length === 0) {
       return true;
     }
-
     if (searchKeyword.length === 0) {
       return checkTagInQuestion(q, searchTags);
     }
-
     if (searchTags.length === 0) {
       return checkKeywordInQuestion(q, searchKeyword);
     }
-
-    return checkKeywordInQuestion(q, searchKeyword) || checkTagInQuestion(q, searchTags);
+    return checkTagInQuestion(q, searchKeyword) || checkKeywordInQuestion(q, searchTags);
   });
+  const sortedQuestions = filteredQuestions.sort((a, b) => {
+    const aRatio = a.upVotes.length / (a.downVotes.length || 1);
+    const bRatio = b.upVotes.length / (b.downVotes.length || 1);
+
+    if (aRatio > bRatio) {
+      return bRatio - aRatio;
+    }
+
+    const aMarkdownQ = a.tags.some(tag => tag.name === 'Markdown');
+    const bMarkdownQ = b.tags.some(tag => tag.name === 'Markdown');
+    if (aMarkdownQ && !bMarkdownQ) {
+      return -1;
+    }
+    if (!aMarkdownQ && bMarkdownQ) {
+      return 1;
+    }
+    return 0;
+  });
+  return sortedQuestions;
 };
 
 /**
@@ -865,8 +882,8 @@ export const createAccount = async (account: Account): Promise<AccountResponse> 
     account.downvotedQuestions = [];
     account.downvotedAnswers = [];
     account.questionDrafts = [];
-    account.answerDrafts = new Map();
-    account.userType = AccountType.user;
+    account.answerDrafts = [];
+    account.userType = 'user';
 
     const newAccount = await AccountModel.create(account);
 
@@ -912,6 +929,42 @@ export const updateAccountSettings = async (
   }
 };
 
+export const getAccounts = async (): Promise<Account[]> => {
+  try {
+    const accounts = await AccountModel.find();
+    return accounts;
+  } catch (error) {
+    throw new Error('Failed to fetch accounts');
+  }
+};
+
+export const updateUserType = async (userID: string, userType: string): Promise<Account> => {
+  try {
+    console.log('userID:', userID);
+    const user = await AccountModel.findById(userID);
+
+    if (!user) {
+      throw new Error('Account not found');
+    }
+    console.log('user:', user);
+    console.log('userType:', userType);
+    console.log('userID:', userID);
+    const account = await AccountModel.findOneAndUpdate(
+      { _id: userID },
+      { $set: { userType } },
+      { new: true },
+    );
+
+    if (!account) {
+      throw new Error('Account not found');
+    }
+
+    return account;
+  } catch (error) {
+    throw new Error(`Failed to update user type: ${error}`);
+  }
+};
+
 /**
  * checks if a user has the ability to perform moderator actions
  * @param account the account of the user requesting to take the action
@@ -926,14 +979,21 @@ export const canPerformActions = async (account: Account): Promise<boolean> | ne
 
     return (
       !!existingAccount &&
-      (existingAccount.userType === AccountType.moderator ||
-        existingAccount.userType === AccountType.owner)
+      (existingAccount.userType === 'moderator' || existingAccount.userType === 'owner')
     );
   } catch (error) {
     throw new Error('Error when determining if user has moderator permissions');
   }
 };
 
+/*
+ * Pins or unpins a post (question, answer, or comment) in the database.
+ *
+ * @param {string} postType - The type of the post to pin or unpin.
+ * @param {string} postID - The ID of the post to pin or unpin.
+ *
+ * @returns {Promise<ActionResponse>} - The updated post or an error message if the operation fails.
+ */
 export const pinPost = async (
   postType: string,
   postID: string,
@@ -986,6 +1046,15 @@ export const pinPost = async (
   }
 };
 
+/*
+ * removes a post (question, answer, or comment) in the database.
+ *
+ * @param {string} postType - The type of the post to edit.
+ * @param {string} postID - The ID of the post to edit.
+ * @param {string} newText - The new text to replace the existing text.
+ *
+ * @returns {Promise<ActionResponse>} - The deleted post or an error message if the operation fails.
+ */
 export const removePost = async (
   postType: string,
   postID: string,
@@ -1050,6 +1119,14 @@ export const removePost = async (
   }
 };
 
+/*
+ * Locks or unlocks a question or answer.
+ *
+ * @param {string} postType - The type of the post to lock or unlock.
+ * @param {string} postID - The ID of the post to lock or unlock.
+ *
+ * @returns {Promise<ActionResponse>} - The updated post or an error message if the operation fails.
+ */
 export const lockPost = async (postType: string, postID: string): Promise<ActionResponse> => {
   if (postType === 'comment') {
     return {};
@@ -1086,6 +1163,41 @@ export const lockPost = async (postType: string, postID: string): Promise<Action
   } catch (error) {
     return { error: 'lock action failed' };
   }
+};
+
+/*
+ * Marks an answer as correct or incorrect.
+ *
+ * @param {string} aID - The ID of the answer to mark.
+ * @param {boolean} correct - `true` to mark the answer as correct, `false` to mark it as incorrect.
+ *
+ * @returns {Promise<ActionResponse>} - The updated answer or an error message if the operation fails.
+ */
+export const markAnswerCorrect = async (aID: string, correct: boolean): Promise<Answer | Error> => {
+  try {
+    const a = await AnswerModel.findOne({ _id: aID });
+
+    const result = await AnswerModel.findOneAndUpdate(
+      { _id: aID },
+      { $set: { isCorrect: correct } },
+      { new: true },
+    );
+
+    if (result && a) {
+      return result;
+    }
+    return new Error('mark correct action failed');
+  } catch {
+    throw new Error('mark correct action failed');
+  }
+};
+
+export const getAccount = async (userName: string): Promise<Account> => {
+  const account = await AccountModel.findOne({ username: userName });
+  if (!account) {
+    throw new Error('Account not found');
+  }
+  return account;
 };
 
 export const findUsersQuestions = async (username: string): Promise<Question[]> => {

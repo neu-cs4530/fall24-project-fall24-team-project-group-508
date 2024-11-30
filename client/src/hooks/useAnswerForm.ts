@@ -67,6 +67,7 @@ const useAnswerForm = () => {
       comments: [],
       pinned: false,
       locked: false,
+      isCorrect: false,
     };
 
     const res = await addAnswer(questionID, answer);
@@ -116,6 +117,7 @@ const useAnswerForm = () => {
     } else {
       answer = {
         text,
+        isCorrect: false,
         ansBy: user.username,
         ansDateTime: new Date(),
         comments: [],
