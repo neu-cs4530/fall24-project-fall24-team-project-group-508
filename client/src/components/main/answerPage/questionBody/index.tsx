@@ -1,6 +1,6 @@
 import './index.css';
 import { Box, Button, Chip, Typography, useTheme } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { PresetTagName, Tag } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
 import useUserContext from '../../../../hooks/useUserContext';
