@@ -1,7 +1,6 @@
 import './index.css';
-import { Box, Button, Divider, Paper, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import { Label } from '@mui/icons-material';
 import AccountPostList from './AccountPostList';
 import useProfilePage from '../../../hooks/useProfilePage';
 

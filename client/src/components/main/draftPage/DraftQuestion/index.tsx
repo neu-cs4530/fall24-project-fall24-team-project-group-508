@@ -14,7 +14,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import { PresetTagName, Question } from '../../../../types';
+import { PresetTagName } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
 import useNewQuestion from '../../../../hooks/useNewQuestion';
 import useDraftPage from '../../../../hooks/useDraftPage';

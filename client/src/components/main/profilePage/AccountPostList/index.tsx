@@ -1,10 +1,8 @@
 import './index.css';
-import { Box, Button, Divider, List, ListItem, Paper, Typography, useTheme } from '@mui/material';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import { Edit, Label } from '@mui/icons-material';
-import { Key, useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { Key } from 'react';
 import QuestionView from '../../questionPage/question';
-import { Account, Answer, Question, Comment, DraftQuestion } from '../../../../types';
+import { Answer, Question, Comment } from '../../../../types';
 import AnswerView from '../../answerPage/answer';
 import useProfilePage from '../../../../hooks/useProfilePage';
 import { getMetaData } from '../../../../tool';
@@ -46,12 +44,32 @@ const ProfilePage = () => {
     return [];
   };
 
+  const displayComment = (comment: Comment) => (
+    // const assignStyle = (c: Comment) => ({
+    //   border: comment.pinned ? '2px solid blue' : '1px solid #ddd',
+    //   backgroundColor: comment.pinned ? '#e3f2fd' : 'transparent',
+    //   padding: 1,
+    //   marginBottom: 1,
+    //   borderRadius: '4px',
+    // });
+
+    <Box sx={{ flex: 1 }}>
+      {/* Comment Text */}
+      <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+        {comment.text}
+      </Typography>
+      {/* Comment Meta Data */}
+      <Typography variant='caption' color='textSecondary'>
+        {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
+      </Typography>
+    </Box>
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getReactType = (item: any) => {
     if (userState === '') {
       return <div></div>;
     }
     if (userState === 'questions') {
-      console.log(item as Question);
       return <QuestionView q={item as Question}></QuestionView>;
     }
     if (userState === 'answers') {
@@ -116,6 +134,7 @@ const ProfilePage = () => {
         </Box>
       );
     }
+    return <div></div>;
   };
 
   return (
@@ -180,29 +199,6 @@ const ProfilePage = () => {
         </Box>
       ))}
     </div>
-  );
-};
-
-const displayComment = (comment: Comment) => {
-  const assignStyle = (comment: Comment) => ({
-    border: comment.pinned ? '2px solid blue' : '1px solid #ddd',
-    backgroundColor: comment.pinned ? '#e3f2fd' : 'transparent',
-    padding: 1,
-    marginBottom: 1,
-    borderRadius: '4px',
-  });
-
-  return (
-    <Box sx={{ flex: 1 }}>
-      {/* Comment Text */}
-      <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
-        {comment.text}
-      </Typography>
-      {/* Comment Meta Data */}
-      <Typography variant='caption' color='textSecondary'>
-        {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
-      </Typography>
-    </Box>
   );
 };
 

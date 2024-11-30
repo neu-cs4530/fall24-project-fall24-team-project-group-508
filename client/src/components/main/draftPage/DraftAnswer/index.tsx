@@ -2,7 +2,6 @@ import './index.css';
 import React from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import MarkdownPreview from '../../markdownPreview';
 import useAnswerForm from '../../../../hooks/useAnswerForm';
 import useDraftPage from '../../../../hooks/useDraftPage';
 

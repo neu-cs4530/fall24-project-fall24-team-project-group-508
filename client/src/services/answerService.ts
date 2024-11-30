@@ -107,7 +107,6 @@ export {
   getDraftAnswerById,
   saveAnswerFromDraft,
   postAnswerFromDraft,
-  addAnswer, 
+  addAnswer,
   updateAnswerCorrect,
 };
-

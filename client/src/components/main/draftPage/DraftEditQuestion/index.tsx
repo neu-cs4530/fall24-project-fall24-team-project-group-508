@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -14,11 +14,10 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import { DraftQuestion, PresetTagName, Question } from '../../../../types';
+import { PresetTagName } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
 import useNewQuestion from '../../../../hooks/useNewQuestion';
 import useDraftPage from '../../../../hooks/useDraftPage';
-import { ReactJSX } from '@emotion/react/types/jsx-namespace';
 
 export interface DraftQuestionProps {
   id: string;
@@ -108,7 +107,7 @@ const DraftEditQuestionPage = (draftData: DraftQuestionProps) => {
     setTagNames,
     setSelectedPresetTags,
   );
-  if (!draftQuestion) return;
+  if (!draftQuestion) return null;
 
   const question = draftQuestion.editId;
 

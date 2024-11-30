@@ -2,7 +2,6 @@ import './index.css';
 import React from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import MarkdownPreview from '../../markdownPreview';
 import useAnswerForm from '../../../../hooks/useAnswerForm';
 import useDraftPage from '../../../../hooks/useDraftPage';
 
@@ -16,7 +15,7 @@ export interface DraftAnswerProps {
  * DraftAnswerPage component allows users to submit an answerdraft or edit to a specific question.
  */
 const DraftEditAnswerPage = (answerProps: DraftAnswerProps) => {
-  const { qid, id, type } = answerProps;
+  const { id, type } = answerProps;
   const { text, textErr, setText, postFromDraft, saveFromDraft } = useAnswerForm();
   const data = useDraftPage(type, id, undefined, setText);
 

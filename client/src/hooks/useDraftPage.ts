@@ -1,16 +1,5 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material';
-import {
-  Answer,
-  Question,
-  User,
-  Comment,
-  PresetTagName,
-  DraftQuestion,
-  DraftAnswer,
-} from '../types';
-import getProfileData from '../services/profileService';
+import { useEffect, useState } from 'react';
+import { Answer, Question, Comment, PresetTagName, DraftQuestion, DraftAnswer } from '../types';
 import useUserContext from './useUserContext';
 import { getQuestionById, getDraftQuestionById } from '../services/questionService';
 import { getAnswerById, getDraftAnswerById } from '../services/answerService';
@@ -73,6 +62,7 @@ const useDraftPage = (
 
   useEffect(() => {
     loadDraftItem();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { question, answer, comment, draftQuestion, draftAnswer };

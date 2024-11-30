@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { validateHyperlink } from '../tool';
-import useUserContext from './useUserContext';
 import { Comment } from '../types';
 import { updateComment } from '../services/commentService';
 
@@ -17,10 +15,9 @@ const useCommentForm = () => {
   const { qid } = useParams();
   const navigate = useNavigate();
 
-  const { user } = useUserContext();
   const [text, setText] = useState<string>('');
   const [textErr, setTextErr] = useState<string>('');
-  const [questionID, setQuestionID] = useState<string>('');
+  const [, setQuestionID] = useState<string>('');
 
   useEffect(() => {
     if (!qid) {
@@ -32,7 +29,7 @@ const useCommentForm = () => {
     setQuestionID(qid);
   }, [qid, navigate]);
 
-  const postDraft = async (comment: Comment, qid: string, parentType: string) => {
+  const postDraft = async (comment: Comment, questionId: string, parentType: string) => {
     if (!comment || (parentType !== 'question' && parentType !== 'answer')) return;
 
     const newComment: Comment = {
@@ -40,7 +37,7 @@ const useCommentForm = () => {
       text,
     };
 
-    const res = await updateComment(qid, parentType, newComment);
+    const res = await updateComment(questionId, parentType, newComment);
     if (res) {
       navigate(`/question/${qid}`);
     }

@@ -1,12 +1,10 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import {
-  Account,
   ProfilePagePayload,
   Answer,
   Question,
-  User,
   Comment,
   DraftAnswer,
   DraftQuestion,
@@ -37,14 +35,12 @@ const useProfilePage = () => {
       setUserComments(profile.comments);
       setUserDraftAnswers(profile.answerDrafts);
       setUserDraftQuestions(profile.questionDrafts);
-      console.log('PROFILE GOT:');
-      console.log(profile);
     }
   };
 
   useEffect(() => {
     getProfileData(user);
-  }, []);
+  }, [user]);
 
   socket.on('userUpdate', updateUser);
 

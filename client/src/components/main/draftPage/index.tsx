@@ -1,10 +1,5 @@
 import './index.css';
-import { Box, Button, Divider, Paper, useTheme } from '@mui/material';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import { Label } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
-import useProfilePage from '../../../hooks/useProfilePage';
-import { Answer, Comment, Question } from '../../../types';
 import DraftQuestionPage from './DraftQuestion';
 import DraftAnswerPage from './DraftAnswer';
 import DraftCommentPage from './DraftComment';
@@ -13,8 +8,6 @@ import DraftEditQuestionPage from './DraftEditQuestion';
 
 const DraftPage = () => {
   const { qid, type, id, parentType } = useParams();
-  const { score, user } = useProfilePage();
-  const theme = useTheme();
 
   if (type === 'question') {
     return <DraftQuestionPage type={'question'} id={id || 'undefined'}></DraftQuestionPage>;
@@ -49,6 +42,7 @@ const DraftPage = () => {
         id={id || 'undefined'}></DraftEditAnswerPage>
     );
   }
+  return <div>Invalid type</div>;
 };
 
 export default DraftPage;

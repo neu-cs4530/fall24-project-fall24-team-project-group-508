@@ -78,7 +78,7 @@ const useAnswerForm = () => {
     }
   };
 
-  const postDraft = async (answer: Answer, qid: string) => {
+  const postDraft = async (answer: Answer, questionId: string) => {
     if (!answer) {
       setTextErr('Invalid answer being edited');
       return;
@@ -95,7 +95,7 @@ const useAnswerForm = () => {
       text,
     };
 
-    const res = await updateAnswer(qid, newAnswer);
+    const res = await updateAnswer(questionId, newAnswer);
     if (res) {
       navigate(`/question/${qid}`);
     }

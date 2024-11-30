@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useNavigate } from 'react-router-dom';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Account, Comment } from '../../../../types';
 import ModeratorActionButtons, { ModeratorActionProps } from '../../moderatorActions';
 import MarkdownPreview from '../../markdownPreview';
 import useUserContext from '../../../../hooks/useUserContext';
-import { useNavigate } from 'react-router-dom';
 import { getAccountByName } from '../../../../services/accountService';
 
 /**
@@ -76,7 +74,7 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
-  const { user, account } = useUserContext();
+  const { user } = useUserContext();
   const [ansByAccount, setAnsByAccount] = useState<Account | null>(null);
 
   useEffect(() => {
