@@ -14,11 +14,17 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import useNewQuestion from '../../../hooks/useNewQuestion';
-import { PresetTagName } from '../../../types';
-import MarkdownPreview from '../markdownPreview';
+import { PresetTagName } from '../../../../types';
+import MarkdownPreview from '../../markdownPreview';
+import useNewQuestion from '../../../../hooks/useNewQuestion';
+import useDraftPage from '../../../../hooks/useDraftPage';
 
-const NewQuestionPage = () => {
+export interface DraftQuestionProps {
+  id: string;
+  type: string;
+}
+
+const DraftQuestionPage = (draftData: DraftQuestionProps) => {
   const {
     title,
     setTitle,
@@ -30,9 +36,11 @@ const NewQuestionPage = () => {
     titleErr,
     textErr,
     tagErr,
-    postQuestion,
+    postDraft,
     saveDraft,
   } = useNewQuestion();
+
+  const { id, type } = draftData;
 
   const presetTagOptions = [
     'C',
@@ -91,6 +99,7 @@ const NewQuestionPage = () => {
   };
 
   const theme = useTheme();
+  const question = useDraftPage(type, id, setTitle, setText, setTagNames, setSelectedPresetTags);
 
   return (
     <Box
@@ -174,24 +183,24 @@ const NewQuestionPage = () => {
             color='primary'
             onClick={e => {
               e.preventDefault();
-              postQuestion();
+              if (question.question) postDraft(question.question);
             }}>
-            Post Question
+            Post Draft/Edit
           </Button>
           <Button
             variant='contained'
             color='primary'
             onClick={e => {
               e.preventDefault();
-              saveDraft();
+              saveDraft(question.question);
             }}>
-            Save Question
+            Save Draft
           </Button>
         </Box>
-        <Typography variant='caption'>* indicates mandatory fields for posting</Typography>
+        <Typography variant='caption'>* indicates mandatory fields</Typography>
       </Box>
     </Box>
   );
 };
 
-export default NewQuestionPage;
+export default DraftQuestionPage;

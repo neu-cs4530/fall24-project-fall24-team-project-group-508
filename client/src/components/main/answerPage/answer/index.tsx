@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useNavigate } from 'react-router-dom';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Account, Comment } from '../../../../types';
@@ -20,12 +19,15 @@ import { getAccountByName } from '../../../../services/accountService';
  * - handleAddComment Callback function to handle adding a new comment.
  */
 interface AnswerProps {
+  qid?: string;
+  _id?: string;
   text: string;
   ansBy: string;
   meta: string;
   comments: Comment[];
   locked: boolean;
   pinned: boolean;
+  cosmetic: boolean;
   isCorrect: boolean;
   qAskedBy: string;
   handleAddComment: (comment: Comment) => void;
@@ -44,12 +46,15 @@ interface AnswerProps {
  * @param handleAddComment Function to handle adding a new comment.
  */
 const AnswerView = ({
+  qid,
   text,
+  _id,
   ansBy,
   meta,
   comments,
   locked,
   pinned,
+  cosmetic,
   isCorrect,
   qAskedBy,
   handleAddComment,
@@ -69,7 +74,7 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
-  const { user, account } = useUserContext();
+  const { user } = useUserContext();
   const [ansByAccount, setAnsByAccount] = useState<Account | null>(null);
 
   useEffect(() => {
@@ -80,48 +85,18 @@ const AnswerView = ({
 
     fetchAccount();
   }, [ansBy]);
+  const navigate = useNavigate();
 
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
-      {(user?.userType === 'moderator' || user?.userType === 'owner') && ( // Only show if userType is 'moderator'
-        <Box
-          role='region'
-          aria-label='Moderator actions'
-          sx={{ marginBottom: 1, flexDirection: 'column' }}>
-          {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
-        </Box>
-      )}
-
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        {isCorrect && (
-          <Box
-            sx={{
-              color: 'success.main',
-              display: 'flex',
-              alignItems: 'center',
-              mr: 2,
-            }}>
-            <CheckCircleIcon />
-            <Typography sx={{ ml: 1 }}>Correct Answer</Typography>
-          </Box>
-        )}
-        {onMarkCorrect && !isCorrect && account.username === qAskedBy && (
-          <Button
-            variant='outlined'
-            color='success'
-            onClick={onMarkCorrect}
-            startIcon={<CheckCircleOutlineIcon />}>
-            Mark as Correct
-          </Button>
-        )}
-        {onMarkCorrect && isCorrect && account.username === qAskedBy && (
-          <Button variant='outlined' color='warning' onClick={onMarkCorrect}>
-            Un-Mark as Correct
-          </Button>
-        )}
+      <Box
+        role='region'
+        aria-label='Moderator actions'
+        sx={{ marginBottom: 1, flexDirection: 'column' }}>
+        {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
       </Box>
-      <Box> </Box>
+
       {/* Answer Text */}
       <Box id='answerText' sx={{ flex: 1 }}>
         <MarkdownPreview text={text} />
@@ -146,21 +121,40 @@ const AnswerView = ({
         <Typography variant='caption' component='div'>
           {meta}
         </Typography>
+        {!cosmetic && ansBy === user.username ? (
+          <Button
+            sx={{ m: 1 }}
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              navigate(`/draft/${qid}/question/answer/${_id}`);
+            }}>
+            edit
+          </Button>
+        ) : (
+          <Box></Box>
+        )}
       </Box>
 
       {/* Comment Section */}
-      <Box sx={{ width: 350 }}>
-        <CommentSection
-          comments={pinSortedComments}
-          handleAddComment={handleAddComment}
-          moderatorInfo={{
-            parentType: 'answer',
-            parentID: moderatorInfo._id,
-            _id: undefined,
-            type: 'comment',
-          }}
-        />
-      </Box>
+      {!cosmetic ? (
+        <Box sx={{ width: 350 }}>
+          <CommentSection
+            qid={qid}
+            comments={pinSortedComments}
+            parentType='answer'
+            handleAddComment={handleAddComment}
+            moderatorInfo={{
+              parentType: 'answer',
+              parentID: moderatorInfo._id,
+              _id: undefined,
+              type: 'comment',
+            }}
+          />
+        </Box>
+      ) : (
+        <div></div>
+      )}
     </Box>
   );
 };

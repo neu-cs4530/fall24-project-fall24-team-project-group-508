@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { AppBar, Toolbar, Typography, TextField, IconButton, Box, Button } from '@mui/material';
 import { Settings as SettingsIcon } from '@mui/icons-material';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import { useNavigate } from 'react-router-dom';
 import useHeader from '../../hooks/useHeader';
 import AccessibilityPopup from './settings';
 import UserContext from '../../contexts/UserContext';
@@ -17,6 +19,7 @@ const Header = () => {
   const userContextValue = useContext(UserContext);
   const account = userContextValue?.account;
   const setAccount = userContextValue?.setAccount;
+  const navigate = useNavigate();
 
   const toggleSettingsPopup = () => {
     setIsSettingsPopupOpen(!isSettingsPopupOpen);
@@ -24,6 +27,10 @@ const Header = () => {
 
   const toggleOwnerPopup = () => {
     setIsOwnerPopupOpen(!isOwnerPopupOpen);
+  };
+
+  const openProfile = () => {
+    navigate('/profile');
   };
 
   return (
@@ -70,6 +77,9 @@ const Header = () => {
           <SettingsIcon />
         </IconButton>
 
+        <IconButton onClick={openProfile} aria-label='Open user profile' color='inherit'>
+          <AccountBoxIcon />
+        </IconButton>
         {isSettingsPopupOpen && account && setAccount && (
           <AccessibilityPopup
             account={account}

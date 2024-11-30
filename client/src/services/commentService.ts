@@ -40,4 +40,31 @@ const addComment = async (
   return res.data;
 };
 
-export default addComment;
+const getCommentById = async (id: string, username: string): Promise<Comment> => {
+  const res = await api.get(`${COMMENT_API_URL}/getCommentById/${id}?username=${username}`);
+  if (res.status !== 200) {
+    throw new Error('Error when fetching comment by id');
+  }
+  return res.data;
+};
+
+const updateComment = async (
+  id: string,
+  type: 'question' | 'answer',
+  comment: Comment,
+): Promise<Comment> => {
+  const reqBody: AddCommentRequestBody = {
+    id,
+    type,
+    comment,
+  };
+  const res = await api.post(`${COMMENT_API_URL}/updateComment`, reqBody);
+
+  if (res.status !== 200) {
+    throw new Error('Error while creating a new question');
+  }
+
+  return res.data;
+};
+
+export { addComment, getCommentById, updateComment };
