@@ -12,6 +12,7 @@ import ModeratorActionButtons, { ModeratorActionProps } from '../moderatorAction
  *
  * - comments - list of the comment components
  * - handleAddComment - a function that handles adding a new comment, taking a Comment object as an argument
+ * - moderatorInfo - information about the moderator
  */
 interface CommentSectionProps {
   comments: Comment[];
@@ -24,6 +25,7 @@ interface CommentSectionProps {
  *
  * @param comments: an array of Comment objects
  * @param handleAddComment: function to handle the addition of a new comment
+ * @param moderatorInfo: information about the moderator
  */
 const CommentSection = ({ comments, handleAddComment, moderatorInfo }: CommentSectionProps) => {
   const { user } = useUserContext();

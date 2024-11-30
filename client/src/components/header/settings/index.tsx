@@ -18,12 +18,23 @@ import { updateAccountSettings } from '../../../services/accountService';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import { useTextSize } from '../../../contexts/TextSizeContext';
 
+/**
+ * AccessibilityPopup props
+ * account - The account object
+ * setAccount - The function to set the account object
+ * onClose - The function to close the dialog
+ */
 interface AccessibilityPopupProps {
   account?: Account;
   setAccount?: (updatedAccount: Account | null) => void;
   onClose: () => void;
 }
 
+/**
+ * AccessibilityPopup component
+ * @param {AccessibilityPopupProps} props - The props of the component
+ * @returns {ReactElement} AccessibilityPopup component
+ */
 const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   account,
   setAccount,
@@ -32,6 +43,10 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   const { textSize, setTextSize } = useTextSize();
   const { currentTheme, switchTheme } = useThemeContext();
 
+  /**
+   * Handle the theme change
+   * @param {SelectChangeEvent<string>} e - The event object
+   */
   const handleThemeChange = async (e: SelectChangeEvent<string>) => {
     const newTheme = e.target.value as
       | 'light'
@@ -54,6 +69,10 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
     }
   };
 
+  /**
+   * Handle the text change
+   * @param {SelectChangeEvent<string>} e - The event object
+   */
   const handleTextChange = async (e: SelectChangeEvent<string>) => {
     const newSize = e.target.value as 'small' | 'medium' | 'large';
     setTextSize(newSize);

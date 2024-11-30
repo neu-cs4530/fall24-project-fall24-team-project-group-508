@@ -10,6 +10,10 @@ import MarkdownPreview from '../../markdownPreview';
  * - text - The content of the question, which may contain hyperlinks.
  * - askby - The username of the user who asked the question.
  * - meta - Additional metadata related to the question, such as the date and time it was asked.
+ * - pinned - Whether the question is pinned.
+ * - locked - Whether the question is locked.
+ * - tags - An array of tags associated with the question.
+ * - presetTags - An array of preset tags associated with the question.
  */
 interface QuestionBodyProps {
   views: number;
@@ -31,6 +35,10 @@ interface QuestionBodyProps {
  * @param text The content of the question.
  * @param askby The username of the question's author.
  * @param meta Additional metadata related to the question.
+ * @param pinned Whether the question is pinned.
+ * @param locked Whether the question is locked.
+ * @param tags An array of tags associated with the question.
+ * @param presetTags An array of preset tags associated with the question.
  */
 const QuestionBody = ({
   views,

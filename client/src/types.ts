@@ -35,6 +35,7 @@ export type OrderType = keyof typeof orderTypeDisplayName;
  * text - The text of the comment.
  * commentBy - Username of the author of the comment.
  * commentDateTime - Time at which the comment was created.
+ * pinned - A boolean indicating whether the comment is pinned.
  */
 export interface Comment {
   _id?: string;
@@ -183,18 +184,6 @@ export interface Question {
   pinned: boolean;
   locked: boolean;
   presetTags: PresetTagName[];
-}
-
-/**
- * interface representing the accessibility settings of a user, which contains:
- * - darkMode - A boolean indicating whether the user prefers dark mode
- * - textSize - The preferred text size of the user
- * - screenReader - A boolean indicating whether the user prefers screen reader
- */
-export interface AccessibilitySettings {
-  darkMode: boolean;
-  textSize: 'small' | 'medium' | 'large';
-  screenReader: boolean;
 }
 
 /**

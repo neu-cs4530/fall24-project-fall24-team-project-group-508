@@ -1,13 +1,13 @@
-// DarkModeContext.tsx
+// ThemeContext.tsx
 import React, { createContext, useState, useContext } from 'react';
 import { createTheme, ThemeProvider, Theme } from '@mui/material/styles';
 
-// interface DarkModeContextProps {
-//   darkMode: boolean;
-//   toggleDarkMode: () => void;
-//   setDarkMode: (value: boolean) => void;
-// }
-
+/**
+ * Interface representing the context value for dark mode.
+ * currentTheme - The current theme.
+ * switchTheme - Function to switch the theme.
+ * themes - The available themes.
+ */
 interface ThemeContextProps {
   currentTheme: keyof typeof themes;
   switchTheme: (themeName: keyof typeof themes) => void;
@@ -262,6 +262,12 @@ const themes = {
   greyscale: greyscaleTheme,
 };
 
+/**
+ * CustomThemeProvider component to provide the theme context.
+ * @param initialTheme - The initial theme to use.
+ * @param children - The children to render.
+ * @returns The custom theme provider.
+ */
 export const CustomThemeProvider: React.FC<{
   initialTheme: keyof typeof themes;
   children: React.ReactNode;
@@ -284,6 +290,9 @@ export const CustomThemeProvider: React.FC<{
   );
 };
 
+/**
+ * Hook to use the theme context.
+ */
 export const useThemeContext = () => {
   const context = useContext(ThemeContext);
   if (!context) throw new Error('useThemeContext must be used within a ThemeProviderWrapper');

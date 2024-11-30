@@ -18,10 +18,12 @@ const Header = () => {
   const account = userContextValue?.account;
   const setAccount = userContextValue?.setAccount;
 
+  // Toggle the settings popup
   const toggleSettingsPopup = () => {
     setIsSettingsPopupOpen(!isSettingsPopupOpen);
   };
 
+  // Toggle the owner popup
   const toggleOwnerPopup = () => {
     setIsOwnerPopupOpen(!isOwnerPopupOpen);
   };
@@ -30,7 +32,7 @@ const Header = () => {
     <AppBar position='fixed'>
       <Toolbar>
         <Box flexGrow={1} display='flex' alignItems='center'>
-          <img src={logo} style={{ height: 40, marginRight: 10 }} />
+          <img src={logo} alt='Husky404 logo' style={{ height: 40, marginRight: 10 }} />
           <Typography variant='h6' component='div'>
             Husky404
           </Typography>

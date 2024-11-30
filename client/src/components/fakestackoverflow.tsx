@@ -13,6 +13,16 @@ import AnswerPage from './main/answerPage';
 import { CustomThemeProvider } from '../contexts/ThemeContext';
 import { TextSizeProvider } from '../contexts/TextSizeContext';
 
+/**
+ * Represents a protected route that requires the user to be logged in.
+ * If the user is not logged in, it will redirect to the login page.
+ *
+ * @param user - The user object.
+ * @param account - The account object.
+ * @param setAccount - The function to set the account object.
+ * @param socket - The socket object.
+ * @param children - The children components to render.
+ */
 const ProtectedRoute = ({
   user,
   account,
