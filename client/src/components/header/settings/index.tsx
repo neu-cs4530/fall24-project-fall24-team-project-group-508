@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import {
   Dialog,
@@ -8,21 +7,19 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Button,
   SelectChangeEvent,
+  Box,
 } from '@mui/material';
-import './index.css';
-import { useDarkMode } from '../../../contexts/DarkModeContext';
+import ReadPageButton from '../../main/ttsButton';
 import { Account } from '../../../types';
 import { updateAccountSettings } from '../../../services/accountService';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 import { useTextSize } from '../../../contexts/TextSizeContext';
 
 interface AccessibilityPopupProps {
-  account?: Account; // Account can be undefined
-  setAccount?: (updatedAccount: Account | null) => void; // Can be undefined
+  account?: Account;
+  setAccount?: (updatedAccount: Account | null) => void;
   onClose: () => void;
 }
 
@@ -32,16 +29,23 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
   onClose,
 }) => {
   const { textSize, setTextSize } = useTextSize();
+  const { currentTheme, switchTheme } = useThemeContext();
 
-  const { darkMode, toggleDarkMode } = useDarkMode();
-
-  const handleDarkModeChange = async () => {
-    toggleDarkMode();
+  const handleThemeChange = async (e: SelectChangeEvent<string>) => {
+    const newTheme = e.target.value as
+      | 'light'
+      | 'dark'
+      | 'northeastern'
+      | 'oceanic'
+      | 'highContrast'
+      | 'colorblindFriendly'
+      | 'greyscale';
+    switchTheme(newTheme);
 
     if (account && account._id && setAccount) {
       const updatedAccount = await updateAccountSettings(account._id, {
         ...account.settings,
-        darkMode: !darkMode,
+        theme: newTheme,
       });
       setAccount(updatedAccount);
     } else {
@@ -85,27 +89,38 @@ const AccessibilityPopup: React.FC<AccessibilityPopupProps> = ({
           </Select>
         </FormControl>
 
-        <FormGroup sx={{ marginTop: '10px' }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={darkMode}
-                onChange={handleDarkModeChange}
-                name='darkMode'
-                sx={{ transform: 'scale(1.2)' }}
-              />
-            }
-            label={<span style={{ fontSize: '1rem' }}>Dark Mode</span>}
-          />
-        </FormGroup>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id='theme-label' sx={{ fontSize: '1.5rem', color: 'inherit' }}>
+            Theme
+          </InputLabel>
+          <Select
+            labelId='theme-label'
+            value={currentTheme}
+            onChange={handleThemeChange}
+            sx={{ marginTop: '25px', fontSize: '1rem' }}>
+            <MenuItem value='light'>Light</MenuItem>
+            <MenuItem value='dark'>Dark</MenuItem>
+            <MenuItem value='northeastern'>Northeastern</MenuItem>
+            <MenuItem value='oceanic'>Oceanic</MenuItem>
+            <MenuItem value='highContrast'>High Contrast</MenuItem>
+            <MenuItem value='colorblindFriendly'>Colorblind Friendly</MenuItem>
+            <MenuItem value='greyscale'>Greyscale</MenuItem>
+          </Select>
+        </FormControl>
 
-        <Button
-          onClick={onClose}
-          variant='contained'
-          color='primary'
-          sx={{ marginTop: '24px', fontSize: '1rem', padding: '8px 16px' }}>
-          Close
-        </Button>
+        <Box sx={{ display: 'block', marginTop: '24px' }}>
+          <ReadPageButton />
+        </Box>
+
+        <Box sx={{ display: 'block', marginTop: '16px' }}>
+          <Button
+            onClick={onClose}
+            variant='contained'
+            color='primary'
+            sx={{ fontSize: '1rem', padding: '8px 16px' }}>
+            Close
+          </Button>
+        </Box>
       </DialogContent>
     </Dialog>
   );

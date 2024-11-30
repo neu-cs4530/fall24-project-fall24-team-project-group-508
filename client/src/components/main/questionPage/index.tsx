@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import './index.css';
 import QuestionHeader from './header';
 import QuestionView from './question';
 import useQuestionPage from '../../../hooks/useQuestionPage';
+import { PresetTagName } from '../../../types';
 
 /**
  * QuestionPage component renders a page displaying a list of questions
@@ -12,7 +13,25 @@ import useQuestionPage from '../../../hooks/useQuestionPage';
  */
 const QuestionPage = () => {
   const { titleText, qlist, setQuestionOrder } = useQuestionPage();
+  const [displayedQuestions, setDisplayedQuestions] = useState(qlist); // Separate state for filtered list.
+
   const theme = useTheme();
+
+  const setFilterTag = (tag: string) => {
+    if (!tag) {
+      // If no tag is selected, reset to full list.
+      setDisplayedQuestions(qlist);
+    } else {
+      // Filter based on the selected tag.
+      const filtered = qlist.filter(q => q.presetTags.includes(tag as PresetTagName));
+      setDisplayedQuestions(filtered);
+    }
+  };
+
+  React.useEffect(() => {
+    // Update displayedQuestions whenever qlist changes (e.g., on search or order change).
+    setDisplayedQuestions(qlist);
+  }, [qlist]);
 
   return (
     <div
@@ -23,17 +42,18 @@ const QuestionPage = () => {
       <Box role='main' sx={{ padding: 2 }}>
         <QuestionHeader
           titleText={titleText}
-          qcnt={qlist.length}
+          qcnt={displayedQuestions.length}
           setQuestionOrder={setQuestionOrder}
+          setFilterTag={setFilterTag}
         />
 
         <Box id='question_list' role='list' sx={{ marginTop: 2 }}>
-          {qlist.length === 0 && titleText === 'Search Results' ? (
+          {displayedQuestions.length === 0 && titleText === 'Search Results' ? (
             <Typography variant='h6' sx={{ fontWeight: 'bold', paddingLeft: 2 }}>
               No Questions Found
             </Typography>
           ) : (
-            qlist.map((q, idx) => (
+            displayedQuestions.map((q, idx) => (
               <Box
                 key={idx}
                 sx={{

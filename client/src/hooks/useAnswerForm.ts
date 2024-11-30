@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { validateHyperlink } from '../tool';
-import addAnswer from '../services/answerService';
+import { addAnswer } from '../services/answerService';
 import useUserContext from './useUserContext';
 import { Answer } from '../types';
 
@@ -61,6 +61,7 @@ const useAnswerForm = () => {
       comments: [],
       pinned: false,
       locked: false,
+      isCorrect: false,
     };
 
     const res = await addAnswer(questionID, answer);

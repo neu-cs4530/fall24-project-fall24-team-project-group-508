@@ -3,8 +3,9 @@ import { AppBar, Toolbar, Typography, TextField, IconButton, Box, Button } from 
 import { Settings as SettingsIcon } from '@mui/icons-material';
 import useHeader from '../../hooks/useHeader';
 import AccessibilityPopup from './settings';
-import UserContext from '../../contexts/UserContext'; // Adjust the path to your AccountContext
+import UserContext from '../../contexts/UserContext';
 import OwnerPopup from './rolesPopup';
+import logo from './logo.png';
 
 /**
  * Header component with live search functionality.
@@ -28,9 +29,10 @@ const Header = () => {
   return (
     <AppBar position='fixed'>
       <Toolbar>
-        <Box flexGrow={1}>
+        <Box flexGrow={1} display='flex' alignItems='center'>
+          <img src={logo} style={{ height: 40, marginRight: 10 }} />
           <Typography variant='h6' component='div'>
-            Fake Stack Overflow
+            Husky404
           </Typography>
         </Box>
 

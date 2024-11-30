@@ -4,6 +4,7 @@ import { Comment, Answer, Question, VoteData } from '../types';
 import useUserContext from './useUserContext';
 import addComment from '../services/commentService';
 import { getQuestionById } from '../services/questionService';
+import { updateAnswerCorrect } from '../services/answerService';
 
 /**
  * Custom hook for managing the answer page's state, navigation, and real-time updates.
@@ -61,6 +62,18 @@ const useAnswerPage = () => {
     }
   };
 
+  const handleAnswerCorrect = async (ans: Answer) => {
+    try {
+      if (!qid) {
+        throw new Error('Question ID is undefined.');
+      }
+      await updateAnswerCorrect(qid, ans);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error marking answer as correct:', error);
+    }
+  };
+
   useEffect(() => {
     /**
      * Function to fetch the question data based on the question ID.
@@ -94,31 +107,45 @@ const useAnswerPage = () => {
       answer: Answer;
       removed: boolean;
     }) => {
-      if (id === questionID && !removed) {
+      // if (id === questionID && !removed) {
+      //   setQuestion(prevQuestion =>
+      //     prevQuestion
+      //       ? // Creates a new Question object with the new answer appended to the end
+      //         {
+      //           ...prevQuestion,
+      //           answers: [...prevQuestion.answers, answer].filter(
+      //             ans =>
+      //               ans._id !== answer._id ||
+      //               (Number(ans.pinned) - Number(answer.pinned) === 0 &&
+      //                 Number(ans.locked) - Number(answer.locked) === 0),
+      //           ),
+      //         }
+      //       : prevQuestion,
+      //   );
+      // } else if (id === questionID) {
+      //   setQuestion(prevQuestion =>
+      //     prevQuestion
+      //       ? // Creates a new Question object with the new answer appended to the end
+      //         {
+      //           ...prevQuestion,
+      //           answers: prevQuestion.answers.filter(ans => ans._id !== answer._id),
+      //         } //
+      //       : // prevQuestion.answers.filter((ans) => ans._id !== answer._id)
+      //         prevQuestion,
+      //   );
+      // }
+      if (id === questionID) {
         setQuestion(prevQuestion =>
           prevQuestion
-            ? // Creates a new Question object with the new answer appended to the end
-              {
+            ? {
                 ...prevQuestion,
-                answers: [...prevQuestion.answers, answer].filter(
-                  ans =>
-                    ans._id !== answer._id ||
-                    (Number(ans.pinned) - Number(answer.pinned) === 0 &&
-                      Number(ans.locked) - Number(answer.locked) === 0),
-                ),
+                answers: removed
+                  ? // Filter out the removed answer
+                    prevQuestion.answers.filter(ans => ans._id !== answer._id)
+                  : // Map to update or add the answer without duplicating
+                    prevQuestion.answers.map(ans => (ans._id === answer._id ? answer : ans)),
               }
             : prevQuestion,
-        );
-      } else if (id === questionID) {
-        setQuestion(prevQuestion =>
-          prevQuestion
-            ? // Creates a new Question object with the new answer appended to the end
-              {
-                ...prevQuestion,
-                answers: prevQuestion.answers.filter(ans => ans._id !== answer._id),
-              } //
-            : // prevQuestion.answers.filter((ans) => ans._id !== answer._id)
-              prevQuestion,
         );
       }
     };
@@ -216,14 +243,16 @@ const useAnswerPage = () => {
       socket.off('viewsUpdate', handleViewsUpdate);
       socket.off('commentUpdate', handleCommentUpdate);
       socket.off('voteUpdate', handleVoteUpdate);
+      socket.off('questionUpdate', handleQuestionRepaint);
     };
-  }, [navigate, questionID, socket]);
+  }, [navigate, qid, questionID, socket]);
 
   return {
     questionID,
     question,
     handleNewComment,
     handleNewAnswer,
+    handleAnswerCorrect,
   };
 };
 

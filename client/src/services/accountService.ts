@@ -94,4 +94,12 @@ export const getAccounts = async (): Promise<Account[]> => {
   return accounts;
 };
 
+export const getAccountByName = async (userName: string): Promise<Account> => {
+  const response = await fetch(`${ACCOUNT_API_URL}/${userName}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch account');
+  }
+  const account = await response.json();
+  return account;
+};
 export default updateSettings;

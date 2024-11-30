@@ -25,6 +25,7 @@ export interface Answer {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  isCorrect: boolean;
 }
 
 /**
@@ -191,7 +192,7 @@ export interface VoteRequest extends Request {
 
 export interface UpdateSettingRequest {
   body: {
-    darkMode: boolean;        // Whether dark mode is enabled or not
+    theme: 'light' | 'dark' | 'northeastern' | 'oceanic' | 'highContrast' | 'colorblindFriendly' | 'greyscale';        // Whether dark mode is enabled or not
     textSize: 'small' | 'medium' | 'large';  // The preferred text size
     screenReader: boolean;    // Whether screen reader mode is enabled
   };
@@ -336,7 +337,7 @@ export interface Account {
   downvotedAnswers: Answer[] | ObjectId[];
   questionDrafts: Question[] | ObjectId[];
   answerDrafts: Answer[] | ObjectId[];
-  settings: {darkMode: boolean;
+  settings: {theme: 'light' | 'dark' | 'northeastern' | 'oceanic' | 'highContrast' | 'colorblindFriendly' | 'greyscale';
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;};
 }
@@ -401,4 +402,5 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  answerCorrectUpdate: (ans: Answer) => void;
 }

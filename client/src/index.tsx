@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import FakeStackOverflow from './components/fakestackoverflow';
 import { FakeSOSocket } from './types';
-import { DarkModeProvider } from './contexts/DarkModeContext';
+import { CustomThemeProvider } from './contexts/ThemeContext';
 
 const container = document.getElementById('root');
 
@@ -32,9 +32,9 @@ const App = () => {
 
   return (
     <Router>
-      <DarkModeProvider initialDarkMode={false}>
+      <CustomThemeProvider initialTheme='light'>
         <FakeStackOverflow socket={socket} />
-      </DarkModeProvider>
+      </CustomThemeProvider>
     </Router>
   );
 };
@@ -42,8 +42,8 @@ const App = () => {
 if (container) {
   const root = ReactDOM.createRoot(container);
   root.render(
-    <DarkModeProvider initialDarkMode={false}>
+    <CustomThemeProvider initialTheme='light'>
       <App />
-    </DarkModeProvider>,
+    </CustomThemeProvider>,
   );
 }
