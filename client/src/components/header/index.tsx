@@ -77,21 +77,15 @@ const Header = () => {
           <SettingsIcon />
         </IconButton>
 
-<<<<<<< HEAD
         <IconButton onClick={openProfile} aria-label='Open user profile' color='inherit'>
           <AccountBoxIcon />
         </IconButton>
-
-        {isPopupOpen && account && setAccount && (
-          <AccessibilityPopup account={account} setAccount={setAccount} onClose={togglePopup} />
-=======
         {isSettingsPopupOpen && account && setAccount && (
           <AccessibilityPopup
             account={account}
             setAccount={setAccount}
             onClose={toggleSettingsPopup}
           />
->>>>>>> Development
         )}
       </Toolbar>
     </AppBar>
