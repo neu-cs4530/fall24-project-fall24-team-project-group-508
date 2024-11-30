@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -14,14 +14,17 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import useNewQuestion from '../../../hooks/useNewQuestion';
-import { PresetTagName } from '../../../types';
-import MarkdownPreview from '../markdownPreview';
+import { PresetTagName } from '../../../../types';
+import MarkdownPreview from '../../markdownPreview';
+import useNewQuestion from '../../../../hooks/useNewQuestion';
+import useDraftPage from '../../../../hooks/useDraftPage';
 
-/**
- * NewQuestionPage component allows users to submit a new question.
- */
-const NewQuestionPage = () => {
+export interface DraftQuestionProps {
+  id: string;
+  type: string;
+}
+
+const DraftEditQuestionPage = (draftData: DraftQuestionProps) => {
   const {
     title,
     setTitle,
@@ -33,9 +36,11 @@ const NewQuestionPage = () => {
     titleErr,
     textErr,
     tagErr,
-    postQuestion,
-    saveDraft,
+    postFromDraft,
+    saveFromDraft,
   } = useNewQuestion();
+
+  const { id, type } = draftData;
 
   const presetTagOptions = [
     'C',
@@ -85,7 +90,6 @@ const NewQuestionPage = () => {
 
   const [selectedPresetTags, setSelectedPresetTags] = useState<string[]>([]);
 
-  // Handle the change in the preset tags
   const handlePresetTagChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value as string[];
     if (value.length <= 5) {
@@ -95,6 +99,17 @@ const NewQuestionPage = () => {
   };
 
   const theme = useTheme();
+  const { draftQuestion } = useDraftPage(
+    type,
+    id,
+    setTitle,
+    setText,
+    setTagNames,
+    setSelectedPresetTags,
+  );
+  if (!draftQuestion) return null;
+
+  const question = draftQuestion.editId;
 
   return (
     <Box
@@ -178,24 +193,24 @@ const NewQuestionPage = () => {
             color='primary'
             onClick={e => {
               e.preventDefault();
-              postQuestion();
+              if (question) postFromDraft(draftQuestion);
             }}>
-            Post Question
+            Post Draft/Edit
           </Button>
           <Button
             variant='contained'
             color='primary'
             onClick={e => {
               e.preventDefault();
-              saveDraft();
+              saveFromDraft(draftQuestion);
             }}>
-            Save Question
+            Save Draft
           </Button>
         </Box>
-        <Typography variant='caption'>* indicates mandatory fields for posting</Typography>
+        <Typography variant='caption'>* indicates mandatory fields</Typography>
       </Box>
     </Box>
   );
 };
 
-export default NewQuestionPage;
+export default DraftEditQuestionPage;

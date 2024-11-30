@@ -30,6 +30,9 @@ const answerSchema: Schema = new Schema(
     pinned: {
       type: Boolean,
     },
+    draft: {
+      type: Boolean,
+    },
     isCorrect: {
       type: Boolean,
     },

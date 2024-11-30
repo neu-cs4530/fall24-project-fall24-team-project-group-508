@@ -261,6 +261,31 @@ export interface QuestionUpdatePayload {
   removed: boolean;
 }
 
+export interface ProfilePagePayload {
+  username: string;
+  score: number;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+  answerDrafts: DraftAnswer[];
+  questionDrafts: DraftQuestion[];
+}
+
+export interface DraftQuestion {
+  _id: string;
+  username: string;
+  realId: string;
+  editId: Question;
+}
+
+export interface DraftAnswer {
+  _id: string;
+  username: string;
+  realId: string;
+  qid: string;
+  editId: Answer;
+}
+
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
@@ -271,5 +296,6 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  userUpdate: (profile: ProfilePagePayload) => void;
   answerCorrectUpdate: (ans: Answer) => void;
 }

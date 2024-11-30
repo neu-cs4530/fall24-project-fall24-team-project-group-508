@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateHyperlink } from '../tool';
-import { addQuestion } from '../services/questionService';
+import {
+  addQuestion,
+  postQuestionFromDraft,
+  saveDraftQuestion,
+  saveQuestionFromDraft,
+  updateQuestion,
+} from '../services/questionService';
 import useUserContext from './useUserContext';
-import { PresetTagName, Question } from '../types';
+import { DraftQuestion, PresetTagName, Question } from '../types';
 
 /**
  * Custom hook to handle question submission and form validation
@@ -115,6 +121,130 @@ const useNewQuestion = () => {
     }
   };
 
+  const postDraft = async (question: Question) => {
+    if (!question) return;
+
+    const tagnames = tagNames.split(' ').filter(tagName => tagName.trim() !== '');
+    const tags = tagnames.map(tagName => ({
+      name: tagName,
+      description: 'user added tag',
+    }));
+
+    const newQuestion = {
+      ...question,
+      title,
+      text,
+      tags,
+      presetTags,
+    };
+
+    const res = await updateQuestion(newQuestion);
+    if (res) {
+      navigate('/home');
+    }
+  };
+
+  const saveDraft = async (q?: Question) => {
+    // Hyperlink validation, text can be empty :)
+    if (text && !validateHyperlink(text)) {
+      setTextErr('Invalid hyperlink format.');
+      return;
+    }
+
+    const tagnames = tagNames.split(' ').filter(tagName => tagName.trim() !== '');
+    const tags = tagnames.map(tagName => ({
+      name: tagName,
+      description: 'user added tag',
+    }));
+
+    let question: Question;
+    if (!q) {
+      question = {
+        title,
+        text,
+        tags,
+        askedBy: user.username,
+        askDateTime: new Date(),
+        answers: [],
+        upVotes: [],
+        downVotes: [],
+        views: [],
+        comments: [],
+        presetTags,
+        pinned: false,
+        locked: false,
+      };
+    } else {
+      question = {
+        ...q,
+        title,
+        text,
+        tags,
+        presetTags,
+      };
+    }
+
+    const res = await saveDraftQuestion(question, user.username);
+
+    if (res && res._id) {
+      // navigate to the home page since question was saved
+      navigate('/home');
+    } else {
+      setTextErr('question failed to be saved');
+    }
+  };
+
+  const postFromDraft = async (draftQuestion: DraftQuestion) => {
+    if (!draftQuestion) return;
+    if (!validateForm()) return;
+
+    const tagnames = tagNames.split(' ').filter(tagName => tagName.trim() !== '');
+    const tags = tagnames.map(tagName => ({
+      name: tagName,
+      description: 'user added tag',
+    }));
+
+    const newQuestion = {
+      ...draftQuestion.editId,
+      title,
+      text,
+      tags,
+      presetTags,
+    };
+
+    draftQuestion.editId = newQuestion;
+
+    const res = await postQuestionFromDraft(draftQuestion, draftQuestion.username);
+    if (res) {
+      navigate('/home');
+    }
+  };
+
+  const saveFromDraft = async (draftQuestion: DraftQuestion) => {
+    if (!draftQuestion) return;
+
+    const tagnames = tagNames.split(' ').filter(tagName => tagName.trim() !== '');
+    const tags = tagnames.map(tagName => ({
+      name: tagName,
+      description: 'user added tag',
+    }));
+
+    const newQuestion = {
+      ...draftQuestion.editId,
+      title,
+      text,
+      tags,
+      presetTags,
+    };
+
+    draftQuestion.editId = newQuestion;
+
+    const res = await saveQuestionFromDraft(draftQuestion, draftQuestion.username);
+    if (res) {
+      navigate('/home');
+    }
+  };
+
   return {
     title,
     setTitle,
@@ -128,6 +258,10 @@ const useNewQuestion = () => {
     textErr,
     tagErr,
     postQuestion,
+    postDraft,
+    saveDraft,
+    postFromDraft,
+    saveFromDraft,
   };
 };
 

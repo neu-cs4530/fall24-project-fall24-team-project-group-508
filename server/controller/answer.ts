@@ -1,11 +1,8 @@
 import express, { Response } from 'express';
-import { Answer, AnswerRequest, AnswerResponse, FakeSOSocket } from '../types';
-import {
-  addAnswerToQuestion,
-  markAnswerCorrect,
-  populateDocument,
-  saveAnswer,
-} from '../models/application';
+import { Answer, AnswerRequest, AnswerResponse, DraftAnswerRequest, FakeSOSocket, FindAnswerByIdRequest, FindDraftByIdRequest, SaveAnswerAsDraftRequest } from '../types';
+import { addAnswerToQuestion, markAnswerCorrect, checkIfExists, fetchAnswerById, fetchAnswerDraftById, populateDocument, removeAnswerDraft, removeOriginalDraftAnswer, saveAnswer, saveAnswerDraft, saveAnswerFromDraft, updateAnswer } from '../models/application';
+import { ObjectId } from 'mongodb';
+
 
 const answerController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -88,6 +85,172 @@ const answerController = (socket: FakeSOSocket) => {
     }
   };
 
+    /**
+   * Retrieves a question by its unique ID, and increments the view count for that answer.
+   * If there is an error, the HTTP response's status is updated.
+   *
+   * @param req The FindAnswerByIdRequest object containing the answer ID as a parameter.
+   * @param res The HTTP response object used to send back the answer details.
+   *
+   * @returns A Promise that resolves to void.
+   */
+    const getAnswerById = async (req: FindAnswerByIdRequest, res: Response): Promise<void> => {
+      const { id } = req.params;
+      const { username } = req.query;
+  
+      if (!ObjectId.isValid(id)) {
+        res.status(400).send('Invalid ID format');
+        return;
+      }
+  
+      if (username === undefined) {
+        res.status(400).send('Invalid username requesting answer.');
+        return;
+      }
+  
+      try {
+        const a = await fetchAnswerById(id, username);
+  
+        if (a && !('error' in a)) {
+          res.json(a);
+          return;
+        }
+  
+        throw new Error('Error while fetching answer by id');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          res.status(500).send(`Error when fetching answer by id: ${err.message}`);
+        } else {
+          res.status(500).send(`Error when fetching answer by id`);
+        }
+      }
+    };
+
+    const updateAnswerRoute = async (req: AnswerRequest, res: Response): Promise<void> => {
+      const { ans } = req.body;
+      console.log(req.body)
+      if (!isAnswerValid(ans)) {
+        res.status(400).send('Invalid question body');
+        return;
+      }
+      try {
+        if(!ans._id || await !checkIfExists(ans._id.toString(), "answer")) {
+          await addAnswer(req, res)
+          await removeAnswerDraft(ans);
+        } else {
+          await updateAnswer(ans);
+          res.status(200).send('updated!');
+        }
+      } catch(err) {
+        res.status(500).send(`Error when updating question: ${(err as Error).message}`);
+      }
+    }
+
+    const saveAsDraft = async (req: SaveAnswerAsDraftRequest, res: Response): Promise<void> => {
+      if (!req.body.draft || !req.body.username || !req.body.qid) {
+        res.status(400).send('Invalid question save request');
+        return;
+      }
+      const answer: Answer = req.body.draft;
+  
+      try {
+        await saveAnswerDraft(req.body.username, answer, req.body.qid);
+      } catch(err) {
+        res.status(500).send(`Error when saving answer: ${(err as Error).message}`);
+      }
+  
+    }
+
+
+  const getDraftAnswerById = async (req: FindDraftByIdRequest, res: Response): Promise<void> => {
+      const { id } = req.params;
+      const { username } = req.query;
+  
+      if (!ObjectId.isValid(id)) {
+        res.status(400).send('Invalid ID format');
+        return;
+      }
+  
+      if (username === undefined) {
+        res.status(400).send('Invalid username requesting question.');
+        return;
+      }
+  
+      try {
+        const q = await fetchAnswerDraftById(id, username);
+  
+        if (q && !('error' in q)) {
+          res.json(q);
+          return;
+        }
+  
+        throw new Error('Error while fetching question by id');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          res.status(500).send(`Error when fetching question by id: ${err.message}`);
+        } else {
+          res.status(500).send(`Error when fetching question by id`);
+        }
+      }
+    };
+
+
+    const saveFromDraft = async (req: DraftAnswerRequest, res: Response): Promise<void> => {
+      if (!req.body.draftAnswer) {
+        res.status(400).send('Invalid question save request');
+        return;
+      }
+  
+      const draftA: Answer = req.body.draftAnswer;
+  
+      try {
+        await saveAnswerFromDraft(draftA);
+      } catch(err) {
+        res.status(500).send(`Error when saving question: ${(err as Error).message}`);
+      }
+    }
+  
+    const postFromDraft = async (req: DraftAnswerRequest, res: Response): Promise<void> => {
+      //simply delete previous post, and post the question inside the draft. Use the realid, if its not real, then just proceed as a post
+      console.log(req.body)
+      if (!req.body.draftAnswer || !req.body.username || !req.body.qid) {
+        res.status(400).send('Invalid question save request');
+        return;
+      }
+  
+      const answer: Answer = req.body.draftAnswer;
+  
+      answer.locked = false;
+      answer.pinned = false;
+      answer.draft = false;
+      try {
+        if(req.body.realId) {
+          await removeOriginalDraftAnswer(req.body.realId);
+        }
+  
+        if(req.body.draftAnswer._id) {
+          await removeOriginalDraftAnswer(req.body.draftAnswer._id.toString());
+        }
+  
+        if (!answer.text) {
+          res.status(400).send('Invalid question body');
+          return;
+        }
+        const result = await saveAnswer(answer);
+        if ('error' in result) {
+          throw new Error(result.error);
+        }
+  
+        await addAnswerToQuestion(req.body.qid, result);
+  
+  
+      await removeAnswerDraft(req.body.draftAnswer);
+      res.status(200).send('Draft has been posted!');
+  
+    }catch(err) {
+        res.status(500).send(`Error when saving question: ${(err as Error).message}`);
+    }
+  }
   /**
    * Updates an existing answer in the database.
    *
@@ -129,6 +292,12 @@ const answerController = (socket: FakeSOSocket) => {
 
   // add appropriate HTTP verbs and their endpoints to the router.
   router.post('/addAnswer', addAnswer);
+  router.get('/getAnswerById/:id', getAnswerById);
+  router.post('/updateAnswer', updateAnswerRoute);
+  router.post('/saveDraft', saveAsDraft);
+  router.get('/getDraftAnswerById/:id', getDraftAnswerById);
+  router.post('/saveFromDraft', saveFromDraft)
+  router.post('/postFromDraft', postFromDraft)
 
   return router;
 };

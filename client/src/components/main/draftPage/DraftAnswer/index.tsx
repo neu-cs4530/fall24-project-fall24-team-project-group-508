@@ -2,22 +2,22 @@ import './index.css';
 import React from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import useAnswerForm from '../../../hooks/useAnswerForm';
-import MarkdownPreview from '../markdownPreview';
+import useAnswerForm from '../../../../hooks/useAnswerForm';
+import useDraftPage from '../../../../hooks/useDraftPage';
+
+export interface DraftAnswerProps {
+  qid: string;
+  id: string;
+  type: string;
+}
 
 /**
- * NewAnswerPage component allows users to submit an answer to a specific question.
+ * DraftAnswerPage component allows users to submit an answerdraft or edit to a specific question.
  */
-const NewAnswerPage = () => {
-  const { text, textErr, setText, postAnswer, saveDraft } = useAnswerForm();
-  const handlePostAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    postAnswer();
-  };
-  const handleSaveAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    saveDraft();
-  };
+const DraftAnswerPage = (answerProps: DraftAnswerProps) => {
+  const { qid, id, type } = answerProps;
+  const { text, textErr, setText, postDraft, saveDraft } = useAnswerForm();
+  const answer = useDraftPage(type, id, undefined, setText);
 
   return (
     <Box
@@ -49,9 +49,7 @@ const NewAnswerPage = () => {
         required
       />
       <h4>Answer Preview with Markdown and LaTeX Support:</h4>
-      <div className='markdown_preview_container'>
-        <MarkdownPreview text={text} />
-      </div>
+      <div className='markdown_preview_container'>{/* <MarkdownPreview text={text} /> */}</div>
 
       {/* Buttons and Mandatory Field Indicator */}
       <Box
@@ -71,14 +69,20 @@ const NewAnswerPage = () => {
           <Button
             variant='contained'
             color='primary'
-            onClick={handlePostAnswer}
+            onClick={() => {
+              if (answer.answer) {
+                postDraft(answer.answer, qid);
+              }
+            }}
             aria-label='Post your answer'>
-            Post Answer
+            Post Draft/Edit
           </Button>
           <Button
             variant='contained'
             color='primary'
-            onClick={handleSaveAnswer}
+            onClick={() => {
+              saveDraft(answer.answer);
+            }}
             aria-label='Save your answer'>
             Save Answer
           </Button>
@@ -91,4 +95,4 @@ const NewAnswerPage = () => {
   );
 };
 
-export default NewAnswerPage;
+export default DraftAnswerPage;

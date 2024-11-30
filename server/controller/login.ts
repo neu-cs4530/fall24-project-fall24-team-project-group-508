@@ -1,6 +1,6 @@
 import express, { Response } from 'express';
-import { LoginRequest, FakeSOSocket, CreateAccountRequest } from '../types';
-import { createAccount, loginToAccount } from '../models/application';
+import { LoginRequest, FakeSOSocket, CreateAccountRequest, GetUserDataRequest, ProfilePagePayload, Question, Answer } from '../types';
+import { createAccount, findUsersQuestions, findUsersAnswers, findUsersComments, loginToAccount, getUserScore, findUsersAnswersDrafts, findUsersQuestionDrafts } from '../models/application';
 
 const loginController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -101,8 +101,45 @@ const loginController = (socket: FakeSOSocket) => {
     }
   };
 
+  const isDataRouteValid = (req: GetUserDataRequest): boolean =>
+    !!req.body.profile.username && !!req.body.profile.hashedPassword;
+
+  const userDataRoute = async(req: GetUserDataRequest, res: Response): Promise<void> => {
+    if(!isDataRouteValid(req)) {
+      res.status(400).send('Invalid request');
+      return;
+    }
+
+    const { username } = req.body.profile;
+
+    try {
+      const questions = await findUsersQuestions(username);
+      const answers = await findUsersAnswers(username);
+      const comments = await findUsersComments(username);
+      const score : number= await getUserScore(username);
+      const answerDrafts = await findUsersAnswersDrafts(username);
+      const questionDrafts = await findUsersQuestionDrafts(username);
+
+      const payload : ProfilePagePayload =  {
+        username,
+        score,
+        questions,
+        answers,
+        comments,
+        answerDrafts,
+        questionDrafts,
+      }
+
+      socket.emit('userUpdate', payload);
+      res.status(200).send('data found succesfully');
+    } catch (err: unknown) {
+      res.status(401).send(`ERROR: Unable to retrieve account info: ${(err as Error).message}`);
+    }
+  }
+
   router.post('/login', loginRoute);
   router.post('/createAccount', createAccountRoute);
+  router.post('/userData', userDataRoute)
 
   return router;
 };
