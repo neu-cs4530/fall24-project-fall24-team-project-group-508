@@ -118,6 +118,7 @@ describe('POST /addComment', () => {
       presetTags: [],
       locked: false,
       pinned: false,
+      isCorrect: false,
     });
 
     popDocSpy.mockResolvedValueOnce({
@@ -129,6 +130,7 @@ describe('POST /addComment', () => {
       presetTags: [],
       locked: false,
       pinned: false,
+      isCorrect: false,
     });
 
     const response = await supertest(app).post('/comment/addComment').send(mockReqBody);
