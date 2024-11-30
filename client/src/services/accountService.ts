@@ -102,5 +102,4 @@ export const getAccountByName = async (userName: string): Promise<Account> => {
   const account = await response.json();
   return account;
 };
-
 export default updateSettings;
