@@ -1,6 +1,15 @@
 import React from 'react';
 import './index.css';
-import { Box, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  Typography,
+} from '@mui/material';
 import OrderButton from './orderButton';
 import { OrderType, orderTypeDisplayName } from '../../../../types';
 import AskQuestionButton from '../../askQuestionButton';
@@ -16,6 +25,7 @@ interface QuestionHeaderProps {
   titleText: string;
   qcnt: number;
   setQuestionOrder: (order: OrderType) => void;
+  setFilterTag: (tag: string) => void;
 }
 
 /**
@@ -27,31 +37,110 @@ interface QuestionHeaderProps {
  * @param qcnt - The number of questions displayed in the header.
  * @param setQuestionOrder - Function to set the order of questions based on input message.
  */
-const QuestionHeader = ({ titleText, qcnt, setQuestionOrder }: QuestionHeaderProps) => (
-  <Box>
-    <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-      <Typography variant='h5' component='h1' sx={{ fontWeight: 'bold' }} aria-live='polite'>
-        {titleText}
-      </Typography>
-      <AskQuestionButton />
-    </Stack>
+const QuestionHeader = ({
+  titleText,
+  qcnt,
+  setQuestionOrder,
+  setFilterTag,
+}: QuestionHeaderProps) => {
+  const [selectedTag, setSelectedTag] = React.useState<string>('');
 
-    <Stack direction='row' justifyContent='space-between' alignItems='center'>
-      <Typography id='question_count' variant='body1' aria-live='polite'>
-        {qcnt} questions
-      </Typography>
+  const tags = [
+    'C',
+    'C++',
+    'Java',
+    'Python',
+    'JavaScript',
+    'HTML',
+    'CSS',
+    'SQL',
+    'MongoDB',
+    'React',
+    'Angular',
+    'Node.js',
+    'OOD',
+    'SWE',
+    'Algorithms',
+    'Data Structures',
+    'Testing',
+    'Debugging',
+    'Version Control',
+    'Security',
+    'Web Development',
+    'Mobile Development',
+    'Cloud Computing',
+    'DevOps',
+    'Agile',
+    'Scrum',
+    'Kanban',
+    'CI/CD',
+    'Docker',
+    'Kubernetes',
+    'Microservices',
+    'Serverless',
+    'RESTful APIs',
+    'GraphQL',
+    'WebSockets',
+    'OAuth',
+    'JWT',
+    'Cookies',
+    'Sessions',
+    'SQL Injection',
+    'Buffer Overflows',
+    'Markdown',
+    'Latex',
+  ];
 
-      <Box role='group' aria-labelledby='order-buttons' sx={{ display: 'flex', gap: 1 }}>
-        {Object.keys(orderTypeDisplayName).map((order, idx) => (
-          <OrderButton
-            key={idx}
-            orderType={order as OrderType}
-            setQuestionOrder={setQuestionOrder}
-          />
-        ))}
-      </Box>
-    </Stack>
-  </Box>
-);
+  const handleTagChange = (event: SelectChangeEvent<string>) => {
+    const newTag = event.target.value as string;
+    setSelectedTag(newTag);
+    setFilterTag(newTag); // Update the parent component's filter state
+  };
+  return (
+    <Box>
+      <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+        <Typography variant='h5' component='h1' sx={{ fontWeight: 'bold' }} aria-live='polite'>
+          {titleText}
+        </Typography>
+        <AskQuestionButton />
+      </Stack>
+
+      <Stack direction='row' justifyContent='space-between' alignItems='center'>
+        <Typography id='question_count' variant='body1' aria-live='polite'>
+          {qcnt} questions
+        </Typography>
+
+        <Box role='group' aria-labelledby='order-buttons' sx={{ display: 'flex', gap: 1 }}>
+          <FormControl size='small' sx={{ minWidth: 150 }}>
+            <InputLabel id='tag-filter-label'>Filter by Tag</InputLabel>
+            <Select
+              labelId='tag-filter-label'
+              id='tag-filter'
+              value={selectedTag}
+              onChange={handleTagChange}
+              label='Filter by Tag'>
+              <MenuItem value=''>
+                <em>All Tags</em>
+              </MenuItem>
+              {tags.map((tag, idx) => (
+                <MenuItem key={idx} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {Object.keys(orderTypeDisplayName).map((order, idx) => (
+            <OrderButton
+              key={idx}
+              orderType={order as OrderType}
+              setQuestionOrder={setQuestionOrder}
+            />
+          ))}
+        </Box>
+      </Stack>
+    </Box>
+  );
+};
 
 export default QuestionHeader;
