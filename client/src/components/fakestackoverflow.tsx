@@ -52,6 +52,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
           <Routes>
             {/* Public Route */}
             <Route path='/' element={<Login />} />
+            <Route path='/' element={<Navigate to={'/'} />} />
 
             {/* Protected Routes */}
             <Route
