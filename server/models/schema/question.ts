@@ -94,6 +94,9 @@ const questionSchema: Schema = new Schema(
     pinned: {
       type: Boolean,
     },
+    draft: {
+      type: Boolean,
+    }
   },
   { collection: 'Question' },
 );

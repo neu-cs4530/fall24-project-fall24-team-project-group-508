@@ -1,6 +1,6 @@
 import express, { Response } from 'express';
 import { LoginRequest, FakeSOSocket, CreateAccountRequest, GetUserDataRequest, ProfilePagePayload, Question, Answer } from '../types';
-import { createAccount, findUsersQuestions, findUsersAnswers, findUsersComments, loginToAccount, getUserScore } from '../models/application';
+import { createAccount, findUsersQuestions, findUsersAnswers, findUsersComments, loginToAccount, getUserScore, findUsersAnswersDrafts, findUsersQuestionDrafts } from '../models/application';
 
 const loginController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -95,10 +95,12 @@ const loginController = (socket: FakeSOSocket) => {
     const { username } = req.body.profile;
 
     try {
-      const questions = await findUsersQuestions(username)
-      const answers = await findUsersAnswers(username)
-      const comments = await findUsersComments(username)
+      const questions = await findUsersQuestions(username);
+      const answers = await findUsersAnswers(username);
+      const comments = await findUsersComments(username);
       const score : number= await getUserScore(username);
+      const answerDrafts = await findUsersAnswersDrafts(username);
+      const questionDrafts = await findUsersQuestionDrafts(username);
 
       const payload : ProfilePagePayload =  {
         username,
@@ -106,6 +108,8 @@ const loginController = (socket: FakeSOSocket) => {
         questions,
         answers,
         comments,
+        answerDrafts,
+        questionDrafts,
       }
 
       socket.emit('userUpdate', payload);

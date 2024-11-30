@@ -17,11 +17,7 @@ export interface DraftAnswerProps {
  */
 const DraftAnswerPage = (answerProps: DraftAnswerProps) => {
   const { qid, id, type } = answerProps;
-  const { text, textErr, setText, postDraft } = useAnswerForm();
-  //   const handlePostAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //     event.preventDefault();
-  //     postAnswer();
-  //   };
+  const { text, textErr, setText, postDraft, saveDraft } = useAnswerForm();
   const answer = useDraftPage(type, id, undefined, setText);
 
   return (
@@ -64,19 +60,36 @@ const DraftAnswerPage = (answerProps: DraftAnswerProps) => {
           alignItems: 'flex-start',
           gap: 1,
         }}>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={() => {
-            if(answer.answer) {
-              postDraft(answer.answer, qid)
-            }
-          }}
-          aria-label='Post your answer'>
-          Post Answer
-        </Button>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            gap: 1,
+          }}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              if (answer.answer) {
+                postDraft(answer.answer, qid);
+              }
+            }}
+            aria-label='Post your answer'>
+            Post Draft/Edit
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              saveDraft(answer.answer);
+            }}
+            aria-label='Save your answer'>
+            Save Answer
+          </Button>
+        </Box>
         <Typography variant='caption' color='textSecondary'>
-          * indicates mandatory fields
+          * indicates mandatory fields for posting
         </Typography>
       </Box>
     </Box>

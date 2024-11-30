@@ -51,13 +51,13 @@ const getCommentById = async (id: string, username: string): Promise<Comment> =>
 const updateComment = async (
   id: string,
   type: 'question' | 'answer',
-  comment: Comment,): 
-  Promise<Comment> => {
-    const reqBody: AddCommentRequestBody = {
-      id,
-      type,
-      comment,
-    };
+  comment: Comment,
+): Promise<Comment> => {
+  const reqBody: AddCommentRequestBody = {
+    id,
+    type,
+    comment,
+  };
   const res = await api.post(`${COMMENT_API_URL}/updateComment`, reqBody);
 
   if (res.status !== 200) {

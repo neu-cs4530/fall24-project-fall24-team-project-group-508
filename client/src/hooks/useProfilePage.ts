@@ -1,7 +1,16 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
-import { Account, ProfilePagePayload, Answer, Question, User, Comment } from '../types';
+import {
+  Account,
+  ProfilePagePayload,
+  Answer,
+  Question,
+  User,
+  Comment,
+  DraftAnswer,
+  DraftQuestion,
+} from '../types';
 import getProfileData from '../services/profileService';
 import useUserContext from './useUserContext';
 
@@ -14,6 +23,8 @@ const useProfilePage = () => {
   const [userQuestions, setUserQuestions] = useState<Question[]>([]);
   const [userAnswers, setUserAnswers] = useState<Answer[]>([]);
   const [userComments, setUserComments] = useState<Comment[]>([]);
+  const [userDraftAnswers, setUserDraftAnswers] = useState<DraftAnswer[]>([]);
+  const [userDraftQuestions, setUserDraftQuestions] = useState<DraftQuestion[]>([]);
   const [score, setScore] = useState(0);
   const navigate = useNavigate();
   const theme = useTheme();
@@ -24,6 +35,10 @@ const useProfilePage = () => {
       setScore(profile.score);
       setUserAnswers(profile.answers);
       setUserComments(profile.comments);
+      setUserDraftAnswers(profile.answerDrafts);
+      setUserDraftQuestions(profile.questionDrafts);
+      console.log('PROFILE GOT:');
+      console.log(profile);
     }
   };
 
@@ -43,6 +58,8 @@ const useProfilePage = () => {
     userQuestions,
     userAnswers,
     userComments,
+    userDraftAnswers,
+    userDraftQuestions,
   };
 };
 

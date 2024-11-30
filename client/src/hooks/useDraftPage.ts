@@ -2,18 +2,18 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import {
-  Account,
-  ProfilePagePayload,
   Answer,
   Question,
   User,
   Comment,
   PresetTagName,
+  DraftQuestion,
+  DraftAnswer,
 } from '../types';
 import getProfileData from '../services/profileService';
 import useUserContext from './useUserContext';
-import { getQuestionById } from '../services/questionService';
-import { getAnswerById } from '../services/answerService';
+import { getQuestionById, getDraftQuestionById } from '../services/questionService';
+import { getAnswerById, getDraftAnswerById } from '../services/answerService';
 import { getCommentById } from '../services/commentService';
 
 /**
@@ -30,6 +30,8 @@ const useDraftPage = (
   const [question, setQuestion] = useState<Question>();
   const [answer, setAnswer] = useState<Answer>();
   const [comment, setComment] = useState<Comment>();
+  const [draftQuestion, setDraftQuestion] = useState<DraftQuestion>();
+  const [draftAnswer, setDraftAnswer] = useState<DraftAnswer>();
   const user = useUserContext();
 
   const loadDraftItem = async () => {
@@ -52,6 +54,20 @@ const useDraftPage = (
       const c = await getCommentById(id, user.user.username);
       setComment(c);
       setText(c.text);
+    } else if (type === 'draftQuestion') {
+      if (!setTitle || !setText || !setTag || !setPresetTags) return;
+      const q = await getDraftQuestionById(id, user.user.username);
+      setDraftQuestion(q);
+      setTitle(q.editId.title);
+      setText(q.editId.text);
+      const tagsStr = q.editId.tags.map(tag => tag.name).join(' ');
+      setTag(tagsStr);
+      setPresetTags(q.editId.presetTags.map(tag => tag as PresetTagName));
+    } else if (type === 'draftAnswer') {
+      if (!setText) return;
+      const a = await getDraftAnswerById(id, user.user.username);
+      setDraftAnswer(a);
+      setText(a.editId.text);
     }
   };
 
@@ -59,7 +75,7 @@ const useDraftPage = (
     loadDraftItem();
   }, []);
 
-  return { question, answer, comment };
+  return { question, answer, comment, draftQuestion, draftAnswer };
 };
 
 export default useDraftPage;

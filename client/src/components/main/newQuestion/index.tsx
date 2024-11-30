@@ -31,6 +31,7 @@ const NewQuestionPage = () => {
     textErr,
     tagErr,
     postQuestion,
+    saveDraft,
   } = useNewQuestion();
 
   const presetTagOptions = [
@@ -167,16 +168,27 @@ const NewQuestionPage = () => {
         * Limit 5 tags
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mt: 2 }}>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={e => {
-            e.preventDefault();
-            postQuestion();
-          }}>
-          Post Question
-        </Button>
-        <Typography variant='caption'>* indicates mandatory fields</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1, mt: 2 }}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={e => {
+              e.preventDefault();
+              postQuestion();
+            }}>
+            Post Question
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={e => {
+              e.preventDefault();
+              saveDraft();
+            }}>
+            Save Question
+          </Button>
+        </Box>
+        <Typography variant='caption'>* indicates mandatory fields for posting</Typography>
       </Box>
     </Box>
   );

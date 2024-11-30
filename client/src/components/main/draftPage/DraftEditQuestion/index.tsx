@@ -14,17 +14,18 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import { PresetTagName, Question } from '../../../../types';
+import { DraftQuestion, PresetTagName, Question } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
 import useNewQuestion from '../../../../hooks/useNewQuestion';
 import useDraftPage from '../../../../hooks/useDraftPage';
+import { ReactJSX } from '@emotion/react/types/jsx-namespace';
 
 export interface DraftQuestionProps {
   id: string;
   type: string;
 }
 
-const DraftQuestionPage = (draftData: DraftQuestionProps) => {
+const DraftEditQuestionPage = (draftData: DraftQuestionProps) => {
   const {
     title,
     setTitle,
@@ -36,8 +37,8 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
     titleErr,
     textErr,
     tagErr,
-    postDraft,
-    saveDraft,
+    postFromDraft,
+    saveFromDraft,
   } = useNewQuestion();
 
   const { id, type } = draftData;
@@ -99,7 +100,17 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
   };
 
   const theme = useTheme();
-  const question = useDraftPage(type, id, setTitle, setText, setTagNames, setSelectedPresetTags);
+  const { draftQuestion } = useDraftPage(
+    type,
+    id,
+    setTitle,
+    setText,
+    setTagNames,
+    setSelectedPresetTags,
+  );
+  if (!draftQuestion) return;
+
+  const question = draftQuestion.editId;
 
   return (
     <Box
@@ -183,7 +194,7 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
             color='primary'
             onClick={e => {
               e.preventDefault();
-              if (question.question) postDraft(question.question);
+              if (question) postFromDraft(draftQuestion);
             }}>
             Post Draft/Edit
           </Button>
@@ -192,7 +203,7 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
             color='primary'
             onClick={e => {
               e.preventDefault();
-              saveDraft(question.question);
+              saveFromDraft(draftQuestion);
             }}>
             Save Draft
           </Button>
@@ -203,4 +214,4 @@ const DraftQuestionPage = (draftData: DraftQuestionProps) => {
   );
 };
 
-export default DraftQuestionPage;
+export default DraftEditQuestionPage;

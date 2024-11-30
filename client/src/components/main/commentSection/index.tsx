@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Box, Button, List, ListItem, TextField, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -6,7 +7,6 @@ import { Comment } from '../../../types';
 import './index.css';
 import useUserContext from '../../../hooks/useUserContext';
 import ModeratorActionButtons, { ModeratorActionProps } from '../moderatorActions';
-import { useNavigate } from 'react-router-dom';
 
 /**
  * Interface representing the props for the Comment Section component.
@@ -28,7 +28,13 @@ interface CommentSectionProps {
  * @param comments: an array of Comment objects
  * @param handleAddComment: function to handle the addition of a new comment
  */
-const CommentSection = ({ qid,comments, parentType, handleAddComment, moderatorInfo }: CommentSectionProps) => {
+const CommentSection = ({
+  qid,
+  comments,
+  parentType,
+  handleAddComment,
+  moderatorInfo,
+}: CommentSectionProps) => {
   const { user } = useUserContext();
   const [text, setText] = useState<string>('');
   const [textErr, setTextErr] = useState<string>('');
@@ -105,15 +111,19 @@ const CommentSection = ({ qid,comments, parentType, handleAddComment, moderatorI
                     <Typography variant='caption' color='textSecondary'>
                       {comment.commentBy}, {getMetaData(new Date(comment.commentDateTime))}
                     </Typography>
-                    {(comment.commentBy === user.username)?<Button
-                      sx={{ m: 1 }}
-                      variant='contained'
-                      color='primary'
-                      onClick={() => {
-                        navigate(`/draft/${qid}/${parentType}/comment/${comment._id}`);
-                      }}>
-                      edit
-                    </Button>:<Box></Box>}
+                    {comment.commentBy === user.username ? (
+                      <Button
+                        sx={{ m: 1 }}
+                        variant='contained'
+                        color='primary'
+                        onClick={() => {
+                          navigate(`/draft/${qid}/${parentType}/comment/${comment._id}`);
+                        }}>
+                        edit
+                      </Button>
+                    ) : (
+                      <Box></Box>
+                    )}
                   </Box>
                 </ListItem>
               ))

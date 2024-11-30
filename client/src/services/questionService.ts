@@ -1,4 +1,4 @@
-import { Question } from '../types';
+import { DraftQuestion, Question } from '../types';
 import api from './config';
 
 const QUESTION_API_URL = `${process.env.REACT_APP_SERVER_URL}/question`;
@@ -30,6 +30,21 @@ const getQuestionsByFilter = async (
  */
 const getQuestionById = async (qid: string, username: string): Promise<Question> => {
   const res = await api.get(`${QUESTION_API_URL}/getQuestionById/${qid}?username=${username}`);
+  if (res.status !== 200) {
+    throw new Error('Error when fetching question by id');
+  }
+  return res.data;
+};
+
+/**
+ * Function to get a question by its ID.
+ *
+ * @param qid - The ID of the question to retrieve.
+ * @param username - The username of the user requesting the question.
+ * @throws Error if there is an issue fetching the question by ID.
+ */
+const getDraftQuestionById = async (qid: string, username: string): Promise<DraftQuestion> => {
+  const res = await api.get(`${QUESTION_API_URL}/getDraftQuestionById/${qid}?username=${username}`);
   if (res.status !== 200) {
     throw new Error('Error when fetching question by id');
   }
@@ -94,6 +109,46 @@ const downvoteQuestion = async (qid: string, username: string) => {
   return res.data;
 };
 
+const saveDraftQuestion = async (question: Question, username: string): Promise<Question> => {
+  const data = { draft: question, username };
+  const res = await api.post(`${QUESTION_API_URL}/saveDraft`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while saving a new question draft');
+  }
+
+  return res.data;
+};
+
+const saveQuestionFromDraft = async (draft: DraftQuestion, username: string): Promise<Question> => {
+  const data = { draftQuestion: draft.editId, username, realId: draft.realId };
+  const res = await api.post(`${QUESTION_API_URL}/saveFromDraft`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while saving a new question draft');
+  }
+
+  return res.data;
+};
+
+const postQuestionFromDraft = async (
+  draftQuestion: DraftQuestion,
+  username: string,
+): Promise<Question> => {
+  const data = {
+    draftQuestion: draftQuestion.editId,
+    username,
+    realId: draftQuestion.realId,
+  };
+  const res = await api.post(`${QUESTION_API_URL}/postFromDraft`, data);
+
+  if (res.status !== 200) {
+    throw new Error('Error while saving a new question draft');
+  }
+
+  return res.data;
+};
+
 export {
   getQuestionsByFilter,
   getQuestionById,
@@ -101,4 +156,8 @@ export {
   upvoteQuestion,
   downvoteQuestion,
   updateQuestion,
+  saveDraftQuestion,
+  getDraftQuestionById,
+  postQuestionFromDraft,
+  saveQuestionFromDraft,
 };

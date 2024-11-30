@@ -1,10 +1,10 @@
 import './index.css';
 import { Box, Button, Divider, List, ListItem, Paper, Typography, useTheme } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import { Label } from '@mui/icons-material';
+import { Edit, Label } from '@mui/icons-material';
 import { Key, useState } from 'react';
 import QuestionView from '../../questionPage/question';
-import { Account, Answer, Question, Comment } from '../../../../types';
+import { Account, Answer, Question, Comment, DraftQuestion } from '../../../../types';
 import AnswerView from '../../answerPage/answer';
 import useProfilePage from '../../../../hooks/useProfilePage';
 import { getMetaData } from '../../../../tool';
@@ -14,8 +14,17 @@ import { getMetaData } from '../../../../tool';
  */
 const ProfilePage = () => {
   // {theme, userState, setUserState, userQuestions, userAnswers, userComments};
-  const { theme, navigate, userState, setUserState, userQuestions, userAnswers, userComments } =
-    useProfilePage();
+  const {
+    theme,
+    navigate,
+    userState,
+    setUserState,
+    userQuestions,
+    userAnswers,
+    userComments,
+    userDraftAnswers,
+    userDraftQuestions,
+  } = useProfilePage();
 
   const listToShow = () => {
     if (userState === 'questions') {
@@ -27,8 +36,11 @@ const ProfilePage = () => {
     if (userState === 'comments') {
       return userComments;
     }
-    if (userState === 'drafts') {
-      // return account.drafts
+    if (userState === 'draftAnswers') {
+      return userDraftAnswers;
+    }
+    if (userState === 'draftQuestions') {
+      return userDraftQuestions;
     }
 
     return [];
@@ -39,6 +51,7 @@ const ProfilePage = () => {
       return <div></div>;
     }
     if (userState === 'questions') {
+      console.log(item as Question);
       return <QuestionView q={item as Question}></QuestionView>;
     }
     if (userState === 'answers') {
@@ -63,9 +76,42 @@ const ProfilePage = () => {
     }
     if (userState === 'comments') {
       return displayComment(item);
-    } /* else if(userState === 'drafts' ) {
-        return (<QuestionView q={item as Question}></QuestionView>);
-    } */
+    }
+    if (userState === 'draftQuestions') {
+      return (
+        <Box
+          onClick={() => {
+            navigate(`/draft/${item._id}/draftQuestion/draftQuestion/${item._id}`);
+          }}>
+          <QuestionView q={item.editId as Question}></QuestionView>
+        </Box>
+      );
+    }
+    if (userState === 'draftAnswers') {
+      const ans = item.editId as Answer;
+      return (
+        <Box
+          onClick={() => {
+            navigate(`/draft/${item.qid}/draftAnswer/draftAnswer/${item._id}`);
+          }}>
+          {
+            <AnswerView
+              text={ans.text}
+              _id={ans._id}
+              ansBy={ans.ansBy}
+              meta={getMetaData(new Date(ans.ansDateTime))}
+              comments={[]}
+              locked={ans.locked}
+              pinned={ans.pinned}
+              cosmetic={true}
+              handleAddComment={() => {}}
+              moderatorInfo={{
+                type: 'answer',
+              }}></AnswerView>
+          }
+        </Box>
+      );
+    }
   };
 
   return (
@@ -103,9 +149,18 @@ const ProfilePage = () => {
           variant='contained'
           color='primary'
           onClick={() => {
-            setUserState('drafts');
+            setUserState('draftQuestions');
           }}>
-          my drafts
+          my question drafts
+        </Button>
+        <Button
+          sx={{ m: 1 }}
+          variant='contained'
+          color='primary'
+          onClick={() => {
+            setUserState('draftAnswers');
+          }}>
+          my answer drafts
         </Button>
       </Box>
       {listToShow().map((item, idx: Key) => (

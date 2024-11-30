@@ -25,6 +25,7 @@ export interface Answer {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  draft: boolean;
 }
 
 /**
@@ -133,6 +134,7 @@ export interface Question {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  draft: boolean;
   presetTags: PresetTagName[];
 }
 
@@ -162,6 +164,19 @@ export interface FindQuestionRequest extends Request {
 export interface FindQuestionByIdRequest extends Request {
   params: {
     qid: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
+ * Interface for the request parameters when finding a question by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindDraftByIdRequest extends Request {
+  params: {
+    id: string;
   };
   query: {
     username: string;
@@ -347,7 +362,7 @@ export enum AccountType {
  * - downvotedQuestions - Object IDs of questions that have been downvoted by the user
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
- * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+ * - answerDrafts - Object IDs of answers that have been saved as drafts by the user, mapped to the qid they will be added to
  * - settings - The accessibility settings of the user
 
  */
@@ -366,7 +381,7 @@ export interface Account {
   downvotedQuestions: Question[] | ObjectId[];
   downvotedAnswers: Answer[] | ObjectId[];
   questionDrafts: Question[] | ObjectId[];
-  answerDrafts: Answer[] | ObjectId[];
+  answerDrafts: Map<Answer | ObjectId, ObjectId>;
   settings: {darkMode: boolean;
     textSize: 'small' | 'medium' | 'large';
     screenReader: boolean;};
@@ -435,6 +450,70 @@ export interface ProfilePagePayload {
   questions: Question[];
   answers: Answer[];
   comments: Comment[];
+  answerDrafts: DraftAnswerPayload[];
+  questionDrafts: DraftQuestionPayload[];
+}
+
+export interface SaveQuestionAsDraftRequest extends Request {
+  body: {
+    draft: Question;
+    username: string;
+  };
+}
+
+export interface DraftQuestionRequest extends Request {
+  body: {
+    draftQuestion: Question;
+    realId: string;
+    username: string;
+  };
+}
+
+export interface DraftAnswerRequest extends Request {
+  body: {
+    draftAnswer: Answer;
+    qid: string;
+    realId: string;
+    username: string;
+  };
+}
+
+export interface SaveAnswerAsDraftRequest extends Request {
+  body: {
+    draft: Answer;
+    qid: string;
+    username: string;
+  };
+}
+
+export interface DraftQuestion {
+  _id?: ObjectId;
+  username: string;
+  realId?: string;
+  editId: string;
+}
+
+export interface DraftQuestionPayload {
+  _id: string;
+  username: string;
+  realId?: string;
+  editId: Question;
+}
+
+export interface DraftAnswer {
+  _id?: ObjectId;
+  username: string;
+  realId?: string;
+  qid: string;
+  editId: string;
+}
+
+export interface DraftAnswerPayload {
+  _id: string
+  username: string;
+  realId?: string;
+  qid: string;
+  editId: Answer;
 }
 
 /**

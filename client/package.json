@@ -12,6 +12,7 @@
     "@mui/material": "^6.1.7",
     "axios": "^1.7.2",
     "better-react-mathjax": "^2.0.3",
+    "crypto-js": "^4.2.0",
     "katex": "^0.16.11",
     "lodash.debounce": "^4.0.8",
     "mongodb": "^6.8.0",

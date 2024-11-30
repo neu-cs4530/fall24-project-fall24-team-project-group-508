@@ -1,37 +1,32 @@
+import { ObjectId } from 'mongodb';
 import { Schema } from 'mongoose';
 /**
  * Mongoose schema for the Answer collection.
  *
- * This schema defines the structure for storing answers in the database.
+ * This schema defines the structure for storing drafts in the database.
  * Each answer includes the following fields:
  * - `text`: The content of the answer.
  * - `ansBy`: The username of the user who provided the answer.
  * - `ansDateTime`: The date and time when the answer was given.
  * - `comments`: Comments that have been added to the answer by users.
  */
-const answerSchema: Schema = new Schema(
+const draftAnswerSchema: Schema = new Schema(
   {
-    text: {
+    username: {
       type: String,
     },
-    ansBy: {
+    realId: {
       type: String,
+      required: false,
     },
-    ansDateTime: {
-      type: Date,
+    qid: {
+        type: String,
     },
-    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-    locked: {
-      type: Boolean,
+    editId: {
+      type: ObjectId,
     },
-    pinned: {
-      type: Boolean,
-    },
-    draft: {
-      type: Boolean,
-    }
   },
-  { collection: 'Answer' },
+  { collection: 'DraftAnswer' },
 );
 
-export default answerSchema;
+export default draftAnswerSchema

@@ -259,6 +259,23 @@ export interface ProfilePagePayload {
   questions: Question[];
   answers: Answer[];
   comments: Comment[];
+  answerDrafts: DraftAnswer[];
+  questionDrafts: DraftQuestion[];
+}
+
+export interface DraftQuestion {
+  _id: string;
+  username: string;
+  realId: string;
+  editId: Question;
+}
+
+export interface DraftAnswer {
+  _id: string;
+  username: string;
+  realId: string;
+  qid: string;
+  editId: Answer;
 }
 
 /**

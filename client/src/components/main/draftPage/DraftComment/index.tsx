@@ -15,7 +15,7 @@ export interface DraftCommentProps {
  * DraftCommentPage component allows users to submit an commentdraft or edit to a specific question.
  */
 const DraftCommentPage = (commentProps: DraftCommentProps) => {
-  const { qid, id, type, parentType} = commentProps;
+  const { qid, id, type, parentType } = commentProps;
   const { text, textErr, setText, postDraft } = useCommentForm();
 
   const comment = useDraftPage(type, id, undefined, setText);
@@ -62,12 +62,12 @@ const DraftCommentPage = (commentProps: DraftCommentProps) => {
           variant='contained'
           color='primary'
           onClick={() => {
-            if(comment.comment) {
-              postDraft(comment.comment, qid, parentType)
+            if (comment.comment) {
+              postDraft(comment.comment, qid, parentType);
             }
           }}
           aria-label='Post your comment'>
-          Post Comment
+          Post Edit
         </Button>
         <Typography variant='caption' color='textSecondary'>
           * indicates mandatory fields
