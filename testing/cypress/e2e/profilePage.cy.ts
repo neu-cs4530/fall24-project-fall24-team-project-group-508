@@ -1,6 +1,5 @@
 describe('ProfilePage', () => {
     beforeEach(() => {
-        // Visit the page containing the AccessibilityPopup
         cy.visit('https://cs4530-f24-508.onrender.com/');
 
         // login to acc
