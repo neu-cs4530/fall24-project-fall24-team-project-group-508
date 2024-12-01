@@ -19,6 +19,9 @@ CLIENT_URL=http://localhost:3000
 PORT=8000  
 Additionally, for local hosting, create a .env file in the client directory with the line:
 REACT_APP_SERVER_URL=http://localhost:8000 
+
+Navigate to server/app.ts can replace line 24 (const CLIENT_URL = process.env.CLIENT_URL || 'https://cs4530-f24-508.onrender.com';) with const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+
 Once the environment is set up, start the server by running npx ts-node server/server.ts from the base directory. Then, navigate to the client folder and run npm run start to launch the client. The application will be accessible in your browser at http://localhost:3000.
 
 ## Deployed Site
