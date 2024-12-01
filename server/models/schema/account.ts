@@ -67,7 +67,12 @@ const accountSchema: Schema = new Schema(
       type: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
     },
     answerDrafts: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+      type: [
+        {
+          key: { type: Schema.Types.ObjectId, ref: 'Answer' },
+          value: { type: Schema.Types.ObjectId, ref: 'Question' },
+        },
+      ],
     },
     settings: {
       theme: {

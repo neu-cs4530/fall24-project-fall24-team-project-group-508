@@ -18,6 +18,9 @@ import useNewQuestion from '../../../hooks/useNewQuestion';
 import { PresetTagName } from '../../../types';
 import MarkdownPreview from '../markdownPreview';
 
+/**
+ * NewQuestionPage component allows users to submit a new question.
+ */
 const NewQuestionPage = () => {
   const {
     title,
@@ -31,6 +34,7 @@ const NewQuestionPage = () => {
     textErr,
     tagErr,
     postQuestion,
+    saveDraft,
   } = useNewQuestion();
 
   const presetTagOptions = [
@@ -81,6 +85,7 @@ const NewQuestionPage = () => {
 
   const [selectedPresetTags, setSelectedPresetTags] = useState<string[]>([]);
 
+  // Handle the change in the preset tags
   const handlePresetTagChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value as string[];
     if (value.length <= 5) {
@@ -167,16 +172,27 @@ const NewQuestionPage = () => {
         * Limit 5 tags
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mt: 2 }}>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={e => {
-            e.preventDefault();
-            postQuestion();
-          }}>
-          Post Question
-        </Button>
-        <Typography variant='caption'>* indicates mandatory fields</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1, mt: 2 }}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={e => {
+              e.preventDefault();
+              postQuestion();
+            }}>
+            Post Question
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={e => {
+              e.preventDefault();
+              saveDraft();
+            }}>
+            Save Question
+          </Button>
+        </Box>
+        <Typography variant='caption'>* indicates mandatory fields for posting</Typography>
       </Box>
     </Box>
   );

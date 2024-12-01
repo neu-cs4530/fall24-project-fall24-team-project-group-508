@@ -16,6 +16,8 @@ import { Schema } from 'mongoose';
  * - `downVotes`: An array of usernames that have downvoted the question.
  * - `comments`: Comments that have been added to the question by users.
  * - `presetTags`: An array of preset tags that can be associated with the question.
+ * - `locked`: Whether the question is locked.
+ *  - `pinned`: Whether the question is pinned.
  */
 const questionSchema: Schema = new Schema(
   {
@@ -92,6 +94,9 @@ const questionSchema: Schema = new Schema(
       type: Boolean,
     },
     pinned: {
+      type: Boolean,
+    },
+    draft: {
       type: Boolean,
     },
   },

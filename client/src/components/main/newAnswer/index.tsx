@@ -9,10 +9,14 @@ import MarkdownPreview from '../markdownPreview';
  * NewAnswerPage component allows users to submit an answer to a specific question.
  */
 const NewAnswerPage = () => {
-  const { text, textErr, setText, postAnswer } = useAnswerForm();
+  const { text, textErr, setText, postAnswer, saveDraft } = useAnswerForm();
   const handlePostAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     postAnswer();
+  };
+  const handleSaveAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    saveDraft();
   };
 
   return (
@@ -57,15 +61,30 @@ const NewAnswerPage = () => {
           alignItems: 'flex-start',
           gap: 1,
         }}>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={handlePostAnswer}
-          aria-label='Post your answer'>
-          Post Answer
-        </Button>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            gap: 1,
+          }}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handlePostAnswer}
+            aria-label='Post your answer'>
+            Post Answer
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handleSaveAnswer}
+            aria-label='Save your answer'>
+            Save Answer
+          </Button>
+        </Box>
         <Typography variant='caption' color='textSecondary'>
-          * indicates mandatory fields
+          * indicates mandatory fields for posting
         </Typography>
       </Box>
     </Box>

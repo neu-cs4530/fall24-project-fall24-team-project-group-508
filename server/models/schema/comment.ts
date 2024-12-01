@@ -8,6 +8,8 @@ import { Schema } from 'mongoose';
  * - `text`: The content of the comment.
  * - `commentBy`: The username of the user who commented.
  * - `commentDateTime`: The date and time when the comment was posted.
+ * - `locked`: Whether the comment is locked.
+ * - `pinned`: Whether the comment is pinned.
  */
 const commentSchema: Schema = new Schema(
   {

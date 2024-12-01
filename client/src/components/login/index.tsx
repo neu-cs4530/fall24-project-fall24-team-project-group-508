@@ -13,6 +13,7 @@ const Login = () => {
   const root = document.documentElement;
   root.style.setProperty('--font-size', '16px');
 
+  // Toggle between login and register forms
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };

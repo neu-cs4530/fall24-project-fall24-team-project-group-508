@@ -25,6 +25,7 @@ export interface Answer {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  draft: boolean;
   isCorrect: boolean;
 }
 
@@ -134,6 +135,7 @@ export interface Question {
   comments: Comment[] | ObjectId[];
   locked: boolean;
   pinned: boolean;
+  draft: boolean;
   presetTags: PresetTagName[];
 }
 
@@ -163,6 +165,45 @@ export interface FindQuestionRequest extends Request {
 export interface FindQuestionByIdRequest extends Request {
   params: {
     qid: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
+ * Interface for the request parameters when finding a question by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindDraftByIdRequest extends Request {
+  params: {
+    id: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
+ * Interface for the request parameters when finding a answer by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindAnswerByIdRequest extends Request {
+  params: {
+    id: string;
+  };
+  query: {
+    username: string;
+  };
+}
+
+/**
+ * Interface for the request parameters when finding a comment by its ID.
+ * - qid - The unique identifier of the question.
+ */
+export interface FindCommentByIdRequest extends Request {
+  params: {
+    id: string;
   };
   query: {
     username: string;
@@ -316,7 +357,7 @@ export interface AccessibilitySettings {
  * - downvotedQuestions - Object IDs of questions that have been downvoted by the user
  * - downvotedAnswers - Object IDs of answers that have been downvoted by the user
  * - questionDrafts - Object IDs of questions that have been saved as drafts by the user
- * - answerDrafts - Object IDs of answers that have been saved as drafts by the user
+ * - answerDrafts - Object IDs of answers that have been saved as drafts by the user, mapped to the qid they will be added to
  * - settings - The accessibility settings of the user
 
  */
@@ -362,6 +403,12 @@ export interface CreateAccountRequest extends Request {
   body: Account;
 }
 
+export interface GetUserDataRequest extends Request {
+  body: {
+    profile: Account;
+  };
+}
+
 export type ActionTypes = 'pin' | 'remove' | 'lock' | 'promote';
 
 /**
@@ -392,6 +439,78 @@ export interface ActionRequest extends Request {
  */
 export type ActionResponse = {} | { comment: Comment} | { answer: Answer} | { question: Question } | { error: string }
 
+export interface ProfilePagePayload {
+  username: string;
+  score: number;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+  answerDrafts: DraftAnswerPayload[];
+  questionDrafts: DraftQuestionPayload[];
+}
+
+export interface SaveQuestionAsDraftRequest extends Request {
+  body: {
+    draft: Question;
+    username: string;
+  };
+}
+
+export interface DraftQuestionRequest extends Request {
+  body: {
+    draftQuestion: Question;
+    realId: string;
+    username: string;
+  };
+}
+
+export interface DraftAnswerRequest extends Request {
+  body: {
+    draftAnswer: Answer;
+    qid: string;
+    realId: string;
+    username: string;
+  };
+}
+
+export interface SaveAnswerAsDraftRequest extends Request {
+  body: {
+    draft: Answer;
+    qid: string;
+    username: string;
+  };
+}
+
+export interface DraftQuestion {
+  _id?: ObjectId;
+  username: string;
+  realId?: string;
+  editId: string;
+}
+
+export interface DraftQuestionPayload {
+  _id: string;
+  username: string;
+  realId?: string;
+  editId: Question;
+}
+
+export interface DraftAnswer {
+  _id?: ObjectId;
+  username: string;
+  realId?: string;
+  qid: string;
+  editId: string;
+}
+
+export interface DraftAnswerPayload {
+  _id: string
+  username: string;
+  realId?: string;
+  qid: string;
+  editId: Answer;
+}
+
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
@@ -402,5 +521,6 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (comment: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  userUpdate: (profile: ProfilePagePayload) => void;
   answerCorrectUpdate: (ans: Answer) => void;
 }

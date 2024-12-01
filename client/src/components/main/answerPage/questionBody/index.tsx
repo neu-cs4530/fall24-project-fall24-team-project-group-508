@@ -1,7 +1,9 @@
 import './index.css';
-import { Box, Chip, Typography, useTheme } from '@mui/material';
+import { Box, Button, Chip, Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { PresetTagName, Tag } from '../../../../types';
 import MarkdownPreview from '../../markdownPreview';
+import useUserContext from '../../../../hooks/useUserContext';
 
 /**
  * Interface representing the props for the QuestionBody component.
@@ -10,9 +12,14 @@ import MarkdownPreview from '../../markdownPreview';
  * - text - The content of the question, which may contain hyperlinks.
  * - askby - The username of the user who asked the question.
  * - meta - Additional metadata related to the question, such as the date and time it was asked.
+ * - pinned - Whether the question is pinned.
+ * - locked - Whether the question is locked.
+ * - tags - An array of tags associated with the question.
+ * - presetTags - An array of preset tags associated with the question.
  */
 interface QuestionBodyProps {
   views: number;
+  _id?: string;
   text: string;
   askby: string;
   meta: string;
@@ -31,8 +38,13 @@ interface QuestionBodyProps {
  * @param text The content of the question.
  * @param askby The username of the question's author.
  * @param meta Additional metadata related to the question.
+ * @param pinned Whether the question is pinned.
+ * @param locked Whether the question is locked.
+ * @param tags An array of tags associated with the question.
+ * @param presetTags An array of preset tags associated with the question.
  */
 const QuestionBody = ({
+  _id,
   views,
   text,
   askby,
@@ -50,6 +62,8 @@ const QuestionBody = ({
     questionClassName += ' locked';
   }
   const theme = useTheme();
+  const user = useUserContext();
+  const navigate = useNavigate();
 
   let borderColor = 'transparent';
   if (pinned) {
@@ -154,6 +168,19 @@ const QuestionBody = ({
             aria-label={`Asked ${meta}`}>
             asked {meta}
           </Typography>
+          {askby === user.user.username ? (
+            <Button
+              sx={{ m: 1 }}
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                navigate(`/draft/${_id}/question/question/${_id}`);
+              }}>
+              edit
+            </Button>
+          ) : (
+            <Box></Box>
+          )}
         </Box>
       </Box>
     </div>

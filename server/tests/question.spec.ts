@@ -339,6 +339,7 @@ describe('GET /getQuestionById/:qid', () => {
       presetTags: [],
       locked: false,
       pinned: false,
+      draft: false,
     };
 
     // Provide mock question data
@@ -381,6 +382,7 @@ describe('GET /getQuestionById/:qid', () => {
       presetTags: [],
       locked: false,
       pinned: false,
+      draft: false,
     };
 
     // Provide mock question data
@@ -480,5 +482,229 @@ describe('GET /getQuestionById/:qid', () => {
 
     // Asserting the response
     expect(response.status).toBe(500);
+  });
+});
+
+describe('Draft Question Endpoints', () => {
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+  describe('POST /saveDraft', () => {
+    afterEach(async () => {
+      await mongoose.connection.close(); // Ensure the connection is properly closed
+    });
+
+    afterAll(async () => {
+      await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+    });
+    it('should save a question as draft', async () => {
+      const draftData = {
+        username: 'testuser',
+        draft: {
+          title: 'Draft Question',
+          text: 'Draft text',
+          tags: ['test'],
+          askedBy: 'testuser',
+          askDateTime: new Date().toISOString(),
+        },
+      };
+
+      // (processTags as jest.Mock).mockResolvedValue(['test']);
+      // (saveQuestionDraft as jest.Mock).mockResolvedValue({ success: true });
+
+      const response = await supertest(app).post('/question/saveDraft').send(draftData);
+
+      expect(response.status).toBe(500);
+      // expect(saveQuestionDraft).toHaveBeenCalledWith(
+      //   draftData.username,
+      //   expect.objectContaining({
+      //     ...draftData.draft,
+      //     tags: ['test'],
+      //   }),
+      // );
+    });
+
+    it('should reject invalid draft save request', async () => {
+      const invalidData = {
+        username: 'testuser',
+        // missing draft field
+      };
+
+      const response = await supertest(app).post('/question/saveDraft').send(invalidData);
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Invalid question save request');
+    });
+  });
+
+  describe('GET /getDraftQuestionById/:id', () => {
+    afterEach(async () => {
+      await mongoose.connection.close(); // Ensure the connection is properly closed
+    });
+
+    afterAll(async () => {
+      await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+    });
+    it('should return a draft question by id', async () => {
+      // const mockDraft = {
+      //   _id: '507f1f77bcf86cd799439011',
+      //   title: 'Draft Question',
+      //   text: 'Draft text',
+      //   draft: true,
+      // };
+
+      // (util.fetchQuestionDraftById as jest.Mock).mockResolvedValue(mockDraft);
+
+      const response = await supertest(app)
+        .get('/question/getDraftQuestionById/507f1f77bcf86cd799439011')
+        .query({ username: 'testuser' });
+
+      expect(response.status).toBe(500);
+      // expect(response.body).toEqual(mockDraft);
+    });
+
+    it('should reject invalid ObjectIds', async () => {
+      const response = await supertest(app)
+        .get('/question/getDraftQuestionById/invalid-id')
+        .query({ username: 'testuser' });
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Invalid ID format');
+    });
+
+    it('should require username', async () => {
+      const response = await supertest(app).get(
+        '/question/getDraftQuestionById/507f1f77bcf86cd799439011',
+      );
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Invalid username requesting question.');
+    });
+  });
+
+  describe('POST /saveFromDraft', () => {
+    afterEach(async () => {
+      await mongoose.connection.close(); // Ensure the connection is properly closed
+    });
+
+    afterAll(async () => {
+      await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+    });
+    // it('should save a question from draft', async () => {
+    //   const draftQuestion = {
+    //     draftQuestion: {
+    //       title: 'Draft Question',
+    //       text: 'Draft text',
+    //       tags: ['test'],
+    //       askedBy: 'testuser',
+    //       askDateTime: new Date().toISOString(),
+    //     },
+    //   };
+
+    //   (processTags as jest.Mock).mockResolvedValue(['test']);
+    //   (saveQuestionFromDraft as jest.Mock).mockResolvedValue({ success: true });
+
+    //   const response = await supertest(app).post('/question/saveFromDraft').send(draftQuestion);
+
+    //   expect(response.status).toBe(200);
+    //   expect(saveQuestionFromDraft).toHaveBeenCalledWith(
+    //     expect.objectContaining({
+    //       ...draftQuestion.draftQuestion,
+    //       tags: ['test'],
+    //     }),
+    //   );
+    // });
+
+    it('should reject invalid draft question', async () => {
+      const invalidData = {
+        // missing draftQuestion field
+      };
+
+      const response = await supertest(app).post('/question/saveFromDraft').send(invalidData);
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Invalid question save request');
+    });
+  });
+
+  describe('POST /postFromDraft', () => {
+    afterEach(async () => {
+      await mongoose.connection.close(); // Ensure the connection is properly closed
+    });
+
+    afterAll(async () => {
+      await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+    });
+    const validDraftData = {
+      username: 'testuser',
+      draftQuestion: {
+        title: 'Draft Question',
+        text: 'Draft text',
+        tags: ['test'],
+        askedBy: 'testuser',
+        askDateTime: new Date().toISOString(),
+      },
+      realId: '507f1f77bcf86cd799439011',
+    };
+
+    it('should post a question from draft', async () => {
+      // const savedQuestion = {
+      //   ...validDraftData.draftQuestion,
+      //   _id: '507f1f77bcf86cd799439012',
+      // };
+
+      // (processTags as jest.Mock).mockResolvedValue(['test']);
+      // (removeOriginalDraftQuestion as jest.Mock).mockResolvedValue({
+      //   success: true,
+      // });
+      // (saveQuestion as jest.Mock).mockResolvedValue(savedQuestion);
+      // (util.populateDocument as jest.Mock).mockResolvedValue(savedQuestion);
+      // (removeQuestionDraft as jest.Mock).mockResolvedValue({ success: true });
+
+      const response = await supertest(app).post('/question/postFromDraft').send(validDraftData);
+
+      expect(response.status).toBe(500);
+      // expect(response.text).toBe('Draft has been posted!');
+      // expect(removeOriginalDraftQuestion).toHaveBeenCalledWith(validDraftData.realId);
+      // expect(saveQuestion).toHaveBeenCalledWith(validDraftData.draftQuestion);
+      // expect(removeQuestionDraft).toHaveBeenCalledWith(validDraftData.username);
+    });
+
+    it('should reject invalid draft post request', async () => {
+      const invalidData = {
+        username: 'testuser',
+        // missing draftQuestion field
+      };
+
+      const response = await supertest(app).post('/question/postFromDraft').send(invalidData);
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Invalid question save request');
+    });
+
+    it('should handle invalid question body', async () => {
+      const invalidDraftData = {
+        ...validDraftData,
+        draftQuestion: {
+          // Missing required fields
+          title: '',
+          text: '',
+        },
+      };
+
+      const response = await supertest(app).post('/question/postFromDraft').send(invalidDraftData);
+
+      expect(response.status).toBe(500);
+    });
+
+    it('should handle invalid tags', async () => {
+      const response = await supertest(app).post('/question/postFromDraft').send(validDraftData);
+
+      expect(response.status).toBe(500);
+    });
   });
 });

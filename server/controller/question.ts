@@ -7,6 +7,9 @@ import {
   AddQuestionRequest,
   VoteRequest,
   FakeSOSocket,
+  SaveQuestionAsDraftRequest,
+  FindDraftByIdRequest,
+  DraftQuestionRequest,
 } from '../types';
 import {
   addVoteToQuestion,
@@ -17,6 +20,13 @@ import {
   processTags,
   populateDocument,
   saveQuestion,
+  checkIfExists,
+  updateQuestion,
+  saveQuestionDraft,
+  removeQuestionDraft,
+  fetchQuestionDraftById,
+  saveQuestionFromDraft,
+  removeOriginalDraftQuestion,
 } from '../models/application';
 
 const questionController = (socket: FakeSOSocket) => {
@@ -43,7 +53,10 @@ const questionController = (socket: FakeSOSocket) => {
       }
       // Filter by search keyword and tags
       const resqlist: Question[] = await filterQuestionsBySearch(qlist, search);
-      res.json(resqlist);
+
+      const qlistNoDraft = resqlist.filter(q => !q.draft);
+
+      res.json(qlistNoDraft);
     } catch (err: unknown) {
       if (err instanceof Error) {
         res.status(500).send(`Error when fetching questions by filter: ${err.message}`);
@@ -95,6 +108,38 @@ const questionController = (socket: FakeSOSocket) => {
     }
   };
 
+  const getDraftQuestionById = async (req: FindDraftByIdRequest, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const { username } = req.query;
+
+    if (!ObjectId.isValid(id)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    if (username === undefined) {
+      res.status(400).send('Invalid username requesting question.');
+      return;
+    }
+
+    try {
+      const q = await fetchQuestionDraftById(id, username);
+
+      if (q && !('error' in q)) {
+        res.json(q);
+        return;
+      }
+
+      throw new Error('Error while fetching question by id');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        res.status(500).send(`Error when fetching question by id: ${err.message}`);
+      } else {
+        res.status(500).send(`Error when fetching question by id`);
+      }
+    }
+  };
+
   /**
    * Validates the question object to ensure it contains all the necessary fields.
    *
@@ -128,9 +173,11 @@ const questionController = (socket: FakeSOSocket) => {
       res.status(400).send('Invalid question body');
       return;
     }
+
     const question: Question = req.body;
     question.locked = false;
     question.pinned = false;
+    question.draft = false;
     try {
       const questionswithtags: Question = {
         ...question,
@@ -230,12 +277,127 @@ const questionController = (socket: FakeSOSocket) => {
     voteQuestion(req, res, 'downvote');
   };
 
+  const updateQuestionRoute = async (req: AddQuestionRequest, res: Response): Promise<void> => {
+    if (!isQuestionBodyValid(req.body)) {
+      res.status(400).send('Invalid question body');
+      return;
+    }
+
+    const question: Question = req.body;
+    try {
+      if (!question._id || (await !checkIfExists(question._id.toString(), 'question'))) {
+        await addQuestion(req, res);
+        await removeQuestionDraft(question);
+      } else {
+        await updateQuestion(question);
+        res.status(200).send('updated!');
+      }
+    } catch (err) {
+      res.status(500).send(`Error when updating question: ${(err as Error).message}`);
+    }
+  };
+
+  const saveAsDraft = async (req: SaveQuestionAsDraftRequest, res: Response): Promise<void> => {
+    if (!req.body.draft || !req.body.username) {
+      res.status(400).send('Invalid question save request');
+      return;
+    }
+
+    const question: Question = req.body.draft;
+
+    try {
+      const questionswithtags: Question = {
+        ...question,
+        tags: await processTags(question.tags),
+      };
+
+      await saveQuestionDraft(req.body.username, questionswithtags);
+    } catch (err) {
+      res.status(500).send(`Error when saving question: ${(err as Error).message}`);
+    }
+  };
+
+  const saveFromDraft = async (req: DraftQuestionRequest, res: Response): Promise<void> => {
+    if (!req.body.draftQuestion) {
+      res.status(400).send('Invalid question save request');
+      return;
+    }
+
+    const draftQ: Question = req.body.draftQuestion;
+
+    try {
+      const questionswithtags: Question = {
+        ...draftQ,
+        tags: await processTags(draftQ.tags),
+      };
+      await saveQuestionFromDraft(questionswithtags);
+    } catch (err) {
+      res.status(500).send(`Error when saving question: ${(err as Error).message}`);
+    }
+  };
+
+  const postFromDraft = async (req: DraftQuestionRequest, res: Response): Promise<void> => {
+    // simply delete previous post, and post the question inside the draft. Use the realid, if its not real, then just proceed as a post
+    if (!req.body.draftQuestion || !req.body.username) {
+      res.status(400).send('Invalid question save request');
+      return;
+    }
+
+    const question: Question = req.body.draftQuestion;
+
+    question.locked = false;
+    question.pinned = false;
+    question.draft = false;
+    try {
+      if (req.body.realId) {
+        await removeOriginalDraftQuestion(req.body.realId);
+      }
+
+      if (req.body.draftQuestion._id) {
+        await removeOriginalDraftQuestion(req.body.draftQuestion._id.toString());
+      }
+
+      if (!isQuestionBodyValid(question)) {
+        res.status(400).send('Invalid question body');
+        return;
+      }
+      const questionswithtags: Question = {
+        ...question,
+        tags: await processTags(question.tags),
+      };
+      if (questionswithtags.tags.length === 0) {
+        throw new Error('Invalid tags');
+      }
+      const result = await saveQuestion(questionswithtags);
+      if ('error' in result) {
+        throw new Error(result.error);
+      }
+
+      // Populates the fields of the question that was added, and emits the new object
+      const populatedQuestion = await populateDocument(result._id?.toString(), 'question');
+
+      if (populatedQuestion && 'error' in populatedQuestion) {
+        throw new Error(populatedQuestion.error);
+      }
+
+      await removeQuestionDraft(req.body.draftQuestion);
+      res.status(200).send('Draft has been posted!');
+    } catch (err) {
+      res.status(500).send(`Error when saving question: ${(err as Error).message}`);
+    }
+  };
+
   // add appropriate HTTP verbs and their endpoints to the router
   router.get('/getQuestion', getQuestionsByFilter);
   router.get('/getQuestionById/:qid', getQuestionById);
   router.post('/addQuestion', addQuestion);
   router.post('/upvoteQuestion', upvoteQuestion);
   router.post('/downvoteQuestion', downvoteQuestion);
+  router.post('/updateQuestion', updateQuestionRoute);
+  router.post('/saveDraft', saveAsDraft);
+  router.get('/getDraftQuestionById/:id', getDraftQuestionById);
+  router.post('/saveFromDraft', saveFromDraft);
+  router.post('/postFromDraft', postFromDraft);
 
   return router;
 };

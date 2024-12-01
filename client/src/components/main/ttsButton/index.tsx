@@ -9,6 +9,7 @@ import useTextToSpeech from '../../../hooks/useTTS';
 const ReadPageButton: React.FC = () => {
   const { isSpeaking, handleStartReading, handleStopReading } = useTextToSpeech();
 
+  // Read the entire page content using text-to-speech
   const handleReadPage = () => {
     const pageContent = document.body.innerText;
     handleStartReading(pageContent);

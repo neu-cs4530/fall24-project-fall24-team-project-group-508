@@ -72,6 +72,7 @@ const AnswerPage = () => {
 
         {/* Question Body */}
         <QuestionBody
+          _id={questionID}
           views={question.views.length}
           text={question.text}
           askby={question.askedBy}
@@ -84,7 +85,9 @@ const AnswerPage = () => {
 
         {/* Comments Section */}
         <CommentSection
+          qid={questionID}
           comments={pinSortedComments}
+          parentType='question'
           handleAddComment={(comment: Comment) => handleNewComment(comment, 'question', questionID)}
           moderatorInfo={{
             parentType: 'question',
@@ -100,12 +103,15 @@ const AnswerPage = () => {
         {sortedAnswers.map((a, idx) => (
           <Paper key={idx} elevation={3} sx={{ mb: 2, p: 2 }}>
             <AnswerView
+              qid={questionID}
+              _id={a._id}
               text={a.text}
               ansBy={a.ansBy}
               meta={getMetaData(new Date(a.ansDateTime))}
               comments={a.comments}
               locked={a.locked}
               pinned={a.pinned}
+              cosmetic={false}
               isCorrect={a.isCorrect}
               qAskedBy={question.askedBy}
               handleAddComment={(comment: Comment) => handleNewComment(comment, 'answer', a._id)}

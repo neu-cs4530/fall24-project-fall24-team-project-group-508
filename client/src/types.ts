@@ -35,6 +35,7 @@ export type OrderType = keyof typeof orderTypeDisplayName;
  * text - The text of the comment.
  * commentBy - Username of the author of the comment.
  * commentDateTime - Time at which the comment was created.
+ * pinned - A boolean indicating whether the comment is pinned.
  */
 export interface Comment {
   _id?: string;
@@ -186,18 +187,6 @@ export interface Question {
 }
 
 /**
- * interface representing the accessibility settings of a user, which contains:
- * - darkMode - A boolean indicating whether the user prefers dark mode
- * - textSize - The preferred text size of the user
- * - screenReader - A boolean indicating whether the user prefers screen reader
- */
-export interface AccessibilitySettings {
-  darkMode: boolean;
-  textSize: 'small' | 'medium' | 'large';
-  screenReader: boolean;
-}
-
-/**
  * Interface representing an account in the application.
  * - _id - The unique identifier for the account.
  * - username - The username of the account.
@@ -272,6 +261,31 @@ export interface QuestionUpdatePayload {
   removed: boolean;
 }
 
+export interface ProfilePagePayload {
+  username: string;
+  score: number;
+  questions: Question[];
+  answers: Answer[];
+  comments: Comment[];
+  answerDrafts: DraftAnswer[];
+  questionDrafts: DraftQuestion[];
+}
+
+export interface DraftQuestion {
+  _id: string;
+  username: string;
+  realId: string;
+  editId: Question;
+}
+
+export interface DraftAnswer {
+  _id: string;
+  username: string;
+  realId: string;
+  qid: string;
+  editId: Answer;
+}
+
 /**
  * Interface representing the possible events that the server can emit to the client.
  */
@@ -282,5 +296,6 @@ export interface ServerToClientEvents {
   voteUpdate: (vote: VoteUpdatePayload) => void;
   commentUpdate: (update: CommentUpdatePayload) => void;
   darkModeUpdate: (mode: boolean) => void;
+  userUpdate: (profile: ProfilePagePayload) => void;
   answerCorrectUpdate: (ans: Answer) => void;
 }
