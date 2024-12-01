@@ -9,10 +9,14 @@ describe("Cypress Tests to verify tagging", () => {
 
   it("7.1 | Adds a question with tags, checks the tags existied", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
-    
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
+
     // add a question with tags
     cy.contains("Ask a Question").click();
     cy.get("#formTitleInput").type("Test Question A");
@@ -29,9 +33,13 @@ describe("Cypress Tests to verify tagging", () => {
 
   it("7.2 | Checks if all tags exist", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     // all tags exist in the page
     cy.contains("Tags").click();
     cy.contains("react", { matchCase: false });
@@ -44,9 +52,13 @@ describe("Cypress Tests to verify tagging", () => {
 
   it("7.3 | Checks if all questions exist inside tags", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     // all question no. should be in the page
     cy.contains("Tags").click();
     cy.contains("6 Tags");
@@ -56,9 +68,13 @@ describe("Cypress Tests to verify tagging", () => {
 
   it("8.1 | go to question in tag react", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     // all question no. should be in the page
     cy.contains("Tags").click();
     cy.contains("react").click();
@@ -67,9 +83,13 @@ describe("Cypress Tests to verify tagging", () => {
 
   it("8.2 | go to questions in tag storage", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     // all question no. should be in the page
     cy.contains("Tags").click();
     cy.contains("storage").click();
@@ -78,9 +98,13 @@ describe("Cypress Tests to verify tagging", () => {
 
   it("8.3 | create a new question with a new tag and finds the question through tag", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
 
     // add a question with tags
     cy.contains("Ask a Question").click();
@@ -99,9 +123,13 @@ describe("Cypress Tests to verify tagging", () => {
     const tagNames = "javascript";
 
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains("Tags").click();
 
     cy.contains(tagNames).click();
@@ -114,9 +142,13 @@ describe("Cypress Tests to verify tagging", () => {
     const tagNames = "storage";
 
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
 
     //clicks the 3rd tag associated with the question.
     cy.get(".question_tag_button").eq(2).click();

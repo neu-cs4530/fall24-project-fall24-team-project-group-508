@@ -11,9 +11,13 @@ describe("Cypress Tests tp verify searching questions", () => {
     const searchText = "Web3";
 
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type(`${searchText}{enter}`);
     cy.get(".postTitle").should("have.length", 0);
   });
@@ -21,9 +25,13 @@ describe("Cypress Tests tp verify searching questions", () => {
   it("3.2 | Search string in question text", () => {
     const qTitles = [Q3_DESC];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("40 million{enter}");
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -33,9 +41,13 @@ describe("Cypress Tests tp verify searching questions", () => {
   it("3.3 | earch string in question text", () => {
     const qTitles = [Q4_DESC];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("data remains{enter}");
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -45,9 +57,13 @@ describe("Cypress Tests tp verify searching questions", () => {
   it("4.1 | Search a question by tag (t1)", () => {
     const qTitles = [Q1_DESC];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("[react]{enter}");
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -60,9 +76,13 @@ describe("Cypress Tests tp verify searching questions", () => {
       Q1_DESC,
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("[javascript]{enter}");
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -75,9 +95,13 @@ describe("Cypress Tests tp verify searching questions", () => {
       Q2_DESC,
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("[android-studio]{enter}");
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -90,9 +114,13 @@ describe("Cypress Tests tp verify searching questions", () => {
       Q2_DESC,
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("[shared-preferences]{enter}");
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -101,9 +129,13 @@ describe("Cypress Tests tp verify searching questions", () => {
 
   it("4.5 | Search for a question using a tag that does not exist", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get("#searchBar").type("[nonExistentTag]{enter}");
     cy.get(".postTitle").should("have.length", 0);
   });

@@ -13,11 +13,10 @@ describe("Cypress Tests to verify asking new questions", () => {
     // register for acc
     cy.contains('Need an account? Register').click();
     cy.contains('Create Account').should('be.visible');
-    cy.get('input[name="username"]').type('test');
-    cy.get('input[name="email"]').type('test@gmail.com');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
     cy.get('input[name="password"]').type('test');
     cy.contains('Create Account').click();
-    cy.visit("http://localhost:3000/home");
 
     cy.contains("Ask a Question").click();
     cy.get("#formTitleInput").type("Test Question Q1");

@@ -9,9 +9,13 @@ describe("Cypress Tests to verify order of questions displayed", () => {
 
   it('1.1 | Adds three questions and one answer, then click "Questions", then click unanswered button, verifies the sequence', () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
 
     // add a question
     cy.contains("Ask a Question").click();
@@ -60,9 +64,13 @@ describe("Cypress Tests to verify order of questions displayed", () => {
     ];
 
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
     });
@@ -76,9 +84,13 @@ describe("Cypress Tests to verify order of questions displayed", () => {
       Q3_DESC,
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains("Active").click();
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);

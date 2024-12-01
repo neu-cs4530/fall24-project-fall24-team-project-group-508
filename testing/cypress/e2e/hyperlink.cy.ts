@@ -10,9 +10,13 @@ describe("Cypress Tests repeated to verify adding hyperlinks to text", () => {
 
   it("9.1 | Adds a question with a hyperlink and verifies", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains("Ask a Question").click();
     cy.get("#formTitleInput").type("How to add a hyperlink in Markdown?");
     cy.get("#formTextInput").type(
@@ -33,9 +37,13 @@ describe("Cypress Tests repeated to verify adding hyperlinks to text", () => {
       A2_TXT,
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains(Q1_DESC).click();
     cy.contains("Answer Question").click();
     cy.get("#answerTextInput").type(
@@ -74,9 +82,13 @@ describe("Cypress Tests repeated to verify adding hyperlinks to text", () => {
       "[Wikipedia](tps://www.wikipedia=com)",
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains("Ask a Question").click();
     cy.get("#formTitleInput").type(
       "How to add an invalid hyperlink in Markdown?"
@@ -88,9 +100,13 @@ describe("Cypress Tests repeated to verify adding hyperlinks to text", () => {
       cy.contains("Invalid hyperlink");
     });
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains("How to add an invalid hyperlink in Markdown?").should(
       "not.exist"
     );
@@ -98,9 +114,13 @@ describe("Cypress Tests repeated to verify adding hyperlinks to text", () => {
 
   it("9.4 | Attempts to add an answer with an invalid hyperlink and verifies failure", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains(Q1_DESC).click();
     cy.contains("Answer Question").click();
     cy.get("#answerTextInput").type(
@@ -109,18 +129,26 @@ describe("Cypress Tests repeated to verify adding hyperlinks to text", () => {
     cy.contains("Post Answer").click();
     cy.contains("Invalid hyperlink");
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains(Q1_DESC).click();
     cy.get(".answerText").should("not.contain", "https://wrong.url");
   });
 
   it("9.5 | Adds multiple questions with valid hyperlinks and verify", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
 
     // List of question data
     const questions = [

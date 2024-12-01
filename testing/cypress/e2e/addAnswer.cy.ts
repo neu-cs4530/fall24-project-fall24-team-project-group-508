@@ -25,6 +25,7 @@ describe("Cypress Tests to verify adding new answers", () => {
     cy.get('input[name="email"]').type('test@gmail.com');
     cy.get('input[name="password"]').type('test');
     cy.contains('Create Account').click();
+    cy.visit("http://localhost:3000/home");
 
     cy.contains(Q1_DESC).click();
     cy.contains("Answer Question").click();
@@ -47,6 +48,7 @@ describe("Cypress Tests to verify adding new answers", () => {
     cy.get('input[name="email"]').type('test@gmail.com');
     cy.get('input[name="password"]').type('test');
     cy.contains('Create Account').click();
+    cy.visit("http://localhost:3000/home");
 
     cy.contains(Q1_DESC).click();
     cy.contains("Answer Question").click();

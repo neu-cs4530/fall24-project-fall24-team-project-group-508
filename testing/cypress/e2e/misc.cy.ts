@@ -10,9 +10,13 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
 
   it("6.1 | Adds a question, click active button, verifies the sequence", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
 
 
     // add a question
@@ -72,9 +76,13 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
       "Storing content as BLOBs in databases.",
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
 
     cy.contains(Q3_DESC).click();
     cy.get(".answerText").each(($el, index) => {
@@ -84,9 +92,13 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
 
   it("6.3 | Checks if a8 exist in q4 answers page", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
     cy.contains(Q4_DESC).click();
     cy.contains("Store data in a SQLLite database.");
   });
