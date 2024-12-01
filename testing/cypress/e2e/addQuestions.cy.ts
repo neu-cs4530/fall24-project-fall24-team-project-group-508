@@ -10,15 +10,20 @@ describe("Cypress Tests to verify asking new questions", () => {
 
   it("2.1 | Ask a Question creates and displays expected meta data", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test111');
+    cy.get('input[name="email"]').type('tes111t@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
+
     cy.contains("Ask a Question").click();
     cy.get("#formTitleInput").type("Test Question Q1");
     cy.get("#formTextInput").type("Test Question Q1 Text T1");
     cy.get("#formTagInput").type("javascript");
     cy.contains("Post Question").click();
-    cy.contains("Fake Stack Overflow");
+    cy.contains("Husky404");
     cy.contains("5 questions");
     cy.contains("testuser asked 0 seconds ago");
     const answers = [
@@ -46,9 +51,15 @@ describe("Cypress Tests to verify asking new questions", () => {
 
   it("2.2 | Ask a Question with empty title shows error", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test');
+    cy.get('input[name="email"]').type('test@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
+    cy.visit("http://localhost:3000/home");
+
     cy.contains("Ask a Question").click();
     cy.get("#formTextInput").type("Test Question 1 Text Q1");
     cy.get("#formTagInput").type("javascript");
