@@ -20,7 +20,7 @@ const draftAnswerSchema: Schema = new Schema(
       required: false,
     },
     qid: {
-        type: String,
+      type: String,
     },
     editId: {
       type: ObjectId,
@@ -29,4 +29,4 @@ const draftAnswerSchema: Schema = new Schema(
   { collection: 'DraftAnswer' },
 );
 
-export default draftAnswerSchema
+export default draftAnswerSchema;

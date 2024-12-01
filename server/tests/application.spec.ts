@@ -1763,18 +1763,6 @@ describe('removePost', () => {
                   mockingoose(QuestionModel).toReturn({ deletedCount: 1 }, 'deleteOne');
 
                   await removeOriginalDraftQuestion(mockQuestionId);
-
-                  const result = await QuestionModel.findById(mockQuestionId);
-                  // expect(result).toBeNull();
-                  // expect(result).toBe({
-                  //   _id: '65e9b58910afe6e94fc6e6de',
-                  //   comments: [],
-                  //   downVotes: [],
-                  //   pinned: false,
-                  //   presetTags: [],
-                  //   upVotes: [],
-                  //   views: [],
-                  // });
                 });
 
                 test('should throw an error if deleteOne fails', async () => {
@@ -1795,14 +1783,6 @@ describe('removePost', () => {
                   mockingoose(AnswerModel).toReturn({ deletedCount: 1 }, 'deleteOne');
 
                   await removeOriginalDraftAnswer(mockAnswerId);
-
-                  const result = await AnswerModel.findById(mockAnswerId);
-                  // expect(result).toBe({
-                  //   _id: '65e9b58910afe6e94fc6e6de',
-                  //   comments: [],
-                  //   pinned: true,
-                  // });
-                  // expect(result).toBeNull();
                 });
 
                 test('should throw an error if deleteOne fails', async () => {
@@ -2066,11 +2046,6 @@ describe('removePost', () => {
                       };
 
                       await saveAnswerFromDraft(mockAnswer as Answer);
-
-                      const result = await AnswerModel.findOne({
-                        text: 'Updated Answer Text',
-                      });
-                      // expect(result).toBeNull();
                     });
                   });
 

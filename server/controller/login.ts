@@ -5,8 +5,6 @@ import {
   CreateAccountRequest,
   GetUserDataRequest,
   ProfilePagePayload,
-  Question,
-  Answer,
 } from '../types';
 import {
   createAccount,
