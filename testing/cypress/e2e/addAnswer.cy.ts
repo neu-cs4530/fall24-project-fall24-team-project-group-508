@@ -18,9 +18,14 @@ describe("Cypress Tests to verify adding new answers", () => {
       A2_TXT,
     ];
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test');
+    cy.get('input[name="email"]').type('test@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
+
     cy.contains(Q1_DESC).click();
     cy.contains("Answer Question").click();
     cy.get("#answerTextInput").type(answers[0]);
@@ -35,9 +40,14 @@ describe("Cypress Tests to verify adding new answers", () => {
 
   it("5.3 | Answer is mandatory when creating a new answer", () => {
     cy.visit("http://localhost:3000");
-    cy.contains('Welcome to FakeStackOverflow!');
-    cy.get("#usernameInput").type("testuser")
-    cy.contains("Submit").click();
+    // register for acc
+    cy.contains('Need an account? Register').click();
+    cy.contains('Create Account').should('be.visible');
+    cy.get('input[name="username"]').type('test');
+    cy.get('input[name="email"]').type('test@gmail.com');
+    cy.get('input[name="password"]').type('test');
+    cy.contains('Create Account').click();
+
     cy.contains(Q1_DESC).click();
     cy.contains("Answer Question").click();
     cy.contains("Post Answer").click();
