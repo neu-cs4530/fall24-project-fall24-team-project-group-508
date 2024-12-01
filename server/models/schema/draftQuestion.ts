@@ -1,21 +1,20 @@
 import { ObjectId } from 'mongodb';
 import { Schema } from 'mongoose';
 
-
 const draftQuestionSchema: Schema = new Schema(
-{
+  {
     username: {
-        type: String,
+      type: String,
     },
     realId: {
-        type: String,
-        required: false
+      type: String,
+      required: false,
     },
     editId: {
-        type: ObjectId,
+      type: ObjectId,
     },
-    },
-    { collection: 'DraftQuestion' },
+  },
+  { collection: 'DraftQuestion' },
 );
 
 export default draftQuestionSchema;

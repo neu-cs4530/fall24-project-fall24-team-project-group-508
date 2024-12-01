@@ -11,7 +11,9 @@ import { DraftAnswer } from '../types';
  *
  * @type {Model<DraftAnswer>}
  */
-const DraftAnswerModel: Model<DraftAnswer> = mongoose.model<DraftAnswer>('DraftAnswer', draftAnswerSchema);
-
+const DraftAnswerModel: Model<DraftAnswer> = mongoose.model<DraftAnswer>(
+  'DraftAnswer',
+  draftAnswerSchema,
+);
 
 export default DraftAnswerModel;
