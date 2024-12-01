@@ -48,6 +48,7 @@ const TextArea = ({ title, mandatory = true, hint, id, val, setState, err }: Tex
       onChange={e => {
         setState(e.currentTarget.value);
       }}
+      placeholder={hint || title}
     />
     {err && <div className='input_error'>{err}</div>}
   </>

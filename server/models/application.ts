@@ -378,7 +378,7 @@ export const fetchAndIncrementQuestionViewsById = async (
 };
 
 /**
- * Fetches answer by its ID 
+ * Fetches answer by its ID
  *
  * @param {string} qid - The ID of the answer to fetch.
  * @param {string} username - The username of the user requesting the answer.
@@ -389,11 +389,9 @@ export const fetchAndIncrementQuestionViewsById = async (
 export const fetchAnswerById = async (
   id: string,
   username: string,
-): Promise<AnswerResponse| null> => {
+): Promise<AnswerResponse | null> => {
   try {
-    const a = await AnswerModel.findOne(
-      { _id: new ObjectId(id) },
-    ).populate([
+    const a = await AnswerModel.findOne({ _id: new ObjectId(id) }).populate([
       { path: 'comments', model: CommentModel },
     ]);
     return a;
@@ -402,9 +400,8 @@ export const fetchAnswerById = async (
   }
 };
 
-
 /**
- * Fetches a question draft by its ID 
+ * Fetches a question draft by its ID
  *
  * @param {string} qid - The ID of the answer to fetch.
  * @param {string} username - The username of the user requesting the answer.
@@ -415,13 +412,11 @@ export const fetchAnswerById = async (
 export const fetchQuestionDraftById = async (
   id: string,
   username: string,
-): Promise<DraftQuestionPayload| {error: string}> => {
+): Promise<DraftQuestionPayload | { error: string }> => {
   try {
-    const draft = await DraftQuestionModel.findOne(
-      { _id: new ObjectId(id) },
-    )
-    if(draft) {
-      const q = await QuestionModel.findOne({_id: draft.editId}).populate([
+    const draft = await DraftQuestionModel.findOne({ _id: new ObjectId(id) });
+    if (draft) {
+      const q = await QuestionModel.findOne({ _id: draft.editId }).populate([
         {
           path: 'tags',
           model: TagModel,
@@ -433,10 +428,9 @@ export const fetchQuestionDraftById = async (
         },
         { path: 'comments', model: CommentModel },
       ]);
-      if(!q)
-      return { error: 'did not find the drafts question' }
+      if (!q) return { error: 'did not find the drafts question' };
 
-      const payload : DraftQuestionPayload = {
+      const payload: DraftQuestionPayload = {
         _id: draft._id.toString(),
         username: draft.username,
         realId: draft.realId,
@@ -444,14 +438,14 @@ export const fetchQuestionDraftById = async (
       };
       return payload;
     }
-    return { error: 'did not find the draft id' }
+    return { error: 'did not find the draft id' };
   } catch (error) {
     return { error: 'Error when fetching and updating a question' };
   }
 };
 
 /**
- * Fetches a question draft by its ID 
+ * Fetches a question draft by its ID
  *
  * @param {string} qid - The ID of the answer to fetch.
  * @param {string} username - The username of the user requesting the answer.
@@ -462,20 +456,17 @@ export const fetchQuestionDraftById = async (
 export const fetchAnswerDraftById = async (
   id: string,
   username: string,
-): Promise<DraftAnswerPayload | {error: string} | null> => {
+): Promise<DraftAnswerPayload | { error: string } | null> => {
   try {
-    const draft = await DraftAnswerModel.findOne(
-      { _id: new ObjectId(id) },
-    )
-    if(draft) {
-      const a = await AnswerModel.findOne({_id: draft.editId}).populate([
+    const draft = await DraftAnswerModel.findOne({ _id: new ObjectId(id) });
+    if (draft) {
+      const a = await AnswerModel.findOne({ _id: draft.editId }).populate([
         { path: 'comments', model: CommentModel },
       ]);
 
-      if(!a)
-        return { error: 'could not find associated id with the drafts answer' }
+      if (!a) return { error: 'could not find associated id with the drafts answer' };
 
-      const payload : DraftAnswerPayload = {
+      const payload: DraftAnswerPayload = {
         _id: draft._id.toString(),
         qid: draft.qid,
         username: draft.username,
@@ -486,15 +477,14 @@ export const fetchAnswerDraftById = async (
       return payload;
     }
 
-    return { error: 'did not find the draft id'}
+    return { error: 'did not find the draft id' };
   } catch (error) {
     return { error: 'Error when fetching and updating a question' };
   }
 };
 
-
 /**
- * Fetches comments by its ID 
+ * Fetches comments by its ID
  *
  * @param {string} qid - The ID of the comment to fetch.
  * @param {string} username - The username of the user requesting the comment.
@@ -505,11 +495,9 @@ export const fetchAnswerDraftById = async (
 export const fetchCommentById = async (
   id: string,
   username: string,
-): Promise<CommentResponse| null> => {
+): Promise<CommentResponse | null> => {
   try {
-    const c = await CommentModel.findOne(
-      { _id: new ObjectId(id) },
-    )
+    const c = await CommentModel.findOne({ _id: new ObjectId(id) });
     return c;
   } catch (error) {
     return { error: 'Error when fetching and updating a question' };
@@ -1200,87 +1188,95 @@ export const getAccount = async (userName: string): Promise<Account> => {
   return account;
 };
 
+export const findUserTags = async (tags: Tag[] | ObjectId[]): Promise<Tag[]> => {
+  const tagObjs: Tag[] = [];
+  for (const tag of tags) {
+    // eslint-disable-next-line no-await-in-loop
+    const t = await TagModel.findOne({ _id: tag._id });
+    if (t) tagObjs.push(t);
+  }
+  return tagObjs;
+};
+
 export const findUsersQuestions = async (username: string): Promise<Question[]> => {
   const data = await QuestionModel.find({ askedBy: username });
   const questions: Question[] = [];
-  for( const item of data) {
+  for (const item of data) {
+    // eslint-disable-next-line no-await-in-loop
     const q = await QuestionModel.findOne({ _id: item._id });
-    if(q && !q.draft) {
+    if (q && !q.draft) {
+      // eslint-disable-next-line no-await-in-loop
       q.tags = await findUserTags(q.tags);
       questions.push(q);
     }
   }
   return questions;
-}
-
-export const findUserTags = async (tags: Tag[] | ObjectId[]): Promise<Tag[]> => {
-  const tag_objs: Tag[] = []
-  for ( const tag of tags ) {
-    const t = await TagModel.findOne({_id: tag._id})
-    if(t)
-      tag_objs.push(t);
-  }
-  return tag_objs
-}
+};
 
 export const findUsersAnswers = async (username: string): Promise<Answer[]> => {
   const data = await AnswerModel.find({ ansBy: username });
   const answers: Answer[] = [];
-  for( const item of data) {
+  for (const item of data) {
+    // eslint-disable-next-line no-await-in-loop
     const a = await AnswerModel.findOne({ _id: item._id });
-    if(a && !a.draft)
-      answers.push(a)
+    if (a && !a.draft) answers.push(a);
   }
   return answers;
-}
+};
 
 export const findUsersComments = async (username: string): Promise<Comment[]> => {
   const data = await CommentModel.find({ commentBy: username });
-  const comments: Comment[] = []
-  for( const item of data) {
-    const c = await CommentModel.findOne({ _id: item._id })
-    if(c)
-      comments.push(c)
+  const comments: Comment[] = [];
+  for (const item of data) {
+    // eslint-disable-next-line no-await-in-loop
+    const c = await CommentModel.findOne({ _id: item._id });
+    if (c) comments.push(c);
   }
   return comments;
-}
+};
 
-export const getUserScore = async(username: string): Promise<number> => {
-  const profile = await AccountModel.findOne({username})
-  if(!profile)
-    return 0;
-  return profile.score
-}
+export const getUserScore = async (username: string): Promise<number> => {
+  const profile = await AccountModel.findOne({ username });
+  if (!profile) return 0;
+  return profile.score;
+};
 
 export const findUsersAnswersDrafts = async (username: string): Promise<DraftAnswerPayload[]> => {
-  const data = await DraftAnswerModel.find({ username: username });
+  const data = await DraftAnswerModel.find({ username });
   const answers: DraftAnswerPayload[] = [];
-  for( const item of data) {
+  for (const item of data) {
+    // eslint-disable-next-line no-await-in-loop
     const a = await DraftAnswerModel.findOne({ _id: item._id });
-    if(a) {
+    if (a) {
+      // eslint-disable-next-line no-await-in-loop
       const editA = await AnswerModel.findOne({ _id: a.editId }).populate([
-        { path: 'comments', model: CommentModel }]);
-      if(editA) {
-        const payload : DraftAnswerPayload = {
+        { path: 'comments', model: CommentModel },
+      ]);
+      if (editA) {
+        const payload: DraftAnswerPayload = {
           _id: item._id.toString(),
           username: a.username,
           realId: a.realId,
           qid: a.qid,
-          editId: editA
-        }
+          editId: editA,
+        };
         answers.push(payload);
       }
     }
   }
   return answers;
-}
+};
 
-export const findUsersQuestionDrafts = async (username: string): Promise<DraftQuestionPayload[]> => {
-  const data = await DraftQuestionModel.find({ username: username });
+export const findUsersQuestionDrafts = async (
+  username: string,
+): Promise<DraftQuestionPayload[]> => {
+  const data = await DraftQuestionModel.find({ username });
   const questions: DraftQuestionPayload[] = [];
-  for( const item of data) {
+  for (const item of data) {
+    // eslint-disable-next-line no-await-in-loop
     const q = await DraftQuestionModel.findOne({ _id: item._id });
-    if(q) {
+    if (q) {
+      // eslint-disable-next-line no-await-in-loop
       const editQ = await QuestionModel.findOne({ _id: q.editId }).populate([
         {
           path: 'tags',
@@ -1291,10 +1287,11 @@ export const findUsersQuestionDrafts = async (username: string): Promise<DraftQu
           model: AnswerModel,
           populate: { path: 'comments', model: CommentModel },
         },
-        { path: 'comments', model: CommentModel }]);
+        { path: 'comments', model: CommentModel },
+      ]);
 
       if (editQ) {
-        const payload : DraftQuestionPayload = {
+        const payload: DraftQuestionPayload = {
           _id: item._id.toString(),
           username: q.username,
           realId: q.realId,
@@ -1305,139 +1302,174 @@ export const findUsersQuestionDrafts = async (username: string): Promise<DraftQu
     }
   }
   return questions;
-}
+};
 
-export const checkIfExists = async(id: string, type: string): Promise<boolean> => {
-  if(type === 'question') {
-    const q = await DraftQuestionModel.findOne({_id: id});
-    return !!q
-  } else if(type === 'answer') {
-    const a = await DraftAnswerModel.findOne({_id: id});
-    return !!a
-  } else if(type === 'comment') {
+export const checkIfExists = async (id: string, type: string): Promise<boolean> => {
+  if (type === 'question') {
+    const q = await DraftQuestionModel.findOne({ _id: id });
+    return !!q;
+  }
+  if (type === 'answer') {
+    const a = await DraftAnswerModel.findOne({ _id: id });
+    return !!a;
+  }
+  if (type === 'comment') {
     return true;
   }
   return false;
-}
+};
 
-export const updateQuestion = async(question: Question): Promise<void> => {
-  const tags = []
-  for(const tag of question.tags) {
+export const updateQuestion = async (question: Question): Promise<void> => {
+  const tags = [];
+  for (const tag of question.tags) {
+    // eslint-disable-next-line no-await-in-loop
     const t = await addTag(tag);
-    if(!t) 
-      continue
+    // eslint-disable-next-line no-continue
+    if (!t) continue;
+    // eslint-disable-next-line no-await-in-loop
     const modelTag = await TagModel.findOne({ name: t.name });
-    if(modelTag)
-      tags.push(modelTag);
+    if (modelTag) tags.push(modelTag);
   }
 
-  const q = await QuestionModel.findOneAndUpdate({ _id: question._id }, { $set: { title: question.title, text: question.text, tags: tags, presetTags: question.presetTags} })  
-  if(!q) 
-    throw new Error(`Could not find the question ${question._id} to update`);
-}
+  const q = await QuestionModel.findOneAndUpdate(
+    { _id: question._id },
+    {
+      $set: {
+        title: question.title,
+        text: question.text,
+        tags,
+        presetTags: question.presetTags,
+      },
+    },
+  );
+  if (!q) throw new Error(`Could not find the question ${question._id} to update`);
+};
 
-export const updateAnswer = async(answer: Answer): Promise<void> => {
-  const a = await AnswerModel.findOneAndUpdate({ _id: answer._id }, { $set: { text: answer.text} });  
-  if(!a) 
-    throw new Error(`Could not find the answer ${answer._id} to update`);
-}
+export const updateAnswer = async (answer: Answer): Promise<void> => {
+  const a = await AnswerModel.findOneAndUpdate(
+    { _id: answer._id },
+    { $set: { text: answer.text } },
+  );
+  if (!a) throw new Error(`Could not find the answer ${answer._id} to update`);
+};
 
-export const updateComment = async(comment: Comment): Promise<void> => {
-  const c = await CommentModel.findOneAndUpdate({ _id: comment._id }, { $set: { text: comment.text} });  
-  if(!c) 
-    throw new Error(`Could not find the comment ${comment._id} to update`);
-}
+export const updateComment = async (comment: Comment): Promise<void> => {
+  const c = await CommentModel.findOneAndUpdate(
+    { _id: comment._id },
+    { $set: { text: comment.text } },
+  );
+  if (!c) throw new Error(`Could not find the comment ${comment._id} to update`);
+};
 
-export const saveQuestionDraft = async(username: string, question: Question): Promise<DraftQuestion> => {
-  let realQuestion = await QuestionModel.findOne({_id: question._id})
+export const saveQuestionDraft = async (
+  username: string,
+  question: Question,
+): Promise<DraftQuestion> => {
+  const realQuestion = await QuestionModel.findOne({ _id: question._id });
   question.draft = true;
   question._id = undefined;
   const draftQ = await QuestionModel.create(question);
 
-  await DraftQuestionModel.deleteMany({editId: draftQ._id})
+  await DraftQuestionModel.deleteMany({ editId: draftQ._id });
 
   let draft: DraftQuestion;
-  if(realQuestion) {
-    await DraftQuestionModel.deleteMany({realId: realQuestion._id})
+  if (realQuestion) {
+    await DraftQuestionModel.deleteMany({ realId: realQuestion._id });
     draft = {
-      username: username,
+      username,
       realId: realQuestion?._id.toString(),
       editId: draftQ._id.toString(),
-    }
+    };
   } else {
     draft = {
-      username: username,
+      username,
       editId: draftQ._id.toString(),
-    }
+    };
   }
 
   const draftQuestion = await DraftQuestionModel.create(draft);
 
-  return draftQuestion
-}
+  return draftQuestion;
+};
 
-export const saveQuestionFromDraft = async(newDraftQ: Question): Promise<void> => {
-
-  if(newDraftQ._id) {
-    await QuestionModel.findOneAndUpdate({_id: newDraftQ._id}, { $set: { text: newDraftQ.text, title: newDraftQ.title, tags: newDraftQ.tags, presetTags:newDraftQ.presetTags} }, {new: true});
+export const saveQuestionFromDraft = async (newDraftQ: Question): Promise<void> => {
+  if (newDraftQ._id) {
+    await QuestionModel.findOneAndUpdate(
+      { _id: newDraftQ._id },
+      {
+        $set: {
+          text: newDraftQ.text,
+          title: newDraftQ.title,
+          tags: newDraftQ.tags,
+          presetTags: newDraftQ.presetTags,
+        },
+      },
+      { new: true },
+    );
   }
-}
+};
 
-export const saveAnswerFromDraft = async(answer: Answer): Promise<void> => {
-
-  if(answer._id) {
-    await AnswerModel.findOneAndUpdate({_id: answer._id}, { $set: { text: answer.text} }, {new: true});
+export const saveAnswerFromDraft = async (answer: Answer): Promise<void> => {
+  if (answer._id) {
+    await AnswerModel.findOneAndUpdate(
+      { _id: answer._id },
+      { $set: { text: answer.text } },
+      { new: true },
+    );
   }
-}
+};
 
-export const saveAnswerDraft = async(username: string, answer: Answer, qid: string): Promise<DraftAnswer> => {
-
-  let realAnswer = await AnswerModel.findOne({_id: answer._id})
+export const saveAnswerDraft = async (
+  username: string,
+  answer: Answer,
+  qid: string,
+): Promise<DraftAnswer> => {
+  const realAnswer = await AnswerModel.findOne({ _id: answer._id });
   answer.draft = true;
   answer._id = undefined;
   const draftA = await AnswerModel.create(answer);
 
-  if(!draftA) {
+  if (!draftA) {
     throw new Error(`Could not create a answer that is being saved as a draft`);
-  }  
+  }
 
-  //overwrite existing drafts for the same answer
-  await DraftAnswerModel.deleteMany({editId: draftA._id})
+  // overwrite existing drafts for the same answer
+  await DraftAnswerModel.deleteMany({ editId: draftA._id });
 
   let draft: DraftAnswer;
-  if(realAnswer) {
-    await DraftAnswerModel.deleteMany({realId: realAnswer._id})
+  if (realAnswer) {
+    await DraftAnswerModel.deleteMany({ realId: realAnswer._id });
     draft = {
-      username: username,
+      username,
       realId: realAnswer._id.toString(),
-      qid: qid,
+      qid,
       editId: draftA._id.toString(),
-    }
-  } else  {
+    };
+  } else {
     draft = {
-      username: username,
-      qid: qid,
+      username,
+      qid,
       editId: draftA._id.toString(),
-    }
+    };
   }
 
   const draftAnswer = await DraftAnswerModel.create(draft);
 
-  return draftAnswer
-}
+  return draftAnswer;
+};
 
-export const removeOriginalDraftQuestion = async(realId: string): Promise<void> => {
-  await QuestionModel.deleteOne({_id: realId});
-}
+export const removeOriginalDraftQuestion = async (realId: string): Promise<void> => {
+  await QuestionModel.deleteOne({ _id: realId });
+};
 
-export const removeOriginalDraftAnswer = async(realId: string): Promise<void> => {
-  await AnswerModel.deleteOne({_id: realId});
-}
+export const removeOriginalDraftAnswer = async (realId: string): Promise<void> => {
+  await AnswerModel.deleteOne({ _id: realId });
+};
 
-export const removeAnswerDraft = async(ans: Answer): Promise<void> => {
-  await DraftAnswerModel.deleteMany({editId: ans._id})
-}
+export const removeAnswerDraft = async (ans: Answer): Promise<void> => {
+  await DraftAnswerModel.deleteMany({ editId: ans._id });
+};
 
-export const removeQuestionDraft = async(question: Question): Promise<void> => {
-  await DraftQuestionModel.deleteMany({editId: question._id})
-}
+export const removeQuestionDraft = async (question: Question): Promise<void> => {
+  await DraftQuestionModel.deleteMany({ editId: question._id });
+};

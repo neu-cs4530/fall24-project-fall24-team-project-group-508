@@ -11,7 +11,6 @@ import { getMetaData } from '../../../../tool';
  * ProfilePage component that displays the full content of a profile, with that user's q/a/c's
  */
 const ProfilePage = () => {
-  // {theme, userState, setUserState, userQuestions, userAnswers, userComments};
   const {
     theme,
     navigate,

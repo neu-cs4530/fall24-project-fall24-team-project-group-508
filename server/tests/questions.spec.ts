@@ -27,6 +27,7 @@ const ans1: Answer = {
   locked: false,
   pinned: false,
   isCorrect: false,
+  draft: false,
 };
 
 const ans2: Answer = {
@@ -38,6 +39,7 @@ const ans2: Answer = {
   locked: false,
   pinned: false,
   isCorrect: false,
+  draft: false,
 };
 
 const ans3: Answer = {
@@ -49,6 +51,7 @@ const ans3: Answer = {
   locked: false,
   pinned: false,
   isCorrect: false,
+  draft: false,
 };
 
 const ans4: Answer = {
@@ -60,6 +63,7 @@ const ans4: Answer = {
   locked: false,
   pinned: false,
   isCorrect: false,
+  draft: false,
 };
 
 const MOCK_QUESTIONS: Question[] = [
@@ -78,6 +82,7 @@ const MOCK_QUESTIONS: Question[] = [
     locked: false,
     pinned: false,
     presetTags: [],
+    draft: false,
   },
   {
     _id: new mongoose.Types.ObjectId('65e9b5a995b6c7045a30d823'),
@@ -94,6 +99,7 @@ const MOCK_QUESTIONS: Question[] = [
     locked: false,
     pinned: false,
     presetTags: [],
+    draft: false,
   },
   {
     _id: new mongoose.Types.ObjectId('34e9b58910afe6e94fc6e99f'),
@@ -110,6 +116,7 @@ const MOCK_QUESTIONS: Question[] = [
     locked: false,
     pinned: false,
     presetTags: [],
+    draft: false,
   },
 ];
 

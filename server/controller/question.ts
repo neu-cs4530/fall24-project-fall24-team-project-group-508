@@ -10,7 +10,6 @@ import {
   SaveQuestionAsDraftRequest,
   FindDraftByIdRequest,
   DraftQuestionRequest,
-  DraftQuestion,
 } from '../types';
 import {
   addVoteToQuestion,
@@ -54,8 +53,8 @@ const questionController = (socket: FakeSOSocket) => {
       }
       // Filter by search keyword and tags
       const resqlist: Question[] = await filterQuestionsBySearch(qlist, search);
-      
-      const qlistNoDraft = resqlist.filter((q) => !q.draft)
+
+      const qlistNoDraft = resqlist.filter(q => !q.draft);
 
       res.json(qlistNoDraft);
     } catch (err: unknown) {
@@ -108,7 +107,6 @@ const questionController = (socket: FakeSOSocket) => {
       }
     }
   };
-
 
   const getDraftQuestionById = async (req: FindDraftByIdRequest, res: Response): Promise<void> => {
     const { id } = req.params;
@@ -287,17 +285,17 @@ const questionController = (socket: FakeSOSocket) => {
 
     const question: Question = req.body;
     try {
-      if(!question._id || await !checkIfExists(question._id.toString(), "question")) {
-        await addQuestion(req, res)
+      if (!question._id || (await !checkIfExists(question._id.toString(), 'question'))) {
+        await addQuestion(req, res);
         await removeQuestionDraft(question);
       } else {
         await updateQuestion(question);
         res.status(200).send('updated!');
       }
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(`Error when updating question: ${(err as Error).message}`);
     }
-  }
+  };
 
   const saveAsDraft = async (req: SaveQuestionAsDraftRequest, res: Response): Promise<void> => {
     if (!req.body.draft || !req.body.username) {
@@ -314,10 +312,10 @@ const questionController = (socket: FakeSOSocket) => {
       };
 
       await saveQuestionDraft(req.body.username, questionswithtags);
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(`Error when saving question: ${(err as Error).message}`);
     }
-  }
+  };
 
   const saveFromDraft = async (req: DraftQuestionRequest, res: Response): Promise<void> => {
     if (!req.body.draftQuestion) {
@@ -333,13 +331,13 @@ const questionController = (socket: FakeSOSocket) => {
         tags: await processTags(draftQ.tags),
       };
       await saveQuestionFromDraft(questionswithtags);
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(`Error when saving question: ${(err as Error).message}`);
     }
-  }
+  };
 
   const postFromDraft = async (req: DraftQuestionRequest, res: Response): Promise<void> => {
-    //simply delete previous post, and post the question inside the draft. Use the realid, if its not real, then just proceed as a post
+    // simply delete previous post, and post the question inside the draft. Use the realid, if its not real, then just proceed as a post
     if (!req.body.draftQuestion || !req.body.username) {
       res.status(400).send('Invalid question save request');
       return;
@@ -351,11 +349,11 @@ const questionController = (socket: FakeSOSocket) => {
     question.pinned = false;
     question.draft = false;
     try {
-      if(req.body.realId) {
+      if (req.body.realId) {
         await removeOriginalDraftQuestion(req.body.realId);
       }
 
-      if(req.body.draftQuestion._id) {
+      if (req.body.draftQuestion._id) {
         await removeOriginalDraftQuestion(req.body.draftQuestion._id.toString());
       }
 
@@ -382,14 +380,12 @@ const questionController = (socket: FakeSOSocket) => {
         throw new Error(populatedQuestion.error);
       }
 
-
-    await removeQuestionDraft(req.body.draftQuestion);
-    res.status(200).send('Draft has been posted!');
-
-  }catch(err) {
+      await removeQuestionDraft(req.body.draftQuestion);
+      res.status(200).send('Draft has been posted!');
+    } catch (err) {
       res.status(500).send(`Error when saving question: ${(err as Error).message}`);
-  }
-}
+    }
+  };
 
   // add appropriate HTTP verbs and their endpoints to the router
   router.get('/getQuestion', getQuestionsByFilter);
@@ -397,11 +393,11 @@ const questionController = (socket: FakeSOSocket) => {
   router.post('/addQuestion', addQuestion);
   router.post('/upvoteQuestion', upvoteQuestion);
   router.post('/downvoteQuestion', downvoteQuestion);
-  router.post('/updateQuestion', updateQuestionRoute)
+  router.post('/updateQuestion', updateQuestionRoute);
   router.post('/saveDraft', saveAsDraft);
   router.get('/getDraftQuestionById/:id', getDraftQuestionById);
-  router.post('/saveFromDraft', saveFromDraft)
-  router.post('/postFromDraft', postFromDraft)
+  router.post('/saveFromDraft', saveFromDraft);
+  router.post('/postFromDraft', postFromDraft);
 
   return router;
 };

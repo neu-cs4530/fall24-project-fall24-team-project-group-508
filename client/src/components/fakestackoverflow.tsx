@@ -15,6 +15,16 @@ import { TextSizeProvider } from '../contexts/TextSizeContext';
 import ProfilePage from './main/profilePage';
 import DraftPage from './main/draftPage';
 
+/**
+ * Represents a protected route that requires the user to be logged in.
+ * If the user is not logged in, it will redirect to the login page.
+ *
+ * @param user - The user object.
+ * @param account - The account object.
+ * @param setAccount - The function to set the account object.
+ * @param socket - The socket object.
+ * @param children - The children components to render.
+ */
 const ProtectedRoute = ({
   user,
   account,

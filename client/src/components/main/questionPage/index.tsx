@@ -17,6 +17,11 @@ const QuestionPage = () => {
 
   const theme = useTheme();
 
+  /**
+   * Function to filter questions based on the selected tag.
+   *
+   * @param tag - The tag to filter the questions by.
+   */
   const setFilterTag = (tag: string) => {
     if (!tag) {
       // If no tag is selected, reset to full list.

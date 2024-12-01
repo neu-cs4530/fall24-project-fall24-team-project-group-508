@@ -16,7 +16,13 @@ import { getAccountByName } from '../../../../services/accountService';
  * - ansBy The username of the user who wrote the answer.
  * - meta Additional metadata related to the answer.
  * - comments An array of comments associated with the answer.
+ * - locked Whether the answer is locked.
+ * - pinned Whether the answer is pinned.
+ * - isCorrect Whether the answer is marked as correct.
+ * - qAskedBy The username of the user who asked the question.
  * - handleAddComment Callback function to handle adding a new comment.
+ * - moderatorInfo Information about the moderator.
+ * - onMarkCorrect Callback function to mark the answer as correct.
  */
 interface AnswerProps {
   qid?: string;
@@ -43,7 +49,14 @@ interface AnswerProps {
  * @param ansBy The username of the answer's author.
  * @param meta Additional metadata related to the answer.
  * @param comments An array of comments associated with the answer.
+ * @param locked Whether the answer is locked.
+ * @param pinned Whether the answer is pinned.
+ * @param isCorrect Whether the answer is marked as correct.
+ * @param qAskedBy The username of the user who asked the question.
  * @param handleAddComment Function to handle adding a new comment.
+ * @param moderatorInfo Information about the moderator.
+ * @param onMarkCorrect Callback function to mark the answer as correct.
+ * @returns The AnswerView component.
  */
 const AnswerView = ({
   qid,

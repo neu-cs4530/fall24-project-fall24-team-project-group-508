@@ -8,6 +8,9 @@ import { Schema } from 'mongoose';
  * - `ansBy`: The username of the user who provided the answer.
  * - `ansDateTime`: The date and time when the answer was given.
  * - `comments`: Comments that have been added to the answer by users.
+ * - `locked`: Whether the answer is locked.
+ * - `pinned`: Whether the answer is pinned.
+ * - `isCorrect`: Whether the answer is marked as correct.
  */
 const answerSchema: Schema = new Schema(
   {

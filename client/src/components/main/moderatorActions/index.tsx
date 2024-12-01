@@ -5,6 +5,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import useModeratorActions from '../../../hooks/useModeratorActions';
 import './index.css';
 
+/**
+ * Interface representing the props for the ModeratorActionButtons component.
+ *
+ * - parentID: The ID of the parent component.
+ * - parentType: The type of the parent component.
+ * - _id: The ID of the component.
+ * - type: The type of the component.
+ */
 export interface ModeratorActionProps {
   parentID?: string;
   parentType?: 'question' | 'answer' | 'comment';
@@ -12,6 +20,12 @@ export interface ModeratorActionProps {
   type: 'question' | 'answer' | 'comment';
 }
 
+/**
+ * ModeratorActionButtons component that displays the moderator action buttons.
+ * It includes buttons to pin, lock, and remove content.
+ * @param info Information about the moderator.
+ * @param _id The ID of the component.
+ */
 const ModeratorActionButtons = (
   info: ModeratorActionProps,
   _id: string | undefined,

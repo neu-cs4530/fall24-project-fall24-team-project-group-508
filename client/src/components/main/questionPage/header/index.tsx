@@ -20,6 +20,7 @@ import AskQuestionButton from '../../askQuestionButton';
  * titleText - The title text displayed at the top of the header.
  * qcnt - The number of questions to be displayed in the header.
  * setQuestionOrder - A function that sets the order of questions based on the selected message.
+ * setFilterTag - A function that sets the filter tag based on the selected tag.
  */
 interface QuestionHeaderProps {
   titleText: string;
@@ -36,6 +37,7 @@ interface QuestionHeaderProps {
  * @param titleText - The title text to display in the header.
  * @param qcnt - The number of questions displayed in the header.
  * @param setQuestionOrder - Function to set the order of questions based on input message.
+ * @param setFilterTag - Function to set the filter tag based on the selected tag.
  */
 const QuestionHeader = ({
   titleText,
@@ -91,6 +93,7 @@ const QuestionHeader = ({
     'Latex',
   ];
 
+  // Update the filter tag when the user selects a new tag
   const handleTagChange = (event: SelectChangeEvent<string>) => {
     const newTag = event.target.value as string;
     setSelectedTag(newTag);

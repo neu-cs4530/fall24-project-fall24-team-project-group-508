@@ -9,6 +9,9 @@ import { CustomThemeProvider } from './contexts/ThemeContext';
 
 const container = document.getElementById('root');
 
+/**
+ * Main application component that initializes the socket connection to the server.
+ */
 const App = () => {
   const [socket, setSocket] = useState<FakeSOSocket | null>(null);
 

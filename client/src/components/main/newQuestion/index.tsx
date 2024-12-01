@@ -18,6 +18,9 @@ import useNewQuestion from '../../../hooks/useNewQuestion';
 import { PresetTagName } from '../../../types';
 import MarkdownPreview from '../markdownPreview';
 
+/**
+ * NewQuestionPage component allows users to submit a new question.
+ */
 const NewQuestionPage = () => {
   const {
     title,
@@ -82,6 +85,7 @@ const NewQuestionPage = () => {
 
   const [selectedPresetTags, setSelectedPresetTags] = useState<string[]>([]);
 
+  // Handle the change in the preset tags
   const handlePresetTagChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value as string[];
     if (value.length <= 5) {

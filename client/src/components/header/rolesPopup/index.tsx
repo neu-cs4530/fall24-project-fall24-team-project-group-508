@@ -14,6 +14,9 @@ import {
 import { Account } from '../../../types';
 import { getAccounts, updateUserTypes } from '../../../services/accountService';
 
+/**
+ * OwnerPopup props
+ */
 interface OwnerPopupProps {
   onClose: () => void;
 }
@@ -73,12 +76,12 @@ const OwnerPopup: React.FC<OwnerPopupProps> = ({ onClose }) => {
       }
       await Promise.all(updatePromises);
 
-      // Optionally, fetch the updated accounts to reflect changes immediately
+      // fetch the updated accounts to reflect changes immediately
       const data = await getAccounts();
       setAccounts(data);
-      setFilteredAccounts(data); // Update filtered accounts
+      setFilteredAccounts(data);
       setEditedAccounts({});
-      onClose(); // Close the popup
+      onClose();
     } catch (error) {
       console.error('Error saving changes:', error);
     }
