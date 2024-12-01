@@ -98,7 +98,7 @@ const questionSchema: Schema = new Schema(
     },
     draft: {
       type: Boolean,
-    }
+    },
   },
   { collection: 'Question' },
 );
