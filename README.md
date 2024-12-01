@@ -1,6 +1,6 @@
-#Husky404
+# Husky404
 
-##Group 508
+## Group 508
 
 Our enhanced FakeStackOverflow project incorporates three major updates designed to improve functionality and user experience: a Markdown Text Editor with LaTeX support, a secure Single Sign-On (SSO) login system, and enhanced accessibility options. These features collectively elevate the platform by enabling professional content formatting, providing robust accessibility tools, and ensuring user account security. Users can now format posts with live previews, access tools to improve readability, and securely manage their profiles and activity.
 
