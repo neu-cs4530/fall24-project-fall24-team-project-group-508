@@ -125,7 +125,8 @@ async function answerCreate(
     comments: comments,
     locked: false,
     pinned: false,
-    isCorrect: false
+    isCorrect: false,
+    draft: false
   };
   return await AnswerModel.create(answerDetail);
 }
@@ -177,7 +178,8 @@ async function questionCreate(
     comments: comments,
     presetTags: presetTags,
     locked: false,
-    pinned: false
+    pinned: false,
+    draft: false,
   };
   return await QuestionModel.create(questionDetail);
 }
