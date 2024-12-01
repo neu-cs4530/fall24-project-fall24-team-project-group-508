@@ -1,6 +1,15 @@
 import supertest from 'supertest';
 import mongoose from 'mongoose';
-import { loginToAccount, createAccount } from '../models/application';
+import {
+  loginToAccount,
+  createAccount,
+  findUsersAnswers,
+  findUsersAnswersDrafts,
+  findUsersComments,
+  findUsersQuestionDrafts,
+  findUsersQuestions,
+  getUserScore,
+} from '../models/application';
 import { app } from '../app';
 
 // Mock the application model functions
@@ -80,6 +89,14 @@ describe('POST /login/createAccount', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(async () => {
+    await mongoose.connection.close(); // Ensure the connection is properly closed
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect(); // Ensure mongoose is disconnected after all tests
+  });
+
   it('should return 200 with new account details for a valid request', async () => {
     const mockNewAccount = { username: 'newuser', email: 'new@example.com' };
     mockCreateAccount.mockResolvedValueOnce(mockNewAccount);
@@ -136,5 +153,66 @@ describe('POST /login/createAccount', () => {
 
     expect(response.status).toBe(500);
     expect(response.text).toContain('ERROR: Unable to create account: Unexpected error');
+  });
+});
+
+jest.mock('../models/application');
+
+const mockFindUsersQuestions = findUsersQuestions as jest.Mock;
+const mockFindUsersAnswers = findUsersAnswers as jest.Mock;
+const mockFindUsersComments = findUsersComments as jest.Mock;
+const mockGetUserScore = getUserScore as jest.Mock;
+const mockFindUsersAnswersDrafts = findUsersAnswersDrafts as jest.Mock;
+const mockFindUsersQuestionDrafts = findUsersQuestionDrafts as jest.Mock;
+
+describe('POST /login/userData', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 200 and send profile payload for a valid request', async () => {
+    const mockPayload = {
+      username: 'testuser',
+      score: 50,
+      questions: [{ id: 1, content: 'Sample question?' }],
+      answers: [{ id: 2, content: 'Sample answer' }],
+      comments: [{ id: 3, content: 'Sample comment' }],
+      answerDrafts: [{ id: 4, content: 'Draft answer' }],
+      questionDrafts: [{ id: 5, content: 'Draft question' }],
+    };
+
+    mockFindUsersQuestions.mockResolvedValueOnce(mockPayload.questions);
+    mockFindUsersAnswers.mockResolvedValueOnce(mockPayload.answers);
+    mockFindUsersComments.mockResolvedValueOnce(mockPayload.comments);
+    mockGetUserScore.mockResolvedValueOnce(mockPayload.score);
+    mockFindUsersAnswersDrafts.mockResolvedValueOnce(mockPayload.answerDrafts);
+    mockFindUsersQuestionDrafts.mockResolvedValueOnce(mockPayload.questionDrafts);
+
+    const response = await supertest(app)
+      .post('/login/userData')
+      .send({ profile: { username: 'testuser', hashedPassword: 'hashedpassword' } });
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('data found succesfully');
+  });
+
+  it('should return 400 for an invalid request', async () => {
+    const response = await supertest(app)
+      .post('/login/userData')
+      .send({ profile: { username: '' } });
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Invalid request');
+  });
+
+  it('should return 401 if an error occurs during data retrieval', async () => {
+    mockFindUsersQuestions.mockRejectedValueOnce(new Error('Database error'));
+
+    const response = await supertest(app)
+      .post('/login/userData')
+      .send({ profile: { username: 'testuser', hashedPassword: 'hashedpassword' } });
+
+    expect(response.status).toBe(401);
+    expect(response.text).toContain('ERROR: Unable to retrieve account info: Database error');
   });
 });

@@ -1,7 +1,14 @@
 import express, { Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { Comment, AddCommentRequest, FakeSOSocket, FindCommentByIdRequest } from '../types';
-import { addComment, checkIfExists, fetchCommentById, populateDocument, saveComment, updateComment } from '../models/application';
+import {
+  addComment,
+  checkIfExists,
+  fetchCommentById,
+  populateDocument,
+  saveComment,
+  updateComment,
+} from '../models/application';
 
 const commentController = (socket: FakeSOSocket) => {
   const router = express.Router();
@@ -99,47 +106,46 @@ const commentController = (socket: FakeSOSocket) => {
     }
   };
 
-    /**
- * Retrieves a comment by its unique ID, and increments the view count for that comment.
- * If there is an error, the HTTP response's status is updated.
- *
- * @param req The FindCommentByIdRequest object containing the comment ID as a parameter.
- * @param res The HTTP response object used to send back the comment details.
- *
- * @returns A Promise that resolves to void.
- */
-    const getCommentById = async (req: FindCommentByIdRequest, res: Response): Promise<void> => {
-      const { id } = req.params;
-      const { username } = req.query;
-  
-      if (!ObjectId.isValid(id)) {
-        res.status(400).send('Invalid ID format');
-        return;
-      }
-  
-      if (username === undefined) {
-        res.status(400).send('Invalid username requesting comment.');
-        return;
-      }
-  
-      try {
-        const c = await fetchCommentById(id, username);
-  
-        if (c && !('error' in c)) {
-          res.json(c);
-          return;
-        }
-  
-        throw new Error('Error while fetching comment by id');
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          res.status(500).send(`Error when fetching comment by id: ${err.message}`);
-        } else {
-          res.status(500).send(`Error when fetching comment by id`);
-        }
-      }
-    };
+  /**
+   * Retrieves a comment by its unique ID, and increments the view count for that comment.
+   * If there is an error, the HTTP response's status is updated.
+   *
+   * @param req The FindCommentByIdRequest object containing the comment ID as a parameter.
+   * @param res The HTTP response object used to send back the comment details.
+   *
+   * @returns A Promise that resolves to void.
+   */
+  const getCommentById = async (req: FindCommentByIdRequest, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const { username } = req.query;
 
+    if (!ObjectId.isValid(id)) {
+      res.status(400).send('Invalid ID format');
+      return;
+    }
+
+    if (username === undefined) {
+      res.status(400).send('Invalid username requesting comment.');
+      return;
+    }
+
+    try {
+      const c = await fetchCommentById(id, username);
+
+      if (c && !('error' in c)) {
+        res.json(c);
+        return;
+      }
+
+      throw new Error('Error while fetching comment by id');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        res.status(500).send(`Error when fetching comment by id: ${err.message}`);
+      } else {
+        res.status(500).send(`Error when fetching comment by id`);
+      }
+    }
+  };
 
   const updateCommentRoute = async (req: AddCommentRequest, res: Response): Promise<void> => {
     const { comment } = req.body;
@@ -149,20 +155,20 @@ const commentController = (socket: FakeSOSocket) => {
     }
 
     try {
-      if(!comment._id || await !checkIfExists(comment._id.toString(), "comment")) {
-        await addCommentRoute(req, res)
+      if (!comment._id || (await !checkIfExists(comment._id.toString(), 'comment'))) {
+        await addCommentRoute(req, res);
       } else {
         await updateComment(comment);
         res.status(200).send('updated!');
       }
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(`Error when updating question: ${(err as Error).message}`);
     }
-  }
+  };
 
   router.post('/addComment', addCommentRoute);
   router.get('/getCommentById/:id', getCommentById);
-  router.post('/updateComment', updateCommentRoute)
+  router.post('/updateComment', updateCommentRoute);
 
   return router;
 };
