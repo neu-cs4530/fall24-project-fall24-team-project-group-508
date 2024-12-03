@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CommentSection from '../../commentSection';
 import './index.css';
 import { Account, Comment } from '../../../../types';
@@ -87,7 +89,7 @@ const AnswerView = ({
   };
 
   const pinSortedComments = comments.sort((a1, a2) => Number(a2.pinned) - Number(a1.pinned));
-  const { user } = useUserContext();
+  const { account, user } = useUserContext();
   const [ansByAccount, setAnsByAccount] = useState<Account | null>(null);
 
   useEffect(() => {
@@ -103,11 +105,41 @@ const AnswerView = ({
   return (
     <Box sx={dynamicStyles}>
       {/* Moderator Actions */}
-      <Box
-        role='region'
-        aria-label='Moderator actions'
-        sx={{ marginBottom: 1, flexDirection: 'column' }}>
-        {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
+      {(user?.userType === 'moderator' || user?.userType === 'owner') && ( // Only show if userType is 'moderator'
+        <Box
+          role='region'
+          aria-label='Moderator actions'
+          sx={{ marginBottom: 1, flexDirection: 'column' }}>
+          {ModeratorActionButtons(moderatorInfo, moderatorInfo._id)}
+        </Box>
+      )}
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        {isCorrect && (
+          <Box
+            sx={{
+              color: 'success.main',
+              display: 'flex',
+              alignItems: 'center',
+              mr: 2,
+            }}>
+            <CheckCircleIcon />
+            <Typography sx={{ ml: 1 }}>Correct Answer</Typography>
+          </Box>
+        )}
+        {onMarkCorrect && !isCorrect && account.username === qAskedBy && (
+          <Button
+            variant='outlined'
+            color='success'
+            onClick={onMarkCorrect}
+            startIcon={<CheckCircleOutlineIcon />}>
+            Mark as Correct
+          </Button>
+        )}
+        {onMarkCorrect && isCorrect && account.username === qAskedBy && (
+          <Button variant='outlined' color='warning' onClick={onMarkCorrect}>
+            Un-Mark as Correct
+          </Button>
+        )}
       </Box>
 
       {/* Answer Text */}
